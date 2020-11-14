@@ -428,6 +428,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         return filelist;
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 99) {
             PmwsSetActivity.RECORD_DIALOG = 1;
@@ -683,80 +684,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         });
     }
 
-    /**
-     * 摄像头选择 上面有备份
-     */
-//    private void showSelectCameraDialog2() {
-//        View v = LayoutInflater.from(this).inflate(R.layout.select_camera, null);
-//        RelativeLayout back_camera_rl = (RelativeLayout) v.findViewById(R.id.back_camera_rl);
-//        final RelativeLayout front_camera_rl = (RelativeLayout) v.findViewById(R.id.front_camera_rl);
-////        RelativeLayout special_camera_rl = (RelativeLayout) v.findViewById(R.id.special_camera_rl);
-//        final RadioButton rb1 = (RadioButton) v.findViewById(R.id.rb1);
-//        final RadioButton rb2 = (RadioButton) v.findViewById(R.id.rb2);
-////        final RadioButton rb3 = (RadioButton) v.findViewById(R.id.rb3);
-//        String camera = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
-//        if (camera.equals(CAMERAID_BACK)) {
-//            initRadioStatus2(rb1, rb2);
-//        } else if (camera.equals(CAMERAID_FRONT)) {
-//            initRadioStatus2(rb2, rb1);
-//        }  else {
-//            initRadioStatus2(rb1, rb2);
-//        }
-//        final Dialog dialog_c = new Dialog(this, R.style.DialogStyle);
-//        dialog_c.setCanceledOnTouchOutside(false);
-//        dialog_c.show();
-//        Window window = dialog_c.getWindow();
-//        WindowManager.LayoutParams lp = window.getAttributes();
-//        window.setGravity(Gravity.CENTER);
-//        lp.width = dip2px(this, 300); // 宽度
-//        lp.height = dip2px(this, 275); // 高度
-//        //lp.dimAmount = 0f;//去掉对话框自带背景色
-//        window.setAttributes(lp);
-//        window.setContentView(v);
-//        back_camera_rl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                initRadioStatus2(rb1, rb2);
-//                SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_BACK);
-//                camera_selected_tv.setText(CAMERAID_BACK);
-//
-//                dialog_c.dismiss();
-//            }
-//        });
-//        front_camera_rl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                initRadioStatus2(rb2, rb1);
-//                SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_FRONT);
-//                camera_selected_tv.setText(CAMERAID_FRONT);
-//
-//                dialog_c.dismiss();
-//            }
-//        });
-////        special_camera_rl.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                initRadioStatus(rb3, rb1, rb2);
-////                SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_SPECIAL);
-////                camera_selected_tv.setText(CAMERAID_SPECIAL);
-////                //开启前置后置
-////
-////
-////                dialog_c.dismiss();
-////            }
-////        });
-//    }
 
-
-    /**
-     *
-     * 摄像头选择
-     */
-//    private void initRadioStatus(RadioButton selected_rb, RadioButton unselected_rb1, RadioButton unselected_rb2) {
-//        selected_rb.setChecked(true);
-//        unselected_rb1.setChecked(false);
-//        unselected_rb2.setChecked(false);
-//    }
 
     /**
      * 摄像头选择 备份
