@@ -1,6 +1,6 @@
 package com.leng.hiddencamera;
 
-public class L {
+public class PmwsLog {
 	private static final boolean ENABLED = true;
 	private static final String TAG = "leng";
 

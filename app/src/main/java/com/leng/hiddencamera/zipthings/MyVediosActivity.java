@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.leng.hiddencamera.Pingmws_SetActivity;
+import com.leng.hiddencamera.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
 
@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 /**
  * @aouther tobato
- * @description ÃèÊö  Â¼ÖÆµÄÎÄ¼ş
+ * @description ï¿½ï¿½ï¿½ï¿½  Â¼ï¿½Æµï¿½ï¿½Ä¼ï¿½
  * @date 2020/10/6 22:36
  */
 
@@ -45,29 +45,29 @@ public class MyVediosActivity extends ListActivity {
 
     String TAG = "MyVediosActivity";
     /**
-     * ÎÄ¼ş£¨¼Ğ£©Ãû×Ö
+     * ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     private List<String> items = null;
     /**
-     * ÎÄ¼ş£¨¼Ğ£©Â·¾¶
+     * ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½Â·ï¿½ï¿½
      */
     private List<String> paths = null;
     /**
-     * ¸ùÄ¿Â¼
+     * ï¿½ï¿½Ä¿Â¼
      **/
     private String rootPath = "/";
 
     /**
-     * ÏÔÊ¾µ±Ç°Ä¿Â¼
+     * ï¿½ï¿½Ê¾ï¿½ï¿½Ç°Ä¿Â¼
      **/
     private TextView mPath;
 
     /**
-     * NotificationµÄID
+     * Notificationï¿½ï¿½ID
      */
     int notifyId = 102;
     /**
-     * NotificationµÄ½ø¶ÈÌõÊıÖµ
+     * Notificationï¿½Ä½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
      */
     int progress = 0;
 
@@ -83,7 +83,7 @@ public class MyVediosActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.fileselect);
-        mDialog = DCPubic.getProgressDialog(this, "ÕıÔÚ½âÃÜ£¬ÇëÉÔºó...");
+        mDialog = DCPubic.getProgressDialog(this, "ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Ôºï¿½...");
         mPath = (TextView) findViewById(R.id.mPath);
         textView = (TextView) findViewById(R.id.cancel_tv_);
 //		findViewById(R.id.buttonConfirm).setOnClickListener(this);
@@ -103,7 +103,7 @@ public class MyVediosActivity extends ListActivity {
 
     @Override
     public void onBackPressed() {
-        Pingmws_SetActivity.RECORD_DIALOG = 1;
+        PmwsSetActivity.RECORD_DIALOG = 1;
         finish();
 
     }
@@ -118,7 +118,7 @@ public class MyVediosActivity extends ListActivity {
 //	}
 
     /**
-     * »ñÈ¡Ö¸¶¨Ä¿Â¼ÏÂµÄËùÓĞÎÄ¼ş(¼Ğ)
+     * ï¿½ï¿½È¡Ö¸ï¿½ï¿½Ä¿Â¼ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½(ï¿½ï¿½)
      *
      * @param filePath
      */
@@ -129,7 +129,7 @@ public class MyVediosActivity extends ListActivity {
         File f = new File(filePath);
         File[] files = f.listFiles();
 
-        // ÓÃÀ´ÏÔÊ¾ ¡°·µ»Ø¸ùÄ¿Â¼¡±+"ÉÏ¼¶Ä¿Â¼"
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½Ä¿Â¼ï¿½ï¿½+"ï¿½Ï¼ï¿½Ä¿Â¼"
         if (!filePath.equals(rootPath)) {
             items.add("rootPath");
             paths.add(rootPath);
@@ -138,7 +138,7 @@ public class MyVediosActivity extends ListActivity {
             paths.add(f.getParent());
         }
 
-        // ÏÈÅÅĞò
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         List<File> resultList = null;
         if (files != null) {
             Log.i("hnyer", files.length + " " + filePath);
@@ -166,7 +166,7 @@ public class MyVediosActivity extends ListActivity {
                 paths.add(file.getPath());
             }
         } else {
-            Log.i("hnyer", filePath + "ÎŞ×ÓÎÄ¼ş");
+            Log.i("hnyer", filePath + "ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½");
         }
 
         setListAdapter(new MyAdapter(this, items, paths));
@@ -175,7 +175,7 @@ public class MyVediosActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         File file = new File(paths.get(position));
-         //       ½âÃÜ²¢²¥·Å
+         //       ï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½ï¿½ï¿½
         if (file.isDirectory()) {
             getFileDir(paths.get(position));
         } else {
@@ -184,7 +184,7 @@ public class MyVediosActivity extends ListActivity {
     }
 
     /**
-     * ¼ì²âÎÄ¼şÊÇ·ñÒÑ±»½âÃÜ
+     * ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param file
      */
     private boolean checkFileIsDecryped(File file) {
@@ -199,7 +199,7 @@ public class MyVediosActivity extends ListActivity {
 
         }
         if (fileNamesMp4.contains(file.getName().substring(0,file.getName().lastIndexOf(".")))) {
-            Toast.makeText(this, "´ËÊÓÆµÎÄ¼şÒÑ¾­½âÃÜ¹ıÁË", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ï¿½ï¿½ï¿½ï¿½Æµï¿½Ä¼ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
             return true;
         }
         return false;
@@ -209,7 +209,7 @@ public class MyVediosActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         Log.i("MyVediosActivity", "MyVediosActivity onDestroy");
-//		Pingmws_SetActivity.RECORD_DIALOG=0;
+//		PmwsSetActivity.RECORD_DIALOG=0;
         if (mDialog!=null) {
             mDialog.dismiss();
             mDialog=null;
@@ -242,17 +242,17 @@ public class MyVediosActivity extends ListActivity {
 
             startService(intent);
             mDialog.show();
-            writeLog("decrypt fiel and play£»", f);
+            writeLog("decrypt fiel and playï¿½ï¿½", f);
             return;
 
         } else {
-            //mp4¸ñÊ½²¥·Å
+            //mp4ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
             Uri uri = null;
             if (Build.VERSION.SDK_INT >= 24) {//7.0 Android N
-                //com.xxx.xxx.fileproviderÎªÉÏÊömanifestÖĞproviderËùÅäÖÃÏàÍ¬
+                //com.xxx.xxx.fileproviderÎªï¿½ï¿½ï¿½ï¿½manifestï¿½ï¿½providerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬
                 uri = FileProvider.getUriForFile(getApplicationContext(), "com.example.pmws.fileProvider",f);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0ÒÔºó£¬ÏµÍ³ÒªÇóÊÚÓèÁÙÊ±uri¶ÁÈ¡È¨ÏŞ£¬°²×°Íê±ÏÒÔºó£¬ÏµÍ³»á×Ô¶¯ÊÕ»ØÈ¨ÏŞ£¬¸Ã¹ı³ÌÃ»ÓĞÓÃ»§½»»¥
-            } else {//7.0ÒÔÏÂ
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0ï¿½Ôºï¿½ÏµÍ³Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±uriï¿½ï¿½È¡È¨ï¿½Ş£ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½Ôºï¿½ÏµÍ³ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½Õ»ï¿½È¨ï¿½Ş£ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
+            } else {//7.0ï¿½ï¿½ï¿½ï¿½
                 uri = Uri.fromFile(f);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
@@ -262,18 +262,18 @@ public class MyVediosActivity extends ListActivity {
 
     }
 
-    // Õâ¸ö·½·¨µÄ´æÔÚ¾ÍÊÇÎªÁËÇø·ÖÊÇ²»ÊÇÌØ¶¨µÄÎÄ¼ş£¬±ÈÈçzip,Èç¹ûÊÇµÄ»°ÔÙ½øĞĞ²Ù×÷µÄ£¬ÒªÊÇ²»ÊÇµÄ»°¾Í²»²Ù×÷£¬¼øÓÚÏÖÔÚÖ»ÊÇ¶ÔÓÚÌØ¶¨µÄÎÄ¼ş½øĞĞ²Ù×÷£¬
-    // ÄÇÎÒ»¹Òª²»Òª¼ÌĞøÑĞ¾¿Õâ¸öÀàĞÍß@‚€–|Î÷£¬ß€ÊÇÈ¥ÑĞ¾¿V²¥
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½Ú¾ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zip,ï¿½ï¿½ï¿½ï¿½ÇµÄ»ï¿½ï¿½Ù½ï¿½ï¿½Ğ²ï¿½ï¿½ï¿½ï¿½Ä£ï¿½Òªï¿½Ç²ï¿½ï¿½ÇµÄ»ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ğ²ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½Ò»ï¿½Òªï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ğ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½ï¿½ß€ï¿½ï¿½È¥ï¿½Ğ¾ï¿½ï¿½Vï¿½ï¿½
 
     /**
      * @param f
-     * @return ·µ»ØµÄÊÇÎÄ¼şºó×ºÃû£¬Ô­À´ºó×ºÃûÒªĞ¡Ğ©£¬´óĞ´¸ù±¾Ã»ÓÃ£¬ËùÒÔ¸ù±¾Ã»±È½Ïµ½£¬ºÇºÇÁË
+     * @return ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½×ºï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½×ºï¿½ï¿½ÒªĞ¡Ğ©ï¿½ï¿½ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½Ô¸ï¿½ï¿½ï¿½Ã»ï¿½È½Ïµï¿½ï¿½ï¿½ï¿½Çºï¿½ï¿½ï¿½
      */
     private String getMIMEType(File f) {
         String type = "";
         String fName = f.getName();
 
-        // ½«À´½âÑ¹ºÃµÄÊÓÆµÎÄ¼şÃû£¬È»ºó±£´æµ½SharedPreferences
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½Ãµï¿½ï¿½ï¿½Æµï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ó±£´æµ½SharedPreferences
         SharedPreferences tmpFileName = getSharedPreferences("tmpFileName", 0);
 
         SharedPreferences.Editor editor = tmpFileName.edit();
@@ -309,10 +309,10 @@ public class MyVediosActivity extends ListActivity {
 
     /**
      * @param first
-     * @param f     Ğ´LOGµ½SD¿¨
+     * @param f     Ğ´LOGï¿½ï¿½SDï¿½ï¿½
      */
     private void writeLog(String first, File f) {
-        //Ğ´ÈÕÖ¾µ½SD¿¨
+        //Ğ´ï¿½ï¿½Ö¾ï¿½ï¿½SDï¿½ï¿½
         File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
         if (!dir.exists()) {
             dir.mkdir();
@@ -320,8 +320,8 @@ public class MyVediosActivity extends ListActivity {
 
         try {
 
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyÄêMMÔÂddÈÕ  HH:mm:ss ");
-            Date curDate = new Date(System.currentTimeMillis());//»ñÈ¡µ±Ç°Ê±¼ä
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyï¿½ï¿½MMï¿½ï¿½ddï¿½ï¿½  HH:mm:ss ");
+            Date curDate = new Date(System.currentTimeMillis());//ï¿½ï¿½È¡ï¿½ï¿½Ç°Ê±ï¿½ï¿½
             String str = formatter.format(curDate);
 
             FileWriter writer = new FileWriter(dir + "/log.txt", true);

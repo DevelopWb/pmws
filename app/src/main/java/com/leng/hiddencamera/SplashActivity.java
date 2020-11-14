@@ -6,15 +6,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
-import com.juntai.wisdom.basecomponent.utils.SPTools;
-import com.juntai.wisdom.basecomponent.utils.ToastUtils;
-import com.softconfig.activity.MainActivity;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -25,11 +19,11 @@ import io.reactivex.functions.Consumer;
 
 /**
  * @aouther tobato
- * @description ÃèÊö Æô¶¯Ò³
+ * @description ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò³
  * @date 2020/10/5 21:20
  */
 public class SplashActivity extends RxAppCompatActivity {
-    public static final int REQUEST_OVERLAY_PERMISSION = 1004;  // Ðü¸¡¿ò
+    public static final int REQUEST_OVERLAY_PERMISSION = 1004;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     String[] permissions = new String[]{
             Manifest.permission.CALL_PHONE,
@@ -42,9 +36,9 @@ public class SplashActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Pingmws_SetActivity.sIsRecording) {
-            // Èç¹ûÔÚÂ¼ÖÆÖÐ£¬toastÏÔÊ¾ÕýÔÚÂ¼ÖÆ
-            Toast.makeText(getBaseContext(), "ÕýÔÚÂ¼ÖÆÖÐ£¬ÇëÏÈÍ£Ö¹...", Toast.LENGTH_LONG)
+        if (PmwsSetActivity.sIsRecording) {
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ð£ï¿½toastï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½
+            Toast.makeText(getBaseContext(), "ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Í£Ö¹...", Toast.LENGTH_LONG)
                     .show();
             finish();
             return;
@@ -58,23 +52,23 @@ public class SplashActivity extends RxAppCompatActivity {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean) {
-                            //ËùÓÐÈ¨ÏÞÍ¨¹ý
+                            //ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½Í¨ï¿½ï¿½
 
                         } else {
-                            //ÓÐÒ»¸öÈ¨ÏÞÃ»Í¨¹ý
+                            //ï¿½ï¿½Ò»ï¿½ï¿½È¨ï¿½ï¿½Ã»Í¨ï¿½ï¿½
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             boolean canDraw = Settings.canDrawOverlays(SplashActivity.this);
                             if (canDraw) {
-                                startActivity(new Intent(SplashActivity.this, Pingmws_SetActivity.class));
+                                startActivity(new Intent(SplashActivity.this, PmwsSetActivity.class));
                                 finish();
                             }else {
-                                // ÔÚAndroid 6.0ºó£¬AndroidÐèÒª¶¯Ì¬»ñÈ¡È¨ÏÞ£¬ÈôÃ»ÓÐÈ¨ÏÞ£¬ÌáÊ¾»ñÈ¡.
+                                // ï¿½ï¿½Android 6.0ï¿½ï¿½Androidï¿½ï¿½Òªï¿½ï¿½Ì¬ï¿½ï¿½È¡È¨ï¿½Þ£ï¿½ï¿½ï¿½Ã»ï¿½ï¿½È¨ï¿½Þ£ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½È¡.
                                 final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
                                 startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION);
                             }
                         }else {
-                            startActivity(new Intent(SplashActivity.this, Pingmws_SetActivity.class));
+                            startActivity(new Intent(SplashActivity.this, PmwsSetActivity.class));
                             finish();
                         }
 
@@ -95,7 +89,7 @@ public class SplashActivity extends RxAppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 boolean canDraw = Settings.canDrawOverlays(this);
                 if (canDraw) {
-                    startActivity(new Intent(SplashActivity.this, Pingmws_SetActivity.class));
+                    startActivity(new Intent(SplashActivity.this, PmwsSetActivity.class));
                     finish();
                 }else {
                     finish();

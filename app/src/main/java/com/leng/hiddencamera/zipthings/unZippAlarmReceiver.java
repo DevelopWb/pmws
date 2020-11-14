@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
-import com.leng.hiddencamera.Pingmws_SetActivity;
+import com.leng.hiddencamera.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 
 import java.io.File;
@@ -25,23 +25,23 @@ public class unZippAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //ÉèÖÃÍ¨ÖªÄÚÈÝ²¢ÔÚonReceive()Õâ¸öº¯ÊýÖ´ÐÐÊ±¿ªÆô    ½âÃÜÍê ½âÑ¹ËõÍêÖ±½Ó²¥·Å£¬²»¸øÍ¨ÖªÁË
+        //ï¿½ï¿½ï¿½ï¿½Í¨Öªï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½onReceive()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó²ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öªï¿½ï¿½
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification.Builder  builder = new Notification.Builder(context)
 				.setSmallIcon(R.drawable.app_icon)
-				.setContentTitle("ÆÁÄ»ÎÀÊ¿")
-				.setContentText("½âÃÜÍê³É")
+				.setContentTitle("ï¿½ï¿½Ä»ï¿½ï¿½Ê¿")
+				.setContentText("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
 				.setAutoCancel(true);
         manager.notify(1, builder.build());
 
 
-		Log.i("unZipReceiver","½âÃÜÍê³É£¬×¼±¸²¥·ÅÊÓÆµ");
+		Log.i("unZipReceiver","ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµ");
 
 
 
 		openVideo(context);
         
-        //ÔÙ´Î¿ªÆôLongRunningServiceÕâ¸ö·þÎñ£¬´Ó¶ø¿ÉÒÔ
+        //ï¿½Ù´Î¿ï¿½ï¿½ï¿½LongRunningServiceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ£¬´Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½
 //        Intent i = new Intent(context, LongRunningService.class);
 //        context.startService(i);
     }
@@ -49,7 +49,7 @@ public class unZippAlarmReceiver extends BroadcastReceiver {
     private void openVideo(Context context) {
     	
     	SharedPreferences tmpFileName = context.getSharedPreferences("tmpFileName", 0);
-    	String pathString=tmpFileName.getString("tmpFileName", Pingmws_SetActivity.SAVED_VIDEO_PATH);  //"mnt/sdcard/MyData"
+    	String pathString=tmpFileName.getString("tmpFileName", PmwsSetActivity.SAVED_VIDEO_PATH);  //"mnt/sdcard/MyData"
     	
     	
     	
@@ -60,10 +60,10 @@ public class unZippAlarmReceiver extends BroadcastReceiver {
 		Uri uri = null;
 		File file = new File(pathString);
 		if (Build.VERSION.SDK_INT >= 24) {//7.0 Android N
-			//com.xxx.xxx.fileproviderÎªÉÏÊömanifestÖÐproviderËùÅäÖÃÏàÍ¬
+			//com.xxx.xxx.fileproviderÎªï¿½ï¿½ï¿½ï¿½manifestï¿½ï¿½providerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬
 			uri = FileProvider.getUriForFile(context, "com.example.pmws.fileProvider",file);
-			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0ÒÔºó£¬ÏµÍ³ÒªÇóÊÚÓèÁÙÊ±uri¶ÁÈ¡È¨ÏÞ£¬°²×°Íê±ÏÒÔºó£¬ÏµÍ³»á×Ô¶¯ÊÕ»ØÈ¨ÏÞ£¬¸Ã¹ý³ÌÃ»ÓÐÓÃ»§½»»¥
-		} else {//7.0ÒÔÏÂ
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0ï¿½Ôºï¿½ÏµÍ³Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±uriï¿½ï¿½È¡È¨ï¿½Þ£ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½Ôºï¿½ÏµÍ³ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½Õ»ï¿½È¨ï¿½Þ£ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
+		} else {//7.0ï¿½ï¿½ï¿½ï¿½
 			uri = Uri.fromFile(file);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		}
@@ -77,10 +77,10 @@ public class unZippAlarmReceiver extends BroadcastReceiver {
 
 	/**
 	 * @param first
-	 * @param filename Ð´LOGµ½SD¿¨
+	 * @param filename Ð´LOGï¿½ï¿½SDï¿½ï¿½
 	 */
 	private void writeLog(String first,String filename){
-		//Ð´ÈÕÖ¾µ½SD¿¨
+		//Ð´ï¿½ï¿½Ö¾ï¿½ï¿½SDï¿½ï¿½
 		File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
 		if (!dir.exists()) {
 			dir.mkdir();
@@ -88,8 +88,8 @@ public class unZippAlarmReceiver extends BroadcastReceiver {
 
 		try {
 
-			SimpleDateFormat formatter   =   new  SimpleDateFormat    ("yyyyÄêMMÔÂddÈÕ  HH:mm:ss ");
-			Date curDate    =   new Date(System.currentTimeMillis());//»ñÈ¡µ±Ç°Ê±¼ä
+			SimpleDateFormat formatter   =   new  SimpleDateFormat    ("yyyyï¿½ï¿½MMï¿½ï¿½ddï¿½ï¿½  HH:mm:ss ");
+			Date curDate    =   new Date(System.currentTimeMillis());//ï¿½ï¿½È¡ï¿½ï¿½Ç°Ê±ï¿½ï¿½
 			String    str    =    formatter.format(curDate);
 
 			FileWriter writer = new FileWriter(dir+"/log.txt",true);

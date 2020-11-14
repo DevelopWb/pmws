@@ -7,7 +7,7 @@ import android.hardware.Camera;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.leng.hiddencamera.L;
+import com.leng.hiddencamera.PmwsLog;
 
 public class CameraPreview extends SurfaceView implements
 		SurfaceHolder.Callback {
@@ -33,7 +33,7 @@ public class CameraPreview extends SurfaceView implements
 			mCamera.setPreviewDisplay(holder);
 			mCamera.startPreview();
 		} catch (IOException e) {
-			L.d("Error setting camera preview: " + e.getMessage());
+			PmwsLog.d("Error setting camera preview: " + e.getMessage());
 		}
 	}
 
@@ -58,7 +58,7 @@ public class CameraPreview extends SurfaceView implements
 		 * // start preview with new settings try {
 		 * mCamera.setPreviewDisplay(mHolder); mCamera.startPreview();
 		 * 
-		 * } catch (Exception e){ L.d("Error starting camera preview: " +
+		 * } catch (Exception e){ PmwsLog.d("Error starting camera preview: " +
 		 * e.getMessage()); }
 		 */
 	}

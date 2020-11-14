@@ -40,13 +40,7 @@
         android:icon="@drawable/app_icon"
         android:label="@string/pmws_app_name"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".onePx.OnePixelActivity"
-            android:excludeFromRecents="false"
-            android:launchMode="singleTask"
-            android:taskAffinity="com.yds.task"
-            android:theme="@style/OnePixelActivity"></activity>
-        <activity android:name=".Pingmws_SetActivity" />
+        <activity android:name=".PmwsSetActivity" />
         <activity
             android:name=".SplashActivity"
             android:label="指南针设置"

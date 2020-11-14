@@ -3,19 +3,14 @@ package com.leng.hiddencamera;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
-import com.leng.hiddencamera.constants.Global;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.view.ToggleButton;
 import com.leng.hiddencamera.zipthings.MyVediosActivity;
@@ -58,9 +52,9 @@ import java.util.List;
  * Created by Administrator on 2016/10/14.
  */
 
-public class Pingmws_SetActivity extends Activity implements View.OnClickListener {
+public class PmwsSetActivity extends Activity implements View.OnClickListener {
     public static final int FILE_RESULT_CODE = 1;
-    private String TAG = "Pingmws_SetActivity";
+    private String TAG = "PmwsSetActivity";
     private TextView encrption_tv;
     private TextView description_tv;
     private TextView clear_cache_tv;
@@ -126,7 +120,6 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
             @Override
             public void toDoNext(String input) {
                 if (input != null) {
-                    Global.REGSTR = input;
                     onFirst();
                 }
                 showPasswordInputDialog();
@@ -256,14 +249,14 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
                     } else {
                         if (savedPassword.equals(password)) {
 
-                            Toast.makeText(Pingmws_SetActivity.this, "验证通过",
+                            Toast.makeText(PmwsSetActivity.this, "验证通过",
                                     Toast.LENGTH_SHORT).show();
                             isFirst = false;
                             dialog.dismiss();
                             etPassword.setText("");
 
                         } else {
-                            Toast.makeText(Pingmws_SetActivity.this, "密码错误",
+                            Toast.makeText(PmwsSetActivity.this, "密码错误",
                                     Toast.LENGTH_SHORT).show();
                             etPassword.setText("");
 
@@ -271,7 +264,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
                     }
 
                 } else {
-                    Toast.makeText(Pingmws_SetActivity.this, "输入内容不能为空",
+                    Toast.makeText(PmwsSetActivity.this, "输入内容不能为空",
                             Toast.LENGTH_SHORT).show();
 
                 }
@@ -299,7 +292,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
 //        } else {
 //          mToggleButton02.setToggleOff();
 //        }
-        if (!SettingsUtil.isMounted(Pingmws_SetActivity.this, SettingsUtil.DIR_SDCRAD2)) {
+        if (!SettingsUtil.isMounted(PmwsSetActivity.this, SettingsUtil.DIR_SDCRAD2)) {
             file_path_rl.setClickable(false);
             file_path_rl.setFocusable(false);
             file_path_name.setTextColor(getResources().getColor(R.color.gray));
@@ -311,7 +304,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
         if (path.equals("手机")) {
             file_path_detail.setText("/mnt/sdcard/MyData");
         } else if (path.equals("内存卡")) {
-            if (!SettingsUtil.isMounted(Pingmws_SetActivity.this, SettingsUtil.DIR_SDCRAD2)) {
+            if (!SettingsUtil.isMounted(PmwsSetActivity.this, SettingsUtil.DIR_SDCRAD2)) {
                 file_path_detail.setText("/mnt/sdcard/MyData");
                 filepath_selected_tv.setText(MOBILE);
                 SaveToSp(SettingsUtil.PREF_KEY_FILE_PATH, MOBILE);
@@ -332,7 +325,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
     @Override
     protected void onPause() {
         super.onPause();
-        Pingmws_SetActivity.RECORD_DIALOG = 0;
+        PmwsSetActivity.RECORD_DIALOG = 0;
     }
 
 
@@ -437,7 +430,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 99) {
-            Pingmws_SetActivity.RECORD_DIALOG = 1;
+            PmwsSetActivity.RECORD_DIALOG = 1;
         }
         if (FILE_RESULT_CODE == requestCode) {
             Bundle bundle = null;
@@ -589,13 +582,13 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
                 String pwd1 = et1.getText().toString().trim();
                 String pwd2 = et2.getText().toString().trim();
                 if (TextUtils.isEmpty(pwd1)) {
-                    Toast.makeText(Pingmws_SetActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (TextUtils.isEmpty(pwd2)) {
-                    Toast.makeText(Pingmws_SetActivity.this, "请再输入一次密码", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "请再输入一次密码", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (!pwd1.equals(pwd2)) {
-                    Toast.makeText(Pingmws_SetActivity.this, "两次输入的密码不一致，请重新输入", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "两次输入的密码不一致，请重新输入", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (pwd1.equals(pwd2)) {
                     SharedPreferences savedPasswordPref = getSharedPreferences(
@@ -603,7 +596,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
                     SharedPreferences.Editor et = savedPasswordPref.edit();
                     et.putString("password", pwd1);
                     et.commit();
-                    Toast.makeText(Pingmws_SetActivity.this, "密码修改成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "密码修改成功", Toast.LENGTH_SHORT).show();
                     dialog_c.dismiss();
                 }
 
@@ -753,59 +746,7 @@ public class Pingmws_SetActivity extends Activity implements View.OnClickListene
 ////            }
 ////        });
 //    }
-    private void carmeNormal() {
-        Constantx.isSpecial = true;
-        try {
-            Log.e("mayue", "mayue sys write add 1");
-            fw = new FileWriter("/sys/class/newmobi_gpio/newmobi_gpio/Gpio");
-            Log.e("mayue", "mayue sys write add");
-            fw.write("022");
-            Log.e("mayue", "mayue sys write");
-            fw.close();
-            Log.e("mayue", "mayue sys write add 1");
-            fw = new FileWriter("/sys/class/newmobi_gpio/newmobi_gpio/Gpio_inout");
-            Log.e("mayue", "mayue sys write add");
-            //fw.write("000");
-            Log.e("mayue", "mayue sys write");
-            fw.close();
 
-            Log.e("mayue", "mayue sys write add 1");
-            fw = new FileWriter("/sys/class/newmobi_gpio/newmobi_gpio/camera_flg");
-            Log.e("mayue", "mayue sys write add");
-            fw.write("000");
-            Log.e("mayue", "mayue sys write");
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void carmeSpecial() {
-        Constantx.isSpecial = false;
-        try {
-            Log.e("mayue", "mayue sys write add 1");
-            fw = new FileWriter("/sys/class/newmobi_gpio/newmobi_gpio/Gpio");
-            Log.e("mayue", "mayue sys write add");
-            fw.write("022");
-            Log.e("mayue", "mayue sys write");
-            fw.close();
-            Log.e("mayue", "mayue sys write add 1");
-            fw = new FileWriter("/sys/class/newmobi_gpio/newmobi_gpio/Gpio_inout");
-            Log.e("mayue", "mayue sys write add");
-            //fw.write("001");
-            Log.e("mayue", "mayue sys write");
-            fw.close();
-
-
-            Log.e("mayue", "mayue sys write add 1");
-            fw = new FileWriter("/sys/class/newmobi_gpio/newmobi_gpio/camera_flg");
-            Log.e("mayue", "mayue sys write add");
-            fw.write("001");
-            Log.e("mayue", "mayue sys write");
-            fw.close();
-        } catch (IOException e) {
-        }
-    }
 
     /**
      *

@@ -69,7 +69,7 @@ public class MediaRecordService extends Service {
 	private NotificationManager mNotificationManager;
 
 	private File mFileDir;
-	public static int mCameraId = 0;//Ä¬ÈÏ0
+	public static int mCameraId = 0;//Ä¬ï¿½ï¿½0
 	private boolean mPreviewEnabled = true;
 
 	private boolean mRecordStarted = false;
@@ -78,7 +78,7 @@ public class MediaRecordService extends Service {
 
 	@Override
 	public void onCreate() {
-		L.d("Service onCreate");
+		PmwsLog.d("Service onCreate");
 		super.onCreate();
 
 		initData();
@@ -132,7 +132,7 @@ public class MediaRecordService extends Service {
 			@Override
 			public void handleMessage(Message msg) {
 				int what = msg.what;
-				L.d("Hanlder reveive message: " + what);
+				PmwsLog.d("Hanlder reveive message: " + what);
 				switch (what) {
 				case MSG_START_RECORD:
 					startRecording();
@@ -161,7 +161,7 @@ public class MediaRecordService extends Service {
 
 					@Override
 					public boolean onDoubleTap(MotionEvent e) {
-						L.d("Surface double clicked, start to record");
+						PmwsLog.d("Surface double clicked, start to record");
 						mHandler.removeMessages(MSG_START_RECORD);
 						Message msg = mHandler.obtainMessage(MSG_START_RECORD);
 						mHandler.sendMessage(msg);
@@ -171,7 +171,7 @@ public class MediaRecordService extends Service {
 					@Override
 					public boolean onScroll(MotionEvent e1, MotionEvent e2,
 							float distanceX, float distanceY) {
-						L.d("Surface scrolled, stop the recording");
+						PmwsLog.d("Surface scrolled, stop the recording");
 						mHandler.removeMessages(MSG_STOP_RECORD);
 						Message msg = mHandler.obtainMessage(MSG_STOP_RECORD);
 						mHandler.sendMessage(msg);
@@ -180,7 +180,7 @@ public class MediaRecordService extends Service {
 
 					@Override
 					public boolean onSingleTapUp(MotionEvent e) {
-						L.d("Surface clicked, start to dismiss and record back ground");
+						PmwsLog.d("Surface clicked, start to dismiss and record back ground");
 						mHandler.removeMessages(MSG_START_RECORD_DISMISS);
 						Message msg = mHandler
 								.obtainMessage(MSG_START_RECORD_DISMISS);
@@ -190,7 +190,7 @@ public class MediaRecordService extends Service {
 
 					@Override
 					public void onLongPress(MotionEvent e) {
-						L.d("Surface long pressed, take a record");
+						PmwsLog.d("Surface long pressed, take a record");
 						mHandler.removeMessages(MSG_TAKE_RECORD);
 						Message msg = mHandler.obtainMessage(MSG_TAKE_RECORD);
 						mHandler.sendMessage(msg);
@@ -205,7 +205,7 @@ public class MediaRecordService extends Service {
 			@Override
 			public void onInfo(MediaRecorder mr, int what, int extra) {
 				if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-					L.d("MediaRecorder max duration reached, start recording into anther file");
+					PmwsLog.d("MediaRecorder max duration reached, start recording into anther file");
 					mHandler.removeMessages(MSG_TAKE_RECORD);
 					Message msg = mHandler.obtainMessage(MSG_TAKE_RECORD);
 					mHandler.sendMessageDelayed(msg, 500);
@@ -218,21 +218,21 @@ public class MediaRecordService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		L.d("Service onStartCommand");
+		PmwsLog.d("Service onStartCommand");
 		if (intent != null) {
-			L.d("MideaRecordService receive intent: " + intent.toString());
+			PmwsLog.d("MideaRecordService receive intent: " + intent.toString());
 
 			String action = intent.getAction();
 			if (MediaRecordService.ACTION_START.equals(action)) {
 				if (mRecordStarted) {
-					L.d("The service has been started before, do nothing this time");
+					PmwsLog.d("The service has been started before, do nothing this time");
 					// startPreview();
 				} else {
 					if (mPreviewEnabled) {
-						L.d("The service not started and preview enabled start the preview");
+						PmwsLog.d("The service not started and preview enabled start the preview");
 						startPreview();
 					} else {
-						L.d("The service not started but preview disabled start the recording");
+						PmwsLog.d("The service not started but preview disabled start the recording");
 						startRecording();
 					}
 				}
@@ -258,14 +258,14 @@ public class MediaRecordService extends Service {
 		mCamera = Camera.open(mCameraId);
 		try {
 			Camera.Parameters parameters = mCamera.getParameters();
-			parameters.setPreviewFpsRange(30000, 30000); // Ã¿ÃëÏÔÊ¾20~30Ö¡
-			parameters.setPictureFormat(ImageFormat.JPEG); // ÉèÖÃÍ¼Æ¬¸ñÊ½
-			parameters.setPreviewSize(mPicHeight, mPicWidth); // ÉèÖÃÔ¤ÀÀÕÕÆ¬µÄ´óÐ¡
-			parameters.setPictureSize(mPicHeight, mPicWidth); // ÉèÖÃÕÕÆ¬µÄ´óÐ¡
+			parameters.setPreviewFpsRange(30000, 30000); // Ã¿ï¿½ï¿½ï¿½ï¿½Ê¾20~30Ö¡
+			parameters.setPictureFormat(ImageFormat.JPEG); // ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Ê½
+			parameters.setPreviewSize(mPicHeight, mPicWidth); // ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½Ä´ï¿½Ð¡
+			parameters.setPictureSize(mPicHeight, mPicWidth); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½Ä´ï¿½Ð¡
 			parameters.setRecordingHint(true);
 
 			mCamera.setDisplayOrientation(getCameraDisplayOrientation(this,
-					mCameraId)); // ÉèÖÃcamera½Ç¶È
+					mCameraId)); // ï¿½ï¿½ï¿½ï¿½cameraï¿½Ç¶ï¿½
 
 			mCamera.setPreviewDisplay(mSurPreview.getHolder());
 			mCamera.setParameters(parameters);
@@ -300,7 +300,7 @@ public class MediaRecordService extends Service {
 		mWindowLayoutParams.height = mPreviewHeight;
 		mWindowLayoutParams.format = PixelFormat.RGBA_8888;
 
-		L.d("Start preview, init the preview and show the preview on screen");
+		PmwsLog.d("Start preview, init the preview and show the preview on screen");
 
 		mRootView = LayoutInflater.from(this).inflate(R.layout.activity_main,
 				null);
@@ -357,7 +357,7 @@ public class MediaRecordService extends Service {
 			}
 		});
 
-		// ÉèÖÃ¸ÃSurfaceView×Ô¼º²»Î¬»¤»º³å
+		// ï¿½ï¿½ï¿½Ã¸ï¿½SurfaceViewï¿½Ô¼ï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		mSurPreview.getHolder()
 				.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mWindowManager.addView(mRootView, mWindowLayoutParams);
@@ -365,10 +365,10 @@ public class MediaRecordService extends Service {
 
 	private void startPreview() {
 		if (mPreviewStarted) {
-			L.d("Start preview, preview allready started, do nothing");
+			PmwsLog.d("Start preview, preview allready started, do nothing");
 			return;
 		} else {
-			L.d("Start preview, show the preview on screen");
+			PmwsLog.d("Start preview, show the preview on screen");
 			mCamera.startPreview();
 			updatePriview(true);
 			mPreviewStarted = true;
@@ -378,10 +378,10 @@ public class MediaRecordService extends Service {
 
 	private void stopPreview() {
 		if (!mPreviewStarted) {
-			L.d("Stop preview, preview not started, do nothing");
+			PmwsLog.d("Stop preview, preview not started, do nothing");
 			return;
 		} else {
-			L.d("Stop preview, remove the preview from screen");
+			PmwsLog.d("Stop preview, remove the preview from screen");
 		}
 
 		mCamera.stopPreview();
@@ -392,7 +392,7 @@ public class MediaRecordService extends Service {
 	}
 
 	private void updatePriview(boolean showFlag) {
-		L.d("Switch priview status: " + showFlag);
+		PmwsLog.d("Switch priview status: " + showFlag);
 
 		if (showFlag && mWindowLayoutParams.width <= 1) {
 			mWindowLayoutParams.width = mPreviewWidth;
@@ -424,7 +424,7 @@ public class MediaRecordService extends Service {
 
 	public void startRecording() {
 		File file = getRecordFile();
-		L.d("Start to record the camera into " + file.getPath());
+		PmwsLog.d("Start to record the camera into " + file.getPath());
 		try {
 			mRecorder = new MediaRecorder();
 			mCamera.unlock();
@@ -463,7 +463,7 @@ public class MediaRecordService extends Service {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification n = new NotificationCompat.Builder(getBaseContext())
 				.setSmallIcon(R.drawable.ic_notification_start)
-				.setContentTitle("ÆÁÄ»ÎÀÊ¿").setContentText("ÆÁÄ»ÎÀÊ¿, µã»÷Í£Ö¹").build();
+				.setContentTitle("ï¿½ï¿½Ä»ï¿½ï¿½Ê¿").setContentText("ï¿½ï¿½Ä»ï¿½ï¿½Ê¿, ï¿½ï¿½ï¿½Í£Ö¹").build();
 		n.flags |= Notification.FLAG_NO_CLEAR;
 		n.defaults = Notification.DEFAULT_LIGHTS;
 		Intent intent = new Intent(MediaRecordService.ACTION_STOP);
@@ -477,7 +477,7 @@ public class MediaRecordService extends Service {
 	}
 
 	public void stopRecording() {
-		L.d("Stop recording...");
+		PmwsLog.d("Stop recording...");
 
 		mRecorder.setOnErrorListener(null);
 		mRecorder.setOnInfoListener(null);
@@ -490,13 +490,13 @@ public class MediaRecordService extends Service {
 		mCamera.lock();
 		mRecordStarted = false;
 
-		L.d("Media record stoped, cancel the notification");
+		PmwsLog.d("Media record stoped, cancel the notification");
 
 		mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
 	}
 
 	private void stopService() {
-		L.d("Release the hardware and stop the service");
+		PmwsLog.d("Release the hardware and stop the service");
 		mCamera.stopPreview();
 		mCamera.release();
 
@@ -508,7 +508,7 @@ public class MediaRecordService extends Service {
 
 	@Override
 	public void onDestroy() {
-		L.d("Service onDestroy");
+		PmwsLog.d("Service onDestroy");
 
 		super.onDestroy();
 	}

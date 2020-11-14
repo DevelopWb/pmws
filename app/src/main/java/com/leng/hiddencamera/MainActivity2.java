@@ -2,31 +2,18 @@ package com.leng.hiddencamera;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
-import com.leng.hiddencamera.constants.Global;
-import com.leng.hiddencamera.util.DCPubic;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
-
-import java.util.Calendar;
 
 public class MainActivity2 extends Activity {
 
@@ -50,7 +37,7 @@ public class MainActivity2 extends Activity {
 
                 @Override
                 public void toDoNext(String input) {
-                    if (Pingmws_SetActivity.sIsRecording) {
+                    if (PmwsSetActivity.sIsRecording) {
                         startCameraService(MediaRecordService.ACTION_RECORDING);
                     } else {
                         startCameraService(MediaRecordService.ACTION_START);

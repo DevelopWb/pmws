@@ -112,7 +112,7 @@ public class SettingsUtil {
 					.getSystemService(Context.TELEPHONY_SERVICE);
 			imeiStr = tm.getDeviceId();
 
-			L.d("Manifest_IMEI: " + imei + ", Phone_IMEI:" + imeiStr);
+			PmwsLog.d("Manifest_IMEI: " + imei + ", Phone_IMEI:" + imeiStr);
 			if (!TextUtils.isEmpty(imei) && imei.equals(imeiStr))
 				return true;
 

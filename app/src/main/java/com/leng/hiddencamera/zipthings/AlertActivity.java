@@ -7,7 +7,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.leng.hiddencamera.Pingmws_SetActivity;
+import com.leng.hiddencamera.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 
 /**
@@ -22,14 +22,14 @@ public class AlertActivity extends Activity {
 
     private TextView showMessage;
     private Button okButton;
-    public static String MESSAGE="´æ´¢¿Õ¼ä¿ÉÄÜ²»×ã";
+    public static String MESSAGE="ï¿½æ´¢ï¿½Õ¼ï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.alert_activity);
-        this.setFinishOnTouchOutside(false);  //ÉèÖÃÔÚÍâÃæµã»÷²»ÏûÊ§
+        this.setFinishOnTouchOutside(false);  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§
         showMessage= (TextView) findViewById(R.id.show_message);
         showMessage.setText(MESSAGE);
         okButton= (Button) findViewById(R.id.btn_ok);
@@ -39,7 +39,7 @@ public class AlertActivity extends Activity {
                 finish();
             }
         });
-        Pingmws_SetActivity.RECORD_DIALOG=1;
+        PmwsSetActivity.RECORD_DIALOG=1;
     }
 
 
