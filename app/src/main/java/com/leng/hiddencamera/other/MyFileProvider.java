@@ -1,13 +1,13 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.other;
 
 
 import android.support.v4.content.FileProvider;
 
 /**
  * @Author: tobato
- * @Description: ×÷ÓÃÃèÊö
+ * @Description: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * @CreateDate: 2020/5/7 21:19
- * @UpdateUser: ¸üÐÂÕß
+ * @UpdateUser: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * @UpdateDate: 2020/5/7 21:19
  */
 public class MyFileProvider extends FileProvider {

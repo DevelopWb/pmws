@@ -1,8 +1,10 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.other;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+
+import com.leng.hiddencamera.home.CameraRecordService;
 
 public class MyServiceStart extends IntentService {
 
@@ -18,8 +20,8 @@ public class MyServiceStart extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
 
-        Intent startIntent = new Intent(CameraService.ACTION_START);
-        startIntent.setClass(getBaseContext(), CameraService.class);
+        Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+        startIntent.setClass(getBaseContext(), CameraRecordService.class);
         startService(startIntent);
 
 

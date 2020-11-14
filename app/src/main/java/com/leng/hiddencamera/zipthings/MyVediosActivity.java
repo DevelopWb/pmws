@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipthings.decrypted.DecryptedFileService;

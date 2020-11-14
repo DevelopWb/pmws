@@ -1,4 +1,4 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.home;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.ToggleButton;

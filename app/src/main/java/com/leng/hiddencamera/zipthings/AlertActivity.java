@@ -7,7 +7,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 
 /**

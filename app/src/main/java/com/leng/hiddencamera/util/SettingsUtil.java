@@ -8,8 +8,6 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
-import com.leng.hiddencamera.PmwsLog;
-
 public class SettingsUtil {
 	public static final String PREF_KEY_PASSWORD = "pref_key_password";
 	public static final String PREF_KEY_PREVIEW = "pref_key_preview";

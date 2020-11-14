@@ -7,7 +7,7 @@ import android.hardware.Camera;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.leng.hiddencamera.PmwsLog;
+import com.leng.hiddencamera.util.PmwsLog;
 
 public class CameraPreview extends SurfaceView implements
 		SurfaceHolder.Callback {

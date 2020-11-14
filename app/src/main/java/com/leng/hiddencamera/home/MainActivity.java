@@ -1,4 +1,4 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,9 +38,9 @@ public class MainActivity extends Activity {
                 @Override
                 public void toDoNext(String input) {
                     if (PmwsSetActivity.sIsRecording) {
-                        startCameraService(CameraService.ACTION_RECORDING);
+                        startCameraService(CameraRecordService.ACTION_RECORDING);
                     } else {
-                        startCameraService(CameraService.ACTION_START);
+                        startCameraService(CameraRecordService.ACTION_START);
                     }
                 }
             });
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
     private void startCameraService(String actionRecording) {
         Intent startIntent = new Intent(
                 actionRecording);
-        startIntent.setClass(getBaseContext(), CameraService.class);
+        startIntent.setClass(getBaseContext(), CameraRecordService.class);
         if (Build.VERSION.SDK_INT >= 26) {
             startService(startIntent);
         } else {

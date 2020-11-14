@@ -1,4 +1,4 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.util;
 
 public class PmwsLog {
 	private static final boolean ENABLED = true;

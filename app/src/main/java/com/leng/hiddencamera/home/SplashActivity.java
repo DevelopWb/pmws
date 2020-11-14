@@ -1,4 +1,4 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.home;
 
 import android.Manifest;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.leng.hiddencamera.BuildConfig;
+import com.leng.hiddencamera.R;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;

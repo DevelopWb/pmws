@@ -9,7 +9,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipthings.AlertActivity;
@@ -79,7 +79,7 @@ public class EncryptedService2 extends Service {
 
                 //????????????????
                 if (PmwsSetActivity.sIsRecording) {
-                    Intent intent = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
+                    Intent intent = new Intent("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
                     sendBroadcast(intent);
                 }
                 AlertActivity.MESSAGE = "?洢??????????????????" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "?????????????";

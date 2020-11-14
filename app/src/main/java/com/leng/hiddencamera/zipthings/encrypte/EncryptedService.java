@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipthings.AlertActivity;
 
@@ -65,7 +65,7 @@ public class EncryptedService extends IntentService {
 
                 //Ҫ�ǿռ䲻���ʱ����¼��
                 if (PmwsSetActivity.sIsRecording) {
-                    Intent intent_ = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
+                    Intent intent_ = new Intent("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
                     sendBroadcast(intent_);
                 }
 

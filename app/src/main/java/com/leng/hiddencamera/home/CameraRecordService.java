@@ -1,4 +1,4 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.home;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -6,26 +6,21 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.PowerManager;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -38,9 +33,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.volumekey.CallBackInBG;
-import com.example.volumekey.VolumeService;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.leng.hiddencamera.other.MyServiceStart;
+import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.SdCard;
 import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.CameraPreview;
@@ -50,7 +46,6 @@ import com.orhanobut.hawk.Hawk;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -58,7 +53,7 @@ import java.util.TimerTask;
 
 import static android.content.Intent.ACTION_DELETE;
 
-public class CameraService extends Service {
+public class CameraRecordService extends Service {
     private static final int NOTIFI_ID_SERVICE_STARTED = 100;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
@@ -116,7 +111,7 @@ public class CameraService extends Service {
     private long availableInternalMemorySize;
     private SharedPreferences sp;
 
-    private String TAG = "CameraService";
+    private String TAG = "CameraRecordService";
 
     private StopReCordingReceiver stopReCordingReceiver;
     private ValumeChangeCarme valumeTest;
@@ -145,14 +140,14 @@ public class CameraService extends Service {
         String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "手机");
         if (mFilepath.equals("手机")) {
             mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
-            available_ = SdCard.getAvailableInternalMemorySize(CameraService.this);
+            available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
         } else if (mFilepath.equals("内存卡")) {
             if (!SettingsUtil.isMounted(this, SettingsUtil.DIR_SDCRAD2)) {
                 mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
-                available_ = SdCard.getAvailableInternalMemorySize(CameraService.this);
+                available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
             } else {
                 mFileDir = SettingsUtil.DIR_SDCRAD2 + SettingsUtil.DIR_DATA;
-                available_ = SdCard.SdcardAvailable(CameraService.this, mFileDir);
+                available_ = SdCard.SdcardAvailable(CameraRecordService.this, mFileDir);
             }
         }
         time = (int) (available_ / 2.03986711);
@@ -206,7 +201,7 @@ public class CameraService extends Service {
                         break;
                     case MSG_SEND_MESSAGE:
                         if (time < 300) {
-                            Toast.makeText(CameraService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
 
                             stopRecording();
 
@@ -239,7 +234,7 @@ public class CameraService extends Service {
         //动态注册广播接收器
         stopReCordingReceiver = new StopReCordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.leng.hiddencamera.CameraService.RECEIVER");
+        intentFilter.addAction("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
         registerReceiver(stopReCordingReceiver, intentFilter);
         Log.i(TAG, "onCreate");
         startForeground(NOTIFI_ID_SERVICE_STARTED, NotificationTool.getNotification(this));
@@ -409,7 +404,7 @@ public class CameraService extends Service {
             @Override
             public void onClick(View v) {
                 PmwsLog.d("Preview clicked, hide the preview first");
-                Toast.makeText(CameraService.this, "开启录制中请勿操作", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraRecordService.this, "开启录制中请勿操作", Toast.LENGTH_SHORT).show();
                 showPreview(false);
                 if (mIsRecording)
                     return;
@@ -805,7 +800,7 @@ public class CameraService extends Service {
     public void onDestroy() {
         //        releaseWakeLock();
 
-        Log.i("CameraService", "onDestroy");
+        Log.i("CameraRecordService", "onDestroy");
         //        manager.unregisterOnePixelReceiver(this);//Activity退出时解注册
         if (mSensorListener != null)
             mSensorManager.unregisterListener(mSensorListener);

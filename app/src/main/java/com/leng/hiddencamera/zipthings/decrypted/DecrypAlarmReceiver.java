@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
-import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 
 import java.io.File;
