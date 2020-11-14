@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.RECORD_VIDEO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.DEVICE_POWER"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -53,8 +53,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
             android:excludeFromRecents="false"
+            android:exported="true"
             android:label="@string/pmws_app_name"
             android:launchMode="singleTask">
 
@@ -86,7 +86,12 @@
 
         <service android:name=".zipthings.encrypte.EncryptedService2" />
         <service android:name=".zipthings.decrypted.DecryptedFileService" />
-<service android:name=".CameraService"></service>
+        <service
+            android:name=".CameraService"
+            android:enabled="true"
+            android:exported="true"
+            android:priority="1000"></service>
+
         <receiver android:name=".zipthings.AlarmReceiver" />
         <receiver android:name=".zipthings.decrypted.DecrypAlarmReceiver" />
         <receiver android:name=".zipthings.SmsReciver">
