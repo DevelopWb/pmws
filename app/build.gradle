@@ -1,0 +1,53 @@
+apply plugin: 'com.android.application'
+def configs = rootProject.ext.android
+android {
+    compileSdkVersion configs.compileSdkVersion
+//    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        applicationId "com.example.pmws"
+        minSdkVersion configs.minSdkVersion
+        versionCode configs.versionCode
+        versionName configs.versionName
+        targetSdkVersion configs.targetSdkVersion
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+        encoding "GBK"
+    }
+    signingConfigs {
+        config {
+            keyAlias 'dwh'
+            keyPassword 'dwh2016'
+            storeFile file('push.jks')
+            storePassword 'dwh2016'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support.constraint:constraint-layout:2.0.1'
+    testImplementation 'junit:junit:4.12'
+    implementation project(path: ':pmws_set')
+    implementation project(path: ':RegMode')
+    compile project(path: ':base_net_lib')
+}

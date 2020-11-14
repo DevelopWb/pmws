@@ -1,0 +1,210 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginLeft="30dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="注册码" />
+
+        <EditText
+            android:id="@+id/reg_et"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_weight="3"
+            android:hint="请输入注册码" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_marginLeft="30dp"
+        android:orientation="horizontal" >
+
+        <!--<TextView-->
+            <!--android:id="@+id/imei_tx"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="手机IMEI"-->
+             <!--android:layout_weight="1" />-->
+
+        <EditText
+            android:id="@+id/imei_et"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="android9之前获取IMEI"
+             android:layout_weight="3" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/phone_mac_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_marginLeft="30dp"
+        android:orientation="horizontal" >
+
+        <!--<TextView-->
+            <!--android:id="@+id/mac_tv"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="手机MAC"-->
+             <!--android:layout_weight="1" />-->
+
+        <EditText
+            android:id="@+id/mac_et"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="android10之后获取MAC"
+             android:layout_weight="3" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/phone_mac_ll"
+        android:layout_below="@+id/phone_mac_ll"
+        android:layout_marginStart="20dp"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/imei_tx3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="时间" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/day_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="_"
+                android:numeric="integer" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="天" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="或者是" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/year_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="_"
+                android:numeric="integer" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="年" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_marginLeft="30dp"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_marginBottom="46dp"
+        android:hint="读取到的默认配置的值"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="13dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:layout_marginTop="20dp"
+        android:text="点击读取配置文件"
+        android:layout_above="@+id/textView1"
+        android:layout_alignStart="@+id/button1" />
+
+    <Button
+        android:id="@+id/getimei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/phone_mac_ll"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:text="9之前获取IMEI" />
+    <Button
+        android:id="@+id/get_mac_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout3"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:text="10之后获取MAC" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击保存到SD卡"
+        android:layout_below="@+id/linearLayout4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
+</RelativeLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:defaultValue="@string/pref_which_camera_default"
+        android:dialogTitle="@string/select_camera"
+        android:entries="@array/pref_which_camera_entries"
+        android:entryValues="@array/pref_which_camera_entryvalues"
+        android:key="pref_key_cameraid"
+        android:title="@string/camera" />
+
+    <CheckBoxPreference
+        android:defaultValue="@string/whether_preview"
+        android:key="pref_key_preview"
+        android:summaryOff="@string/no_preview_record"
+        android:summaryOn="@string/preview_record"
+        android:title="@string/show_preview" />
+
+    <ListPreference
+        android:defaultValue="@string/pref_record_time_default"
+        android:dialogTitle="@string/record_time"
+        android:entries="@array/pref_record_time_entries"
+        android:entryValues="@array/pref_record_time_entryvalues"
+        android:key="pref_key_max_duration"
+        android:title="@string/record_time" />
+    <!--
+    <CheckBoxPreference
+        android:defaultValue="@string/whether_shake_start"
+        android:key="pref_shake_start"
+        android:summaryOff="@string/service_off"
+        android:summaryOn="@string/service_on"
+        android:title="@string/preview_in_time" />
+    -->
+    <!--  
+    <ListPreference
+        android:defaultValue="180"
+        android:dialogTitle="@string/shake_value_select_info"
+        android:entries="@array/pref_shake_value_entries"
+        android:entryValues="@array/pref_shake_value_entryvalues"
+        android:key="pref_shake_value"
+        android:title="@string/shake_values" />
+    -->
+    <!--
+    <com.leng.hiddencamera.view.FilePathDialogPreference 
+        android:key="pref_file_path"
+        android:defaultValue="/sdcard/MyData"
+        android:title="文件路径" />
+    -->
+    <ListPreference
+        android:defaultValue="/mnt/sdcard/MyData"
+        android:dialogTitle="选择文件路径"
+        android:entries="@array/pref_filepath_entries"
+        android:entryValues="@array/pref_filepath_values"
+        android:key="pref_file_path"
+        android:title="文件存储路径" />
+    
+   
+    
+     <Preference
+        android:dialogTitle="加密文件"
+        android:key="pref_key_zip"
+        android:title="加密文件" />
+      <Preference
+        android:dialogTitle="解密并播放"
+        android:key="pref_key_unzip"
+        android:title="解密并播放" />
+      <Preference
+        android:dialogTitle="清除视频缓存"
+        android:key="pref_key_clear_history"
+        android:title="清除视频缓存" />
+      
+      <Preference
+        android:dialogTitle="一键文件自毁"
+        android:key="pref_key_clear_app"
+        android:title="一键文件自毁" />
+<!-- 
+    <com.leng.hiddencamera.view.PasswordDialogPreference
+        android:defaultValue="123456"
+        android:key="pref_password"
+        android:title="修改密码" />
+ -->
+</PreferenceScreen>

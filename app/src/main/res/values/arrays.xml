@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_which_camera_entries">
+        <item>后置</item>
+        <item>前置</item>
+        <item>特殊前置</item>
+    </string-array>
+    <string-array name="pref_which_camera_entryvalues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="pref_record_time_entries">
+        <item>5分钟</item>
+        <item>10分钟</item>
+        <item>30分钟</item>
+        
+        
+    </string-array>
+    <string-array name="pref_record_time_entryvalues">
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+        
+        
+    </string-array>
+    <string-array name="pref_shake_value_entries">
+        <item>小</item>
+        <item>中</item>
+        <item>大</item>
+        <item>特大</item>
+    </string-array>
+    <string-array name="pref_shake_value_entryvalues">
+        <item>150</item>
+        <item>180</item>
+        <item>200</item>
+        <item>230</item>
+    </string-array>
+    <string-array name="pref_filepath_entries">
+        <item>手机</item>
+        <item>存储卡</item>
+    </string-array>
+    <string-array name="pref_filepath_values">
+        <item>/mnt/sdcard/MyData</item>
+        <item>/storage/extSdCard/MyData</item>
+    </string-array>
+
+</resources>

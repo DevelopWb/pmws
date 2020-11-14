@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+
+def configs = rootProject.ext.android
+android {
+    compileSdkVersion configs.compileSdkVersion
+//    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion configs.minSdkVersion
+        targetSdkVersion configs.targetSdkVersion
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    // 此处一定要注意使用RxJava2的版本
+    implementation project(path: ':base_net_lib')
+    api project(path: ':module_Base')
+}

@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_takephoto"
+        android:showAsAction="always|withText"
+        android:title="拍照"/>
+    <item
+        android:id="@+id/action_takevideo"
+        android:showAsAction="always|withText"
+        android:title="开始录像"/>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="always|withText"
+        android:title="@string/action_settings"/>
+</menu>

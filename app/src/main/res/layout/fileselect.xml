@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CCCCCC">
+
+    <RelativeLayout
+        android:id="@+id/toplinearlay"
+        android:layout_width="fill_parent"
+        android:layout_height="400dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="#CCCCCC"
+        >
+
+        <TextView
+            android:id="@+id/mPath"
+            android:layout_alignParentTop="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="路径:"
+            android:textColor="@color/blue"
+            android:textSize="18sp"></TextView>
+
+        <ListView
+            android:layout_below="@+id/mPath"
+            android:layout_above="@+id/cancel_tv_"
+            android:id="@android:id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"></ListView>
+
+        <TextView
+            android:id="@+id/cancel_tv_"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/cancel_shape"
+            android:paddingBottom="7dp"
+            android:onClick="finish_MyFile"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="7dp"
+            android:text="取 消"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_marginBottom="15dp"-->
+    <!--android:background="#CCCCCC"-->
+    <!--android:layout_below="@+id/toplinearlay"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+    <!--<ImageView-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:background="@drawable/confirm_pmws"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/buttonConfirm"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:padding="10px"-->
+    <!--android:text="确定"-->
+    <!--android:textSize="20sp"-->
+    <!--android:textColor="@color/black" />-->
+    <!--</LinearLayout>-->
+    <!--<LinearLayout-->
+    <!--android:layout_marginLeft="80dp"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+    <!--<ImageView-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:background="@drawable/cancel"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/buttonCancle"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:padding="10px"-->
+    <!--android:textSize="20sp"-->
+    <!--android:textColor="@color/black"-->
+    <!--android:text="取消"></TextView>-->
+    <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
+
+
+</RelativeLayout>
