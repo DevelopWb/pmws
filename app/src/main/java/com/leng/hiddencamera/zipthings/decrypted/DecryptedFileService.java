@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings;
+package com.leng.hiddencamera.zipthings.decrypted;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -16,11 +16,14 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
+import com.leng.hiddencamera.zipthings.AlertActivity;
+import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 
 import java.io.File;
 import java.io.IOException;
 
-public class unZipFileService extends IntentService {
+public class DecryptedFileService extends IntentService {
 	public static String path = "mnt/sdcard/MyData";
 	private static String password = "fls94#@AB";
 
@@ -31,17 +34,17 @@ public class unZipFileService extends IntentService {
 	NotificationCompat.Builder mBuilder;
 	public NotificationManager mNotificationManager;
 	Handler handler;
-	private String TAG="unZipFileService";
+	private String TAG="DecryptedFileService";
 
 	/**
 	 * Creates an IntentService.  Invoked by your subclass's constructor.
 	 *
 	 * @param name Used to name the worker thread, important only for debugging.
 	 */
-	public unZipFileService(String name) {
+	public DecryptedFileService(String name) {
 		super(name);
 	}
-	public unZipFileService() {
+	public DecryptedFileService() {
 		super("");
 	}
 	@Override
@@ -90,11 +93,11 @@ public class unZipFileService extends IntentService {
 //					handler=new Handler(Looper.getMainLooper());
 //					handler.post(new Runnable(){
 //						public void run(){
-//							Toast.makeText(getApplicationContext(),"存储空间不足不能解密，请清理出"+ZipFileService.FormetFileSize(ZipFileService.getFileSize(target)+800*1024*1024)+"空间之后再解密查看",Toast.LENGTH_LONG).show();
+//							Toast.makeText(getApplicationContext(),"存储空间不足不能解密，请清理出"+EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"空间之后再解密查看",Toast.LENGTH_LONG).show();
 //						}
 //					});
 
-			AlertActivity.MESSAGE="存储空间不足不能解密，请清理出"+ZipFileService.FormetFileSize(ZipFileService.getFileSize(target)+800*1024*1024)+"空间之后再解密查看";
+			AlertActivity.MESSAGE="存储空间不足不能解密，请清理出"+ EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"空间之后再解密查看";
 
 			//以dialog的方式展示一个activity
 			Intent it =new Intent(getApplicationContext(),AlertActivity.class);
@@ -118,7 +121,7 @@ public class unZipFileService extends IntentService {
 		long triggerAtTime = SystemClock.elapsedRealtime();// 这个时间可以是压缩完成之后再加1秒就发送广播，然后给个通知就好
 		// 此处设置开启AlarmReceiver这个Service
 		Intent i2 = new Intent(getApplicationContext(),
-				unZippAlarmReceiver.class);
+				DecrypAlarmReceiver.class);
 		PendingIntent pi = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, i2, 0);
 //				sendBroadcast(i2);
@@ -183,7 +186,7 @@ public class unZipFileService extends IntentService {
 	}
 	@Override
 	public void onDestroy() {
-		Log.i(TAG,"unZipFileService is Desotrying");
+		Log.i(TAG,"DecryptedFileService is Desotrying");
 		super.onDestroy();
 
 		// 在Service结束后关闭AlarmManager

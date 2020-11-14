@@ -5,48 +5,6 @@ import java.io.RandomAccessFile;
 
 public class AddFilesWithAESEncryption {
 
-//	public static void AddFilesWithpassword(String desFileName,
-//			String sourceFileName, String password)
-//			throws net.lingala.zip4j.exception.ZipException {
-//
-//		ZipFile zipFile = new ZipFile(desFileName);
-//
-//		ArrayList<File> filesToAdd = new ArrayList<File>();
-//		filesToAdd.add(new File(sourceFileName));
-//		// filesToAdd.add(new File("c:\\ZipTest\\myvideo.avi"));
-//		// filesToAdd.add(new File("c:\\ZipTest\\mysong.mp3"));
-//
-//		ZipParameters parameters = new ZipParameters();
-//		parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-//
-//		parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_FASTEST); // ?????????????????
-//																				// DEFLATE_LEVEL_NORMAL
-//		parameters.setEncryptFiles(true);
-//
-//		parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
-//
-//		parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
-//		parameters.setPassword(password);
-//
-//		zipFile.addFiles(filesToAdd, parameters);
-//	}
-//
-//	public static void unZipFilesWithPassword(String sourceZipFileName,
-//			String desFoler, String password) {
-//		try {
-//			// 解压有密码的zip文件
-//			File src = new File(sourceZipFileName);
-//			ZipFile zipFile = new ZipFile(src);
-//			if (zipFile.isEncrypted()) {
-//				zipFile.setPassword(password);
-//			}
-//			String dest = new String(desFoler);
-//			zipFile.extractAll(dest);
-//		} catch (net.lingala.zip4j.exception.ZipException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 
 	/**
 	 * 使用RandomAccessFile 修复文件

@@ -1,11 +1,10 @@
 package com.leng.hiddencamera.view;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.SettingsUtil;
+import com.leng.hiddencamera.util.SettingsUtil;
 
 import android.content.Context;
 import android.preference.DialogPreference;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;

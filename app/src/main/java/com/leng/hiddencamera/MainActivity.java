@@ -15,7 +15,7 @@ import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
 
-public class MainActivity2 extends Activity {
+public class MainActivity extends Activity {
 
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -38,9 +38,9 @@ public class MainActivity2 extends Activity {
                 @Override
                 public void toDoNext(String input) {
                     if (PmwsSetActivity.sIsRecording) {
-                        startCameraService(MediaRecordService.ACTION_RECORDING);
+                        startCameraService(CameraService.ACTION_RECORDING);
                     } else {
-                        startCameraService(MediaRecordService.ACTION_START);
+                        startCameraService(CameraService.ACTION_START);
                     }
                 }
             });
@@ -89,7 +89,7 @@ public class MainActivity2 extends Activity {
                 actionRecording);
         startIntent.setClass(getBaseContext(), CameraService.class);
         if (Build.VERSION.SDK_INT >= 26) {
-            startForegroundService(startIntent);
+            startService(startIntent);
         } else {
             // Pre-O behavior.
             startService(startIntent);

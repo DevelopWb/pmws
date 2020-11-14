@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings;
+package com.leng.hiddencamera.zipthings.decrypted;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class unZippAlarmReceiver extends BroadcastReceiver {
+public class DecrypAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

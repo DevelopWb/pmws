@@ -35,8 +35,9 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
 import com.leng.hiddencamera.util.SdCard;
+import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.CameraPreview;
-import com.leng.hiddencamera.zipthings.ZipFileService2;
+import com.leng.hiddencamera.zipthings.encrypte.EncryptedService2;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
@@ -97,11 +98,11 @@ public class CameraService extends Service {
     private Timer timer;
     private TimerTask task;
 
-    // Note3,Note4ÆÁÄ»Ô¤ÀÀ´óÐ¡
+    // Note3,Note4ï¿½ï¿½Ä»Ô¤ï¿½ï¿½ï¿½ï¿½Ð¡
     // private final int mPreviewWidth = 600;
     // private final int mPreviewHeight = 800;
 
-    // HTCÐ¡ÆÁÄ»´óÐ¡
+    // HTCÐ¡ï¿½ï¿½Ä»ï¿½ï¿½Ð¡
     private final int mPreviewWidth = 400;
     private final int mPreviewHeight = 500;
     private long availableInternalMemorySize;
@@ -112,9 +113,9 @@ public class CameraService extends Service {
     private StopReCordingReceiver stopReCordingReceiver;
     private ValumeChangeCarme valumeTest;
 
-    private String CAMERAID_BACK = "ºóÖÃ";
-    private String CAMERAID_FRONT = "Ç°ÖÃ";
-    private String CAMERAID_SPECIAL = "ÌØÊâÇ°ÖÃ";
+    private String CAMERAID_BACK = "ï¿½ï¿½ï¿½ï¿½";
+    private String CAMERAID_FRONT = "Ç°ï¿½ï¿½";
+    private String CAMERAID_SPECIAL = "ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½";
 
     private int VolumeEmbellish = 1;
     private int initStatus = 1;
@@ -125,19 +126,19 @@ public class CameraService extends Service {
     public void onCreate() {
         super.onCreate();
 //        manager = new OnePixelManager();
-//        manager.registerOnePixelReceiver(this);//×¢²á¹ã²¥½ÓÊÕÕß
-//        ¶¯Ì¬×¢²á½ÓÊÜÀ´×Ô¸¨Öú·þÎñµÄ¹ã²¥
+//        manager.registerOnePixelReceiver(this);//×¢ï¿½ï¿½ã²¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//        ï¿½ï¿½Ì¬×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ã²¥
         valumeTest = new ValumeChangeCarme();
         IntentFilter intentFilter2 = new IntentFilter();
         intentFilter2.addAction("asasqwe");
         registerReceiver(valumeTest, intentFilter2);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
-        // ÎÄ¼þ´æ´¢Â·¾¶Ñ¡Ôñ
-        String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "ÊÖ»ú");
-        if (mFilepath.equals("ÊÖ»ú")) {
+        // ï¿½Ä¼ï¿½ï¿½æ´¢Â·ï¿½ï¿½Ñ¡ï¿½ï¿½
+        String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "ï¿½Ö»ï¿½");
+        if (mFilepath.equals("ï¿½Ö»ï¿½")) {
             mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
             available_ = SdCard.getAvailableInternalMemorySize(CameraService.this);
-        } else if (mFilepath.equals("ÄÚ´æ¿¨")) {
+        } else if (mFilepath.equals("ï¿½Ú´æ¿¨")) {
             if (!SettingsUtil.isMounted(this, SettingsUtil.DIR_SDCRAD2)) {
                 mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
                 available_ = SdCard.getAvailableInternalMemorySize(CameraService.this);
@@ -148,16 +149,16 @@ public class CameraService extends Service {
         }
         time = (int) (available_ / 2.03986711);
         if (time < 300) {
-            Toast.makeText(getBaseContext(), "´æ´¢¿Õ¼ä²»×ãÇë¼°Ê±´¦Àí", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "ï¿½æ´¢ï¿½Õ¼ä²»ï¿½ï¿½ï¿½ë¼°Ê±ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
             stopSelf();
             return;
         }
 
         if (available_ < 500) {
-            Toast.makeText(getBaseContext(), "´æ´¢¿Õ¼ä²»×ãÇë¼°Ê±´¦Àí", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "ï¿½æ´¢ï¿½Õ¼ä²»ï¿½ï¿½ï¿½ë¼°Ê±ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
 
             PmwsSetActivity.sIsRecording = false;
-            //¶þ´ÎÉèÖÃÎª
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª
             stopSelf();
             return;
         } else {
@@ -197,7 +198,7 @@ public class CameraService extends Service {
                         break;
                     case MSG_SEND_MESSAGE:
                         if (time < 300) {
-                            Toast.makeText(CameraService.this, "´æ´¢¿Õ¼ä²»×ã", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CameraService.this, "ï¿½æ´¢ï¿½Õ¼ä²»ï¿½ï¿½", Toast.LENGTH_SHORT).show();
 
                             stopRecording();
 
@@ -227,7 +228,7 @@ public class CameraService extends Service {
          */
 
         initView();
-        //¶¯Ì¬×¢²á¹ã²¥½ÓÊÕÆ÷
+        //ï¿½ï¿½Ì¬×¢ï¿½ï¿½ã²¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         stopReCordingReceiver = new StopReCordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.leng.hiddencamera.CameraService.RECEIVER");
@@ -251,7 +252,7 @@ public class CameraService extends Service {
 
             }
         };
-        timer.schedule(task, 1000, 1000);/* ±íÊ¾1000ºÁÃëÖ®áá£¬Ã¿¸ô1000ºÁÃëˆÌÐÐÒ»´Î */
+        timer.schedule(task, 1000, 1000);/* ï¿½ï¿½Ê¾1000ï¿½ï¿½ï¿½ï¿½Ö®ï¿½á£¬Ã¿ï¿½ï¿½1000ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ */
     }
 
     @SuppressLint("WrongConstant")
@@ -267,30 +268,30 @@ public class CameraService extends Service {
         if (!mSDReady)
             return super.onStartCommand(intent, flags, startId);
         PmwsSetActivity.sIsRecording = true;
-        Log.i(TAG, "ÉèÖÃÍê PmwsSetActivity.sIsRecordingµÄ×´Ì¬=" + PmwsSetActivity.sIsRecording);
+        Log.i(TAG, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PmwsSetActivity.sIsRecordingï¿½ï¿½×´Ì¬=" + PmwsSetActivity.sIsRecording);
         String action = intent.getAction();
         if (ACTION_START.equals(action)) {
             if (mIsRecording) {
-                // Èç¹ûÕýÔÚÂ¼ÖÆ£¬Õâ¸öaction¾ÍÊÇÒªÍ£Ö¹Â¼ÖÆ
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½Æ£ï¿½ï¿½ï¿½ï¿½actionï¿½ï¿½ï¿½ï¿½ÒªÍ£Ö¹Â¼ï¿½ï¿½
                 PmwsLog.d("The service has been started before, stop the recording");
                 mHandler.removeMessages(MSG_RESTART_RECORDING);
                 mHandler.removeMessages(MSG_START_RECORDING);
 
                 stopRecording();
-                // Èç¹ûÂ¼ÖÆ¹ý³ÌÖÐ£¬µã»÷³ÌÐò£¬ÏÔÊ¾Ô¤ÀÀ
+                // ï¿½ï¿½ï¿½Â¼ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ô¤ï¿½ï¿½
                 if (mPreviewEnabled) {
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
                 }
             } else {
-                // Èç¹ûÃ»ÓÐÂ¼ÖÆ£¬³ÌÐò±»µã»÷£¬ÏÔÊ¾Ô¤ÀÀ
+                // ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Â¼ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ò±»µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ô¤ï¿½ï¿½
                 if (mPreviewEnabled) {
                     PmwsLog.d("The service not started and preview enabled start the preview");
                     showPreview(true);
                     // mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_RECORDING),
                     // 1000);
                 } else {
-                    // Èç¹ûÃ»ÓÐ±»µã»÷£¬²»ÏÔÊ¾Ô¤ÀÀ£¬¿ªÊ¼Â¼ÖÆ
+                    // ï¿½ï¿½ï¿½Ã»ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Â¼ï¿½ï¿½
                     PmwsLog.d("The service not started but preview disabled start the recording");
                     showPreview(false);
                     mHandler.sendMessageDelayed(
@@ -315,7 +316,7 @@ public class CameraService extends Service {
 
             stopSelf();
         } else if (ACTION_RECORDING.equals(action)) {
-            // ×¢²áÍê³Éºó£¬µã»÷ÆÁÄ»£¬ÏÔÊ¾preView
+            // ×¢ï¿½ï¿½ï¿½ï¿½Éºó£¬µï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ê¾preView
             if (mIsRecording) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
@@ -330,43 +331,43 @@ public class CameraService extends Service {
 
     private void loadSettings() {
 
-        // ÊÇ·ñÕ¹Ê¾Ô¤ÀÀ
+        // ï¿½Ç·ï¿½Õ¹Ê¾Ô¤ï¿½ï¿½
         mPreviewEnabled = Hawk.get(SettingsUtil.PREF_KEY_PREVIEW,false);
         String cameraIdStr = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
 
         if (cameraIdStr != null) {
-            if (cameraIdStr.equals("Ç°ÖÃ")) {
+            if (cameraIdStr.equals("Ç°ï¿½ï¿½")) {
                 mCameraId = 1;
 
             } else {
                 mCameraId = 0;
             }
         } else {
-            if (cameraIdStr.equals("Ç°ÖÃ")) {
-                Toast.makeText(this, "Ç°ÖÃÉãÏñ", Toast.LENGTH_SHORT).show();
+            if (cameraIdStr.equals("Ç°ï¿½ï¿½")) {
+                Toast.makeText(this, "Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
                 mCameraId = 1;
-//                Toast.makeText(this, "ÌØÊâÇ°ÖÃÉãÏñ", Toast.LENGTH_SHORT).show();
-            } else if (cameraIdStr.equals("ºóÖÃ")) {
-                Toast.makeText(this, "ºóÖÃÉãÏñ", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
+            } else if (cameraIdStr.equals("ï¿½ï¿½ï¿½ï¿½")) {
+                Toast.makeText(this, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
                 mCameraId = 0;
             } else {
-                Toast.makeText(this, "ÌØÊâÉãÏñ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
                 mCameraId = 2;
             }
         }
 
-//        // Â¼ÏñÊ±¼äÑ¡Ôñ  Â¼ÏñÊ±¼ä
+//        // Â¼ï¿½ï¿½Ê±ï¿½ï¿½Ñ¡ï¿½ï¿½  Â¼ï¿½ï¿½Ê±ï¿½ï¿½
         String maxDuration = "";
         String vedio_time = sp.getString(SettingsUtil.PREF_KEY_MAX_DURATION, "");
-        if (vedio_time.equals("5·ÖÖÓ") || vedio_time.equals("")) {
+        if (vedio_time.equals("5ï¿½ï¿½ï¿½ï¿½") || vedio_time.equals("")) {
             maxDuration = "5";
-        } else if (vedio_time.equals("10·ÖÖÓ")) {
+        } else if (vedio_time.equals("10ï¿½ï¿½ï¿½ï¿½")) {
             maxDuration = "10";
-        } else if (vedio_time.equals("30·ÖÖÓ")) {
+        } else if (vedio_time.equals("30ï¿½ï¿½ï¿½ï¿½")) {
             maxDuration = "30";
         }
         mMaxDuration = Integer.valueOf(maxDuration) * 60 * 1000;// * 60 *
-        // 1000;±íÊ¾1fen
+        // 1000;ï¿½ï¿½Ê¾1fen
 
     }
 
@@ -394,13 +395,13 @@ public class CameraService extends Service {
         FrameLayout preview = (FrameLayout) mRootView
                 .findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-        // Ô¤ÀÀ½çÃæµÄµã»÷ÊÂ¼þ
+        // Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Â¼ï¿½
         mPreview.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 PmwsLog.d("Preview clicked, hide the preview first");
-                Toast.makeText(CameraService.this, "¿ªÆôÂ¼ÖÆÖÐÇëÎð²Ù×÷", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraService.this, "ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
                 showPreview(false);
                 if (mIsRecording)
                     return;
@@ -408,7 +409,7 @@ public class CameraService extends Service {
 
 
                 PmwsLog.d("Preview clicked, recording not started, start recording");
-                // Ô¤ÀÀ½çÃæµã»÷ºó£¬Òþ²Ø£¬È»ºó¿ªÊ¼Â¼ÖÆ
+                // Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½È»ï¿½ï¿½Ê¼Â¼ï¿½ï¿½
                 mPreview.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -472,7 +473,7 @@ public class CameraService extends Service {
             mIsRecording = true;
 
             showNotification();
-            Toast.makeText(this, "¿ªÆô³É¹¦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½", Toast.LENGTH_SHORT).show();
 
             if (mMaxDuration > 0) {
                 mHandler.sendMessageDelayed(
@@ -491,7 +492,7 @@ public class CameraService extends Service {
 
     }
 
-    // Í£Ö¹Â¼Ïñ
+    // Í£Ö¹Â¼ï¿½ï¿½
     private void stopRecording() {
 
         if (timer != null) {
@@ -507,12 +508,12 @@ public class CameraService extends Service {
         releaseMediaRecorder(); // release the MediaRecorder object
 
 
-        //Í£Ö¹Â¼ÏñµÄÊ±ºò¾ÍÖ´ÐÐ¼ÓÃÜµÄ²Ù×÷
-        Intent intent = new Intent(getApplicationContext(), ZipFileService2.class);
+        //Í£Ö¹Â¼ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ö´ï¿½Ð¼ï¿½ï¿½ÜµÄ²ï¿½ï¿½ï¿½
+        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
         startService(intent);
         Log.i("QWEQWE", "ONE AGAIN");
         mIsRecording = false;
-//        stopSelf();  //²»ÒªÍ£Ö¹·þÎñÁË
+//        stopSelf();  //ï¿½ï¿½ÒªÍ£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 //        mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
         PmwsSetActivity.sIsRecording = false;
@@ -541,18 +542,18 @@ public class CameraService extends Service {
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-// ÉèÖÃÂ¼ÖÆÍê³ÉºóÊÓÆµµÄ·â×°¸ñÊ½THREE_GPPÎª3gp.MPEG_4Îªmp4
+// ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Éºï¿½ï¿½ï¿½Æµï¿½Ä·ï¿½×°ï¿½ï¿½Ê½THREE_GPPÎª3gp.MPEG_4Îªmp4
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-// ÉèÖÃÂ¼ÖÆµÄÊÓÆµ±àÂëh263 h264
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);// ÒôÆµ¸ñÊ½
+// ï¿½ï¿½ï¿½ï¿½Â¼ï¿½Æµï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½h263 h264
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);// ï¿½ï¿½Æµï¿½ï¿½Ê½
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        //ÉèÖÃ±àÂë±ÈÌØÂÊ,²»ÉèÖÃ»áÊ¹ÊÓÆµÍ¼ÏñÄ£ºý
-        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //ÇåÎú
-//        mediarecorder.setVideoEncodingBitRate(900*1024); //½ÏÎªÇåÎú£¬ÇÒÎÄ¼þ´óÐ¡Îª3.26M(30Ãë)
-        // ÉèÖÃÊÓÆµÂ¼ÖÆµÄ·Ö±æÂÊ¡£±ØÐë·ÅÔÚÉèÖÃ±àÂëºÍ¸ñÊ½µÄºóÃæ£¬·ñÔò±¨´í
+        //ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ê¹ï¿½ï¿½ÆµÍ¼ï¿½ï¿½Ä£ï¿½ï¿½
+        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //ï¿½ï¿½ï¿½ï¿½
+//        mediarecorder.setVideoEncodingBitRate(900*1024); //ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ð¡Îª3.26M(30ï¿½ï¿½)
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆµÂ¼ï¿½ÆµÄ·Ö±ï¿½ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½Í¸ï¿½Ê½ï¿½Äºï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ò±¨´ï¿½
         mMediaRecorder.setVideoSize(1280, 720);
-        // ÉèÖÃÂ¼ÖÆµÄÊÓÆµÖ¡ÂÊ¡£±ØÐë·ÅÔÚÉèÖÃ±àÂëºÍ¸ñÊ½µÄºóÃæ£¬·ñÔò±¨´í
-//        Ö¡ÂÊ²»¿ÉÒÔËæ±ã¶¨Òå£¬Èç¹ûÏµÍ³²»Ö§³Ö¾Í»á±¨´í¡£Ó¦¸ÃÏÈÍ¨¹ýcamera»ñÈ¡Ö§³ÖµÄÖ¡ÂÊ£¬È»ºóÔÙÉèÖÃ
+        // ï¿½ï¿½ï¿½ï¿½Â¼ï¿½Æµï¿½ï¿½ï¿½ÆµÖ¡ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½Í¸ï¿½Ê½ï¿½Äºï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ò±¨´ï¿½
+//        Ö¡ï¿½Ê²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã¶¨ï¿½å£¬ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½Ö§ï¿½Ö¾Í»á±¨ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½cameraï¿½ï¿½È¡Ö§ï¿½Öµï¿½Ö¡ï¿½Ê£ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         mMediaRecorder.setVideoFrameRate(rate);
 
         // Step 4: Set output file
@@ -606,8 +607,8 @@ public class CameraService extends Service {
         Notification n = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification_start)
                 .setOngoing(true)
-                .setContentTitle("ÆÁÄ»ÎÀÊ¿").setContentText("ÆÁÄ»ÎÀÊ¿, µã»÷Í£Ö¹").build();
-//        n.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; //°ÑÍ¨ÖªÉèÖÃÎªÕýÔÚÔËÐÐ
+                .setContentTitle("ï¿½ï¿½Ä»ï¿½ï¿½Ê¿").setContentText("ï¿½ï¿½Ä»ï¿½ï¿½Ê¿, ï¿½ï¿½ï¿½Í£Ö¹").build();
+//        n.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; //ï¿½ï¿½Í¨Öªï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());
@@ -768,7 +769,7 @@ public class CameraService extends Service {
                 return size;
             } catch (Exception e) {
                 e.printStackTrace();
-                PmwsLog.d("SD¿¨ ´íÎóÐÅÏ¢ÊÇ£º" + e.getMessage());
+                PmwsLog.d("SDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ç£ï¿½" + e.getMessage());
                 return null;
             }
         } else {
@@ -777,7 +778,7 @@ public class CameraService extends Service {
     }
 
     /**
-     * Íâ²¿´æ´¢ÊÇ·ñ¿ÉÓÃ
+     * ï¿½â²¿ï¿½æ´¢ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      *
      * @return
      */
@@ -797,7 +798,7 @@ public class CameraService extends Service {
 //        releaseWakeLock();
 
         Log.i("CameraService", "onDestroy");
-//        manager.unregisterOnePixelReceiver(this);//ActivityÍË³öÊ±½â×¢²á
+//        manager.unregisterOnePixelReceiver(this);//Activityï¿½Ë³ï¿½Ê±ï¿½ï¿½×¢ï¿½ï¿½
         if (mSensorListener != null)
             mSensorManager.unregisterListener(mSensorListener);
 
@@ -821,13 +822,13 @@ public class CameraService extends Service {
 
 
     /**
-     * ¶¯Ì¬¹ã²¥½ÓÊÕÆ÷
+     * ï¿½ï¿½Ì¬ï¿½ã²¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public class StopReCordingReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "½ÓÊÕµ½ÁË¹ã²¥");
+            Log.i(TAG, "ï¿½ï¿½ï¿½Õµï¿½ï¿½Ë¹ã²¥");
             stopRecording();
             releaseMediaRecorder();
             releaseCamera();
@@ -837,7 +838,7 @@ public class CameraService extends Service {
     }
 
     /**
-     * ÒôÁ¿+-¼üÇÐ»»surfaceÔ¤ÀÀ´°¿Ú
+     * ï¿½ï¿½ï¿½ï¿½+-ï¿½ï¿½ï¿½Ð»ï¿½surfaceÔ¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
 
     public class ValumeChangeCarme extends BroadcastReceiver {
@@ -845,25 +846,25 @@ public class CameraService extends Service {
         public void onReceive(Context context, Intent intent) {
             String qubie = intent.getStringExtra("ABC");
             if (qubie != null && qubie.equals("KEYCODE_VOLUME_DOWN")) {
-                TestsBroadStop();//µã»÷ÒôÁ¿¼üÍ£Ö¹ÊÓÆµÂ¼ÖÆ
-                //µÈÓÚ1ÊÇÔòÊÇÃ»ÓÐ¿ªÊ¼Â¼ÖÆ
+                TestsBroadStop();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£Ö¹ï¿½ï¿½ÆµÂ¼ï¿½ï¿½
+                //ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð¿ï¿½Ê¼Â¼ï¿½ï¿½
                 if (VolumeEmbellish == 1) {
                     VolumeCarmeChange();
                     Log.i("qweqwe", "KEYCODE_VOLUME_DOWN=1");
                 }
-                //Æô¶¯ÁíÍâ·þÎñ¿ªÆô£¬µã»÷ÒôÁ¿¼ü
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 Intent i = new Intent(getBaseContext(), MyServiceStart.class);
                 startService(i);
             }
             if (qubie != null && qubie.equals("KEYCODE_VOLUME_UP")) {
                 Log.i("qweqwe", "KEYCODE_VOLUME_UP=1");
-                TestsBroadStop();//µã»÷ÒôÁ¿¼üÍ£Ö¹ÕýÔÚÂ¼ÖÆ
-                //µÈÓÚ1ÊÇÔòÊÇÃ»ÓÐ¿ªÊ¼Â¼ÖÆ
+                TestsBroadStop();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½
+                //ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð¿ï¿½Ê¼Â¼ï¿½ï¿½
                 if (VolumeEmbellish == 1) {
                     VolumeCarmeChange();
                     Log.i("qweqwe", "KEYCODE_VOLUME_DOWN=1");
                 }
-                //Æô¶¯ÁíÍâ·þÎñ¿ªÆô£¬µã»÷ÒôÁ¿¼ü
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 Intent i = new Intent(getBaseContext(), MyServiceStart.class);
                 startService(i);
             }
@@ -871,7 +872,7 @@ public class CameraService extends Service {
     }
 
     /**
-     * ÒôÁ¿¼üÉãÏñÍ·ÇÐ»»Ñ¡Ôñ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½Ð»ï¿½Ñ¡ï¿½ï¿½
      */
     private void VolumeCarmeChange() {
 
@@ -888,14 +889,14 @@ public class CameraService extends Service {
 
 
     /**
-     * Èç¹ûÔÚÂ¼ÖÆÍ£Ö¹£¬Èç¹ûÃ»ÓÐÂ¼ÖÆÔòÇÐ»»ÉãÏñÍ·
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í·
      *
-     * @VolumeEmbellish ÅÐ¶ÏÉãÏñÍ·µÄÑ¡Ôñ
-     * @VolumeCarmeChange ¸Ä±äÏµÍ³ÅäÖÃµÄÉãÏñÍ·
+     * @VolumeEmbellish ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ñ¡ï¿½ï¿½
+     * @VolumeCarmeChange ï¿½Ä±ï¿½ÏµÍ³ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Í·
      */
     private void TestsBroadStop() {
         if (mIsRecording == false) {
-            Log.i(TAG, "ÖØÐÂ³õÊ¼»¯");
+            Log.i(TAG, "ï¿½ï¿½ï¿½Â³ï¿½Ê¼ï¿½ï¿½");
             VolumeCarmeChange();
             VolumeEmbellish = 2;
             Log.i("VolumeEmbellish", "VolumeEmbellish=2");
@@ -905,8 +906,8 @@ public class CameraService extends Service {
 //            mWindowManager.removeView(mRootView);
             stopSelf();
         } else {
-            // Toast.makeText(this, "Â¼ÖÆÒÑ¾­Í£Ö¹", Toast.LENGTH_SHORT).show();
-            // Toast.makeText(this, "Â¼ÖÆÒÑ¾­Í£Ö¹", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Â¼ï¿½ï¿½ï¿½Ñ¾ï¿½Í£Ö¹", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Â¼ï¿½ï¿½ï¿½Ñ¾ï¿½Í£Ö¹", Toast.LENGTH_SHORT).show();
             mHandler.removeMessages(MSG_RESTART_RECORDING);
             mHandler.removeMessages(MSG_START_RECORDING);
 

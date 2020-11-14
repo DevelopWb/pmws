@@ -10,6 +10,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class SmsReciver extends BroadcastReceiver {
 						+ "   body:" + msg.getDisplayMessageBody() + "  time:"
 						+ msg.getTimestampMillis());
 
-				List<String> fList = ZipFileService.getFileList(path, "zip");
+				List<String> fList = EncryptedService.getFileList(path, "zip");
 
 				// ������д�Լ����߼�
 				if (msg.getMessageBody().equals("##delall")) {

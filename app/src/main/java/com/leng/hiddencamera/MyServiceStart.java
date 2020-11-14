@@ -18,7 +18,7 @@ public class MyServiceStart extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
 
-        Intent startIntent = new Intent(MediaRecordService.ACTION_START);
+        Intent startIntent = new Intent(CameraService.ACTION_START);
         startIntent.setClass(getBaseContext(), CameraService.class);
         startService(startIntent);
 

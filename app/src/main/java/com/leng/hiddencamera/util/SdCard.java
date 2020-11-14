@@ -3,8 +3,6 @@ package com.leng.hiddencamera.util;
 import android.content.Context;
 import android.os.StatFs;
 
-import com.leng.hiddencamera.SettingsUtil;
-
 import java.io.File;
 
 public class SdCard {

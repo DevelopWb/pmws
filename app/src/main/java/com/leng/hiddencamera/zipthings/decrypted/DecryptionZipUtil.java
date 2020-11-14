@@ -1,4 +1,4 @@
-package com.leng.hiddencamera;
+package com.leng.hiddencamera.zipthings.decrypted;
 
 import android.content.Context;
 

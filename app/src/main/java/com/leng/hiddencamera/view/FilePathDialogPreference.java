@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.SettingsUtil;
+import com.leng.hiddencamera.util.SettingsUtil;
 
 import java.io.File;
 
@@ -47,7 +47,7 @@ public class FilePathDialogPreference extends DialogPreference {
 				SettingsUtil.write(this.getContext(),
 						SettingsUtil.PREF_KEY_FILE_PATH, inputPassword);
 			} else {
-				Toast.makeText(getContext(), "ÎÄ¼þÂ·¾¶²»ºÏ·¨£¬ÇëÖØÐÂÊäÈë", Toast.LENGTH_LONG)
+				Toast.makeText(getContext(), "ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_LONG)
 						.show();
 			}
 		}

@@ -35,7 +35,7 @@
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
     <application
-        android:name=".MyApplication"
+        android:name=".MyApp"
         android:allowBackup="true"
         android:icon="@drawable/app_icon"
         android:label="@string/pmws_app_name"
@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity2"
+            android:name=".MainActivity"
             android:exported="true"
             android:excludeFromRecents="false"
             android:label="@string/pmws_app_name"
@@ -83,31 +83,12 @@
         <activity
             android:name=".zipthings.AlertActivity"
             android:theme="@android:style/Theme.Dialog" />
-        <!--
-        <activity
-            android:name="com.leng.hiddencamera.CameraService
-            android:label="卫士预览" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
-        <service
-            android:name=".CameraService"
-            android:enabled="true"
-            android:exported="true"
-            android:priority="1000"></service>
-        <service android:name=".MediaRecordService" />
-
-        <activity android:name=".SuperManagerActivity" />
-
-        <service android:name=".zipthings.ZipFileService2" />
-        <service android:name=".zipthings.unZipFileService" />
-
+        <service android:name=".zipthings.encrypte.EncryptedService2" />
+        <service android:name=".zipthings.decrypted.DecryptedFileService" />
+<service android:name=".CameraService"></service>
         <receiver android:name=".zipthings.AlarmReceiver" />
-        <receiver android:name=".zipthings.unZippAlarmReceiver" />
+        <receiver android:name=".zipthings.decrypted.DecrypAlarmReceiver" />
         <receiver android:name=".zipthings.SmsReciver">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

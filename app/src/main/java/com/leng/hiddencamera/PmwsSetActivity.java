@@ -31,10 +31,11 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.util.DCPubic;
+import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.ToggleButton;
 import com.leng.hiddencamera.zipthings.MyVediosActivity;
 import com.leng.hiddencamera.zipthings.SmsReciver;
-import com.leng.hiddencamera.zipthings.ZipFileService;
+import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
@@ -482,7 +483,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                 } else {
                     // 在这里开启一个新的服务然后后台操作
                     Intent intent = new Intent(getApplicationContext(),
-                            ZipFileService.class);
+                            EncryptedService.class);
                     // 开启关闭Service
                     startService(intent);
                     mProgressDialog.show();
@@ -613,7 +614,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
     private void ClearCache(String path) {
-        List<String> fList_ = ZipFileService.getFileList(
+        List<String> fList_ = EncryptedService.getFileList(
                 path, "mp4"); // path
 
         for (int i = 0; i < fList_.size(); i++) {
@@ -927,14 +928,14 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     public  void destroyFiles(SmsMessage msg) {
-        List<String> fList = ZipFileService.getFileList(SAVED_VIDEO_PATH,
+        List<String> fList = EncryptedService.getFileList(SAVED_VIDEO_PATH,
                 "m9xs"); // path
-        List<String> fList1 = ZipFileService.getFileList(SAVED_VIDEO_PATH,
+        List<String> fList1 = EncryptedService.getFileList(SAVED_VIDEO_PATH,
                 "mp4"); // path
 
-        List<String> fList2 = ZipFileService.getFileList(SAVED_VIDEO_PATH2,
+        List<String> fList2 = EncryptedService.getFileList(SAVED_VIDEO_PATH2,
                 "m9xs"); // path
-        List<String> fList3 = ZipFileService.getFileList(SAVED_VIDEO_PATH2,
+        List<String> fList3 = EncryptedService.getFileList(SAVED_VIDEO_PATH2,
                 "mp4"); // path
 
 
@@ -967,14 +968,14 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
     public static void destroyFiles() {
-        List<String> fList = ZipFileService.getFileList(SAVED_VIDEO_PATH,
+        List<String> fList = EncryptedService.getFileList(SAVED_VIDEO_PATH,
                 "m9xs"); // path
-        List<String> fList1 = ZipFileService.getFileList(SAVED_VIDEO_PATH,
+        List<String> fList1 = EncryptedService.getFileList(SAVED_VIDEO_PATH,
                 "mp4"); // path
 
-        List<String> fList2 = ZipFileService.getFileList(SAVED_VIDEO_PATH2,
+        List<String> fList2 = EncryptedService.getFileList(SAVED_VIDEO_PATH2,
                 "m9xs"); // path
-        List<String> fList3 = ZipFileService.getFileList(SAVED_VIDEO_PATH2,
+        List<String> fList3 = EncryptedService.getFileList(SAVED_VIDEO_PATH2,
                 "mp4"); // path
 
 

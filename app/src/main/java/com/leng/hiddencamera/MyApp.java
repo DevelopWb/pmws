@@ -12,7 +12,7 @@ import com.juntai.wisdom.basecomponent.utils.NotificationTool;
 import com.leng.hiddencamera.util.CrashHandler;
 import com.orhanobut.hawk.Hawk;
 
-public class MyApplication extends BaseApplication {
+public class MyApp extends BaseApplication {
 
 	@Override
 	public void appBackground(boolean isBackground, Activity activity) {

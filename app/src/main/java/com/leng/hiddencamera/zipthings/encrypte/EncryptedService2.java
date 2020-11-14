@@ -1,12 +1,18 @@
-package com.leng.hiddencamera.zipthings;
+package com.leng.hiddencamera.zipthings.encrypte;
 
-import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.leng.hiddencamera.PmwsSetActivity;
+import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
+import com.leng.hiddencamera.zipthings.AlertActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,21 +23,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ZipFileService extends IntentService {
+public class EncryptedService2 extends Service {
 
     public static String path = "mnt/sdcard/MyData";
     private static String password = "fls94#@AB";
     Handler handler;
-    private String TAG = "ZipFileService";
-
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     */
-    public ZipFileService() {
-        super("");
-    }
-
+    private String TAG = "EncryptedService";
+    ExecutorService service = Executors.newSingleThreadExecutor();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -39,107 +40,107 @@ public class ZipFileService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
+        service.execute(new Runnable() {
+            @Override
+            public void run() {
+                xxxxx();
+                Log.i("QWEQWE", "ASDASASA");
+
+            }
+        });
+
+
+        return super.onStartCommand(intent, flags, startId);
+
+    }
+
+    private void xxxxx() {
         List<String> fList = getFileList(PmwsSetActivity.SAVED_VIDEO_PATH, "mp4");  //path
 
-
         if (fList.size() == 0) {
-            Log.i(TAG, "��Ƶ�ļ��ĸ���Ϊ0����ִ�м��ܲ���");
+            Log.i(TAG, "????????????0??????м??????");
             return;
         }
         for (int i = 0; i < fList.size(); i++) {
-            Log.i(TAG, "���ܵ�ʱ���ļ���=" + fList.get(i));
+            Log.i(TAG, "?????????????=" + fList.get(i));
             final String temFileName = fList.get(i);
             String newFileName = temFileName.replace(".mp4", "");
-            Log.i(TAG, "���ܿ�ʼ��ʱ��" + GetTime());
+            Log.i(TAG, "???????????" + GetTime());
 
-            //7.25 ���ĵ��µļ��ܷ���
+            //7.25 ??????????????
             try {
                 AddFilesWithAESEncryption.damageFile(newFileName + ".m9xs", fList.get(i));
+                Log.i("QWEQWE", "?????????????1");
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                Log.i(TAG, "���ܵ�ʱ��׽���쳣");
+                Log.i("QWEQWE", "?????????????2");
 
-                //Ҫ�ǿռ䲻���ʱ����¼��
+                //????????????????
                 if (PmwsSetActivity.sIsRecording) {
-                    Intent intent_ = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
-                    sendBroadcast(intent_);
+                    Intent intent = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
+                    sendBroadcast(intent);
                 }
-
-
-                AlertActivity.MESSAGE = "�洢�ռ䲻�㲻�ܼ��ܣ��������" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "�ռ�֮���ֶ�����";
-                //��dialog�ķ�ʽչʾһ��activity
+                AlertActivity.MESSAGE = "?洢??????????????????" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "?????????????";
+                //??dialog?????????activity
                 Intent it = new Intent(getApplicationContext(), AlertActivity.class);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(it);
-
-
-                //����ʧ��֮����ɾ��û�гɹ����ļ�����֪��Ϊʲôû�гɹ����Ժ�����
+                //?????????????????г???????????????????г???????????
                 File failedfile = new File(newFileName + ".m9xs");
-                Log.i(TAG, "����������֮����ļ���" + newFileName + ".m9xs");
+                Log.i(TAG, "???????????????????" + newFileName + ".m9xs");
                 if (failedfile.exists()) {
                     failedfile.delete();
                 }
 
                 Log.i(TAG, "failedfile.exists=" + String.valueOf(failedfile.exists()));
                 e.printStackTrace();
+                stopSelf();
                 return;
             }
-
-
-//
-            Log.i(TAG, "���ܽ�����ʱ��" + GetTime());
-//
-            // ��������֮��ɾ��Դ�ļ�
+            Log.i(TAG, "????????????" + GetTime());
+            // ??????????????????
             File file = new File(fList.get(i));
             file.delete();
 
 
         }
-        //�ر�dialog
-        Intent intentCloseDialog = new Intent("CloseDialog");
-        sendBroadcast(intentCloseDialog);
-
-        //�µķ���֪ͨ�Ĵ���
 
 
-        //ע���Ժ���ʾ�������Notification����ע����������ʾ
-//                NotificationCompat.Builder builder = new NotificationCompat.Builder(
-//                        getApplicationContext());
-//
-//                // ����֪ͨ�Ļ�����Ϣ��icon�����⡢����
-//                builder.setSmallIcon(R.drawable.app_icon);
-//                builder.setContentTitle("��Ļ��ʿ");
-//                builder.setContentText("�������");
-//
-//
-//                Notification notification = builder.build();
-//                // ����֪ͨ id ��Ҫ��Ӧ����Ψһ
-//                NotificationManager notificationManager = (NotificationManager) getSystemService
-//                        (Context.NOTIFICATION_SERVICE);
-//                notificationManager.notify(1, notification);
+        //?????????????
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                getApplicationContext())
+
+                // ????????????????icon??????????
+                .setSmallIcon(R.drawable.app_icon)
+                .setContentTitle("??????")
+                .setContentText("???????")
+                .setAutoCancel(true);
 
 
-        Log.i(TAG, "����ִ�����");
+        // ?????? id ??????????Ψ?
+        NotificationManager notificationManager = (NotificationManager) getSystemService
+                (Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, builder.build());
 
+
+        Log.i(TAG, "??????????");
+
+        stopSelf(); //?????????????service
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-
-    }
 
     public static List<String> getFileList(String strPath, String endsWith) {
         List<String> filelist = new ArrayList<String>();
         File dir = new File(strPath);
-        File[] files = dir.listFiles(); // ���ļ�Ŀ¼���ļ�ȫ����������
+        File[] files = dir.listFiles(); // ???????????????????????
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
-                if (files[i].isDirectory()) { // �ж����ļ������ļ���
-                    getFileList(files[i].getAbsolutePath(), endsWith); // ��ȡ�ļ�����·��
+                if (files[i].isDirectory()) { // ?ж???????????????
+                    getFileList(files[i].getAbsolutePath(), endsWith); // ??????????·??
                 } else if (fileName.endsWith(endsWith)) {
                     String strFileName = files[i].getAbsolutePath();
                     System.out.println(strFileName);
@@ -156,28 +157,22 @@ public class ZipFileService extends IntentService {
 
     private String GetTime() {
         SimpleDateFormat formatter = new SimpleDateFormat(
-                "yyyy��MM��dd��    HH:mm:ss     ");
-        Date curDate = new Date(System.currentTimeMillis());// ��ȡ��ǰʱ��
+                "yyyy??MM??dd??    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());// ?????????
         String str = formatter.format(curDate);
         return str;
     }
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "ZipFileService is Desotrying");
+        Log.i(TAG, "EncryptedService is Desotrying");
         super.onDestroy();
-
-//        // ��Service������ر�AlarmManager
-//        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        Intent i = new Intent(this, AlarmReceiver.class);
-//        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-//        manager.cancel(pi);
 
     }
 
 
     /**
-     * ��ȡָ���ļ���С
+     * ???????????С
      *
      * @param filename
      * @return
@@ -200,14 +195,14 @@ public class ZipFileService extends IntentService {
             }
         } else {
 
-            Log.i("ZipFileService", "�ļ�������!");
+            Log.i("EncryptedService", "?????????!");
         }
         return size;
     }
 
 
     /**
-     * ת���ļ���С
+     * ????????С
      *
      * @param fileS
      * @return

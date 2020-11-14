@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.leng.hiddencamera.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
+import com.leng.hiddencamera.zipthings.decrypted.DecryptedFileService;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -238,7 +239,7 @@ public class MyVediosActivity extends ListActivity {
 
             editor.commit();
 
-           intent = new Intent(getApplicationContext(), unZipFileService.class);
+           intent = new Intent(getApplicationContext(), DecryptedFileService.class);
 
             startService(intent);
             mDialog.show();
