@@ -9,7 +9,11 @@
     <style name="NotificationContent">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
-
+    <!--1像素保活透明Activity-->
+    <style name="onePixelActivity" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
     <style name="NotificationTitle">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textStyle">bold</item>

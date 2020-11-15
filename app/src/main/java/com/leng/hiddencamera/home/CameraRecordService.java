@@ -52,9 +52,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Intent.ACTION_DELETE;
-
-public class CameraRecordService extends Service {
-    private static final int NOTIFI_ID_SERVICE_STARTED = 100;
+/**
+ * @aouther tobato
+ * @description 描述  后台录像的服务
+ * @date 2020/11/15 17:00
+ */public class CameraRecordService extends Service {
+    public static final int NOTIFICATION_FLAG = 10086;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
@@ -214,7 +217,7 @@ public class CameraRecordService extends Service {
                             mHandler.removeMessages(MSG_START_RECORDING);
 
                             mWindowManager.removeView(mRootView);
-                            mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
+                            mNotificationManager.cancel(NOTIFICATION_FLAG);
 
                             PmwsSetActivity.sIsRecording = false;
                             stopSelf();
@@ -237,7 +240,7 @@ public class CameraRecordService extends Service {
         intentFilter.addAction("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
         registerReceiver(stopReCordingReceiver, intentFilter);
         Log.i(TAG, "onCreate");
-        startForeground(NOTIFI_ID_SERVICE_STARTED, NotificationTool.getNotification(this));
+        startForeground(NOTIFICATION_FLAG, NotificationTool.getNotification(this));
     }
 
     private void setTimerTask() {
@@ -312,7 +315,7 @@ public class CameraRecordService extends Service {
             releaseCamera(); // release the camera immediately on pause event
 
             mWindowManager.removeView(mRootView);
-            mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
 
             PmwsSetActivity.sIsRecording = false;
 
@@ -441,7 +444,7 @@ public class CameraRecordService extends Service {
                     releaseCamera(); // release the camera immediately on pause
                     // event
                     mWindowManager.removeView(mRootView);
-                    mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
+                    mNotificationManager.cancel(NOTIFICATION_FLAG);
 
                     stopSelf();
 
@@ -481,7 +484,7 @@ public class CameraRecordService extends Service {
             if (mMaxDuration > 0) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                        60*1000);
+                        300*1000);
             }
 
         } else {
@@ -505,7 +508,7 @@ public class CameraRecordService extends Service {
             timer = null;
         }
 
-        mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
+        mNotificationManager.cancel(NOTIFICATION_FLAG);
         // stop recording and release camera
         mMediaRecorder.stop(); // stop the recording
         releaseMediaRecorder(); // release the MediaRecorder object
@@ -624,7 +627,7 @@ public class CameraRecordService extends Service {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         n.deleteIntent = pi_delete;
 
-        mNotificationManager.notify(NOTIFI_ID_SERVICE_STARTED, n);
+        mNotificationManager.notify(NOTIFICATION_FLAG, n);
         //        startForeground(NOTIFI_ID_SERVICE_STARTED, n);
 
         //        unbindService(mConn);
@@ -922,7 +925,7 @@ public class CameraRecordService extends Service {
 
             mWindowManager.removeViewImmediate(mRootView);
             //            mWindowManager.removeView(mRootView);
-            mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
 
             PmwsSetActivity.sIsRecording = false;
             stopSelf();

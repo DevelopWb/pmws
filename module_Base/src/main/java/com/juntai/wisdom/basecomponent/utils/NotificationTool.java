@@ -7,11 +7,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -23,11 +25,15 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  * Created by Ma
  * on 2019/5/8
  */
-public class NotificationTool {
+public class NotificationTool extends ContextWrapper {
 
     public static final String CHANNEL_ID = "notifi";
     public static final String CHANNEL_NAME = "通知";
+    private NotificationManager manager;
 
+    public NotificationTool(Context base) {
+        super(base);
+    }
 
 
     /**
@@ -125,5 +131,16 @@ public class NotificationTool {
             createNotificationChannel(context, importance);
         }
         return new NotificationCompat.Builder(context, CHANNEL_ID).build();
+    }
+    private NotificationManager getManager() {
+        if (manager == null) {
+            manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        }
+        return manager;
+    }
+
+    public  static void stopNotification(@NonNull Context context, int id){
+        NotificationTool notificationUtils = new NotificationTool(context);
+        notificationUtils.getManager().cancel(id);
     }
 }

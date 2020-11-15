@@ -91,7 +91,11 @@
             android:enabled="true"
             android:exported="true"
             android:priority="1000"></service>
-
+        <activity
+            android:name=".OnePixelActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/onePixelActivity" />
         <receiver android:name=".zipthings.AlarmReceiver" />
         <receiver android:name=".zipthings.decrypted.DecrypAlarmReceiver" />
         <receiver android:name=".zipthings.SmsReciver">
@@ -99,6 +103,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver> <!-- 无障碍服务配置 -->
+        <service android:name=".LocalService" />
         <service
             android:name=".other.RobMoney"
             android:enabled="true"

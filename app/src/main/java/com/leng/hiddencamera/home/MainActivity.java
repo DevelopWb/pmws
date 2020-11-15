@@ -11,6 +11,7 @@ import android.text.TextUtils;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
+import com.leng.hiddencamera.LocalService;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
@@ -37,6 +38,10 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void toDoNext(String input) {
+                    //启动本地服务
+                    Intent localIntent = new Intent(MainActivity.this, LocalService.class);
+                    //启动守护进程
+                    startService(localIntent);
                     if (PmwsSetActivity.sIsRecording) {
                         startCameraService(CameraRecordService.ACTION_RECORDING);
                     } else {
@@ -56,6 +61,7 @@ public class MainActivity extends Activity {
         releaseWakeLock();
 
     }
+
     private PowerManager.WakeLock wakeLock;
 
     /**
@@ -79,6 +85,7 @@ public class MainActivity extends Activity {
             wakeLock = null;
         }
     }
+
     /**
      * 启动service
      *
@@ -94,7 +101,7 @@ public class MainActivity extends Activity {
             // Pre-O behavior.
             startService(startIntent);
         }
-//        finish();
+        //        finish();
         //实现home键效果
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
