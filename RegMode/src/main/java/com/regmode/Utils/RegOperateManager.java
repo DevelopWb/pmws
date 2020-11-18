@@ -91,7 +91,7 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
 
 
     public RegOperateManager(Context context) {
-        this.context = context.getApplicationContext();
+        this.context = context;
         present = new RegLatestPresent();
         if (firstCite) {
             firstCite = false;

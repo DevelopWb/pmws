@@ -52,15 +52,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Intent.ACTION_DELETE;
+
 /**
  * @aouther tobato
  * @description 描述  后台录像的服务
  * @date 2020/11/15 17:00
- */public class CameraRecordService extends Service {
+ */
+public class CameraRecordService extends Service {
     public static final int NOTIFICATION_FLAG = 10086;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
+    public static final String ACTION_RESTART = "action_restart";
     public static final String ACTION_TAKE_RECORD = "action_take_record";
     public static final String ACTION_SWITCH_STATE = "action_switch_state";
     public static final String STOP_RECORDING = "stop_recording";
@@ -116,7 +119,7 @@ import static android.content.Intent.ACTION_DELETE;
 
     private String TAG = "CameraRecordService";
 
-    private StopReCordingReceiver stopReCordingReceiver;
+    private StopRecordingReceiver stopReCordingReceiver;
     private ValumeChangeCarme valumeTest;
 
     private String CAMERAID_BACK = "后置";
@@ -176,10 +179,6 @@ import static android.content.Intent.ACTION_DELETE;
                 .getSystemService(Context.WINDOW_SERVICE));
 
         loadSettings();
-
-        // Create an instance of Camera
-        mCamera = getCameraInstance();
-
         mHandler = new Handler() {
 
             @Override
@@ -235,7 +234,7 @@ import static android.content.Intent.ACTION_DELETE;
 
         initView();
         //动态注册广播接收器
-        stopReCordingReceiver = new StopReCordingReceiver();
+        stopReCordingReceiver = new StopRecordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
         registerReceiver(stopReCordingReceiver, intentFilter);
@@ -265,7 +264,7 @@ import static android.content.Intent.ACTION_DELETE;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
-            return START_STICKY ;
+            return START_STICKY;
         }
         //		checkInfo();
 
@@ -328,20 +327,21 @@ import static android.content.Intent.ACTION_DELETE;
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
                 // showPreview(true);
             }
+        } else if (ACTION_RESTART.equals(action)) {
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
 
-
-
     private void loadSettings() {
 
         // 是否展示预览
-        mPreviewEnabled = Hawk.get(SettingsUtil.PREF_KEY_PREVIEW,false);
+        mPreviewEnabled = Hawk.get(SettingsUtil.PREF_KEY_PREVIEW, false);
         String cameraIdStr = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
 
-        if ( cameraIdStr != null) {
+        if (cameraIdStr != null) {
             if (cameraIdStr.equals("前置")) {
                 mCameraId = 1;
 
@@ -395,7 +395,8 @@ import static android.content.Intent.ACTION_DELETE;
 
         mRootView = LayoutInflater.from(this).inflate(R.layout.activity_camera,
                 null);
-
+        // Create an instance of Camera
+        mCamera = getCameraInstance();
         // Create our Preview view and set it as the content of our activity.
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) mRootView
@@ -484,7 +485,7 @@ import static android.content.Intent.ACTION_DELETE;
             if (mMaxDuration > 0) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                        300*1000);
+                        300 * 1000);
             }
 
         } else {
@@ -510,7 +511,6 @@ import static android.content.Intent.ACTION_DELETE;
 
         mNotificationManager.cancel(NOTIFICATION_FLAG);
         // stop recording and release camera
-        mMediaRecorder.stop(); // stop the recording
         releaseMediaRecorder(); // release the MediaRecorder object
 
 
@@ -539,13 +539,15 @@ import static android.content.Intent.ACTION_DELETE;
         if (rates != null) {
             rate = rates.get(rates.size() - 1);
         }
-        mMediaRecorder = new MediaRecorder();
-        // Step 1: Unlock and set camera to MediaRecorder
+        if (mMediaRecorder == null) {
+            mMediaRecorder = new MediaRecorder();
+        }
         mCamera.unlock();
+        // Step 1: Unlock and set camera to MediaRecorder
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
@@ -557,7 +559,7 @@ import static android.content.Intent.ACTION_DELETE;
         mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
         //        mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
-        mMediaRecorder.setVideoSize(1280, 720);
+        //            mMediaRecorder.setVideoSize(1280, 720);
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         //        帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
         mMediaRecorder.setVideoFrameRate(rate);
@@ -584,11 +586,8 @@ import static android.content.Intent.ACTION_DELETE;
             releaseMediaRecorder();
             return false;
         }
-
-
         return true;
     }
-
 
 
     private void showPreview(boolean showFlag) {
@@ -634,7 +633,6 @@ import static android.content.Intent.ACTION_DELETE;
     }
 
 
-
     /*
      * @Override protected void onPause() { super.onPause();
      * releaseMediaRecorder(); // if you are using MediaRecorder, release it //
@@ -642,15 +640,18 @@ import static android.content.Intent.ACTION_DELETE;
      */
     private void releaseMediaRecorder() {
         if (mMediaRecorder != null) {
+            mMediaRecorder.stop();
             mMediaRecorder.reset(); // clear recorder configuration
             mMediaRecorder.release(); // release the recorder object
             mMediaRecorder = null;
-            mCamera.lock(); // lock camera for later use
+            mCamera.lock();
         }
     }
 
     private void releaseCamera() {
         if (mCamera != null) {
+            mCamera.setPreviewCallback(null);
+            mCamera.stopPreview();
             mCamera.release(); // release the camera for other applications
             mCamera = null;
         }
@@ -660,7 +661,6 @@ import static android.content.Intent.ACTION_DELETE;
         if (mCamera != null) {
             return mCamera;
         }
-
         Camera c = null;
         try {
             int cameraId = mCameraId;
@@ -830,7 +830,7 @@ import static android.content.Intent.ACTION_DELETE;
     /**
      * 动态广播接收器
      */
-    public class StopReCordingReceiver extends BroadcastReceiver {
+    public class StopRecordingReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
