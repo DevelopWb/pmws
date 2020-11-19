@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
 import com.leng.hiddencamera.home.CameraRecordService;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.ServiceUtils;
 
 
@@ -106,11 +107,14 @@ public final class LocalService extends Service {
                             if (!isPause) {
                                 if (!ServiceUtils.isServiceRunning(getApplicationContext(), "com.leng.hiddencamera" +
                                         ".home.CameraRecordService")) {
+                                    PmwsLog.writeLog("CameraRecordService  已经停止运行了!!!!!!!!!!!");
                                     Log.d("8888888", "CameraRecordService  已经停止运行了");
-                                    Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-                                    startIntent.setClass(getBaseContext(), CameraRecordService.class);
+                                    Intent startIntent = new Intent(CameraRecordService.ACTION_RESTART);
+                                    startIntent.setClass(LocalService.this, CameraRecordService.class);
                                     startService(startIntent);
                                 }else {
+                                    PmwsLog.writeLog("音乐播放完毕 录制服务正常运行!");
+
                                     Log.d("8888888", "CameraRecordService  正在运行");
                                 }
                                 play();
@@ -182,6 +186,7 @@ public final class LocalService extends Service {
      */
     private void play() {
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            PmwsLog.writeLog("开始播放无声音乐!");
             Log.d("8888888", "开始播放无声音乐");
             mediaPlayer.start();
         }
@@ -256,6 +261,7 @@ public final class LocalService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        PmwsLog.writeLog("本地服务down了!");
         Log.d("8888888", "LocalService  onDestroy");
         //        if (connection != null){
         //            try {

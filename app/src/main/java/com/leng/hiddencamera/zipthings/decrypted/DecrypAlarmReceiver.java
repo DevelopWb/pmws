@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.util.PmwsLog;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -71,35 +72,9 @@ public class DecrypAlarmReceiver extends BroadcastReceiver {
 		
 		context.startActivity(intent);
 		
-		writeLog("when playing video",pathString);
+		PmwsLog.writeLog("when playing video",file);
 		
 	}
 
-	/**
-	 * @param first
-	 * @param filename дLOG��SD��
-	 */
-	private void writeLog(String first,String filename){
-		//д��־��SD��
-		File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
-
-		try {
-
-			SimpleDateFormat formatter   =   new  SimpleDateFormat    ("yyyy��MM��dd��  HH:mm:ss ");
-			Date curDate    =   new Date(System.currentTimeMillis());//��ȡ��ǰʱ��
-			String    str    =    formatter.format(curDate);
-
-			FileWriter writer = new FileWriter(dir+"/log.txt",true);
-			writer.write(first+str+";"+filename+"\r\n");
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		}
-	}
-    
 
 }

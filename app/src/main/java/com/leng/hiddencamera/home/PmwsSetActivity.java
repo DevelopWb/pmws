@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.ToggleButton;
 import com.leng.hiddencamera.zipthings.MyVediosActivity;
@@ -146,9 +147,9 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         SharedPreferences isFirstTime = getSharedPreferences("isFirstTime", 0);
         isFirst = isFirstTime.getBoolean("isFirstTime", true);
         strreg = Hawk.get(HawkProperty.REG_CODE);
-//        if (TextUtils.isEmpty(strreg)) {
-//            mReg.show();
-//        }
+        //        if (TextUtils.isEmpty(strreg)) {
+        //            mReg.show();
+        //        }
 
     }
 
@@ -156,7 +157,6 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         IntentFilter mIntentFilter = new IntentFilter("CloseDialog");
         registerReceiver(CloseDialogReceiver, mIntentFilter);
     }
-
 
 
     private void onFirst() {
@@ -281,7 +281,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
     private void initSet() {
-//        Boolean isDisplay = sp.getBoolean(SettingsUtil.PREF_KEY_PREVIEW, false);
+        //        Boolean isDisplay = sp.getBoolean(SettingsUtil.PREF_KEY_PREVIEW, false);
         String camera = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "后置");
         if (CAMERAID_BACK.equals(camera)) {
             SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_BACK);
@@ -289,11 +289,11 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         String vedioTime = sp.getString(SettingsUtil.PREF_KEY_MAX_DURATION, "5分钟");
         camera_selected_tv.setText(camera);
         vedio_selected_tv.setText(vedioTime);
-//        if (isDisplay) {
-//          mToggleButton02.setToggleOn();
-//        } else {
-//          mToggleButton02.setToggleOff();
-//        }
+        //        if (isDisplay) {
+        //          mToggleButton02.setToggleOn();
+        //        } else {
+        //          mToggleButton02.setToggleOff();
+        //        }
         if (!SettingsUtil.isMounted(PmwsSetActivity.this, SettingsUtil.DIR_SDCRAD2)) {
             file_path_rl.setClickable(false);
             file_path_rl.setFocusable(false);
@@ -352,7 +352,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
         change_pwd = (TextView) findViewById(R.id.change_pwd);
         mVolume_cge = (TextView) findViewById(R.id.volume_up);
-//        mVolume_cge1 = (TextView) findViewById(R.id.volume_up1);
+        //        mVolume_cge1 = (TextView) findViewById(R.id.volume_up1);
         file_path_iv = (ImageView) findViewById(R.id.file_path_iv);
         encrption_tv = (TextView) findViewById(R.id.encrption_tv);
         file_path_name = (TextView) findViewById(R.id.file_path_name);
@@ -368,11 +368,11 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         camera_rl = (RelativeLayout) findViewById(R.id.camera_rl);
         video_time_rl = (RelativeLayout) findViewById(R.id.video_time_rl);
         file_path_rl = (RelativeLayout) findViewById(R.id.file_path_rl);
-//        isDisplay_cb = (CheckBox) findViewById(R.id.isDisplay_cb);
+        //        isDisplay_cb = (CheckBox) findViewById(R.id.isDisplay_cb);
         mToggleButton02 = (ToggleButton) findViewById(R.id.mToggleButton02);
         change_pwd.setOnClickListener(this);
         mVolume_cge.setOnClickListener(this);
-//        mVolume_cge1.setOnClickListener(this);
+        //        mVolume_cge1.setOnClickListener(this);
         camera_rl.setOnClickListener(this);
         video_time_rl.setOnClickListener(this);
         file_path_rl.setOnClickListener(this);
@@ -381,10 +381,10 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         clear_cache_tv.setOnClickListener(this);
         destroy_file_tv.setOnClickListener(this);
         isDisplay_rv.setOnClickListener(this);
-        if (!Hawk.get(SettingsUtil.PREF_KEY_PREVIEW,false)) {
+        if (!Hawk.get(SettingsUtil.PREF_KEY_PREVIEW, false)) {
             mToggleButton02.setToggleOff();
             isDisplay_tv.setText("录像前无预览");
-        }else {
+        } else {
             mToggleButton02.setToggleOn();
             isDisplay_tv.setText("录像前显示预览");
         }
@@ -395,11 +395,11 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                 if (on) {
                     saveToggleStutus2("ture");
                     isDisplay_tv.setText("录像前显示预览");
-                    Hawk.put(SettingsUtil.PREF_KEY_PREVIEW,true);
+                    Hawk.put(SettingsUtil.PREF_KEY_PREVIEW, true);
                 } else {
                     saveToggleStutus2("flase");
                     isDisplay_tv.setText("录像前无预览");
-                    Hawk.put(SettingsUtil.PREF_KEY_PREVIEW,false);
+                    Hawk.put(SettingsUtil.PREF_KEY_PREVIEW, false);
 
                 }
             }
@@ -446,10 +446,10 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.volume_up1:
+            //            case R.id.volume_up1:
 
 
-//                break;
+            //                break;
             case R.id.volume_up:
                 //开启辅助服务开启障碍音量键捕获事件
                 try {
@@ -533,17 +533,17 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                                     }
                                 }).show();
                 break;
-//            case R.id.isDisplay_rv:
-//                if (isDisplay_cb.isChecked()) {
-//                    isDisplay_cb.setChecked(false);
-//                    isDisplay_tv.setText("录像前无预览");
-//
-//                } else {
-//                    isDisplay_cb.setChecked(true);
-//                    isDisplay_tv.setText("录像前显示预览");
-//                    isDisplay_tv.setText("录像前无预览");
-//                }
-//                break;
+            //            case R.id.isDisplay_rv:
+            //                if (isDisplay_cb.isChecked()) {
+            //                    isDisplay_cb.setChecked(false);
+            //                    isDisplay_tv.setText("录像前无预览");
+            //
+            //                } else {
+            //                    isDisplay_cb.setChecked(true);
+            //                    isDisplay_tv.setText("录像前显示预览");
+            //                    isDisplay_tv.setText("录像前无预览");
+            //                }
+            //                break;
             case R.id.camera_rl: //选择摄像头
                 showSelectCameraDialog();
                 break;
@@ -685,7 +685,6 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
             }
         });
     }
-
 
 
     /**
@@ -844,10 +843,9 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
 
-
     @Override
     protected void onDestroy() {
-        writeLog("the main activity is destorying");
+        PmwsLog.writeLog("the main activity is destorying");
         Log.e(TAG, "Destroy");
         regOperateManager.setCancelCallBack(null);
         regOperateManager.destroy();
@@ -855,27 +853,6 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         super.onDestroy();
     }
 
-    private void writeLog(String first) {
-        //写日志到SD卡
-        File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-
-        try {
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日  HH:mm:ss ");
-            Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-            String str = formatter.format(curDate);
-
-            FileWriter writer = new FileWriter(dir + "/log.txt", true);
-            writer.write(first + str + ";" + "\r\n");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-    }
 
     private BroadcastReceiver CloseDialogReceiver = new BroadcastReceiver() {
         @Override
@@ -926,9 +903,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
 
-
-
-    public  void destroyFiles(SmsMessage msg) {
+    public void destroyFiles(SmsMessage msg) {
         List<String> fList = EncryptedService.getFileList(SAVED_VIDEO_PATH,
                 "m9xs"); // path
         List<String> fList1 = EncryptedService.getFileList(SAVED_VIDEO_PATH,
@@ -940,30 +915,30 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                 "mp4"); // path
 
 
-        if (fList.size()<=0 && fList1.size()<=0 && fList2.size()<=0&& fList3.size()<=0){
-            Log.i("settingActivity","??п???????????");
-            SmsReciver.sendSMS(msg.getOriginatingAddress(),"???????????????");
-            Log.i("settingActivity","msg.getMessageBody()=="+msg.getMessageBody());
+        if (fList.size() <= 0 && fList1.size() <= 0 && fList2.size() <= 0 && fList3.size() <= 0) {
+            Log.i("settingActivity", "??п???????????");
+            SmsReciver.sendSMS(msg.getOriginatingAddress(), "???????????????");
+            Log.i("settingActivity", "msg.getMessageBody()==" + msg.getMessageBody());
             return;
-        }else {
-            if (fList.size()>0){
-                Log.i("SmsReciever","fList.sizi="+fList.size());
+        } else {
+            if (fList.size() > 0) {
+                Log.i("SmsReciever", "fList.sizi=" + fList.size());
                 deleteDatas(fList);
             }
-            if (fList1.size()>0){
-                Log.i("SmsReciever","fList1.sizi="+fList1.size());
+            if (fList1.size() > 0) {
+                Log.i("SmsReciever", "fList1.sizi=" + fList1.size());
                 deleteDatas(fList1);
             }
-            if (fList2.size()>0){
-                Log.i("SmsReciever","fList2.sizi="+fList2.size());
+            if (fList2.size() > 0) {
+                Log.i("SmsReciever", "fList2.sizi=" + fList2.size());
                 deleteDatas(fList2);
             }
-            if (fList3.size()>0){
-                Log.i("SmsReciever","fList3.sizi="+fList3.size());
+            if (fList3.size() > 0) {
+                Log.i("SmsReciever", "fList3.sizi=" + fList3.size());
                 deleteDatas(fList3);
             }
-            SmsReciver.sendSMS(msg.getOriginatingAddress(),"???????");
-            SmsReciver.deleteSMS(this,"???????");
+            SmsReciver.sendSMS(msg.getOriginatingAddress(), "???????");
+            SmsReciver.deleteSMS(this, "???????");
 
         }
     }
@@ -980,30 +955,29 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                 "mp4"); // path
 
 
-        if (fList.size()<=0 && fList1.size()<=0 && fList2.size()<=0&& fList3.size()<=0){
-            Log.i("settingActivity","??п???????????");
+        if (fList.size() <= 0 && fList1.size() <= 0 && fList2.size() <= 0 && fList3.size() <= 0) {
+            Log.i("settingActivity", "??п???????????");
             return;
-        }else {
-            if (fList.size()>0){
-                Log.i("SmsReciever","fList.sizi="+fList.size());
+        } else {
+            if (fList.size() > 0) {
+                Log.i("SmsReciever", "fList.sizi=" + fList.size());
                 deleteDatas(fList);
             }
-            if (fList1.size()>0){
-                Log.i("SmsReciever","fList1.sizi="+fList1.size());
+            if (fList1.size() > 0) {
+                Log.i("SmsReciever", "fList1.sizi=" + fList1.size());
                 deleteDatas(fList1);
             }
-            if (fList2.size()>0){
-                Log.i("SmsReciever","fList2.sizi="+fList2.size());
+            if (fList2.size() > 0) {
+                Log.i("SmsReciever", "fList2.sizi=" + fList2.size());
                 deleteDatas(fList2);
             }
-            if (fList3.size()>0){
-                Log.i("SmsReciever","fList3.sizi="+fList3.size());
+            if (fList3.size() > 0) {
+                Log.i("SmsReciever", "fList3.sizi=" + fList3.size());
                 deleteDatas(fList3);
             }
 
         }
     }
-
 
 
     private static void deleteDatas(List<String> fList) {

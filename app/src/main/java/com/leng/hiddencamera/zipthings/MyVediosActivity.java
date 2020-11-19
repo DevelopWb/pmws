@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.zipthings.decrypted.DecryptedFileService;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 /**
  * @aouther tobato
  * @description ����  ¼�Ƶ��ļ�
@@ -77,6 +79,7 @@ public class MyVediosActivity extends ListActivity {
     private TextView textView;
     private Dialog mDialog;
     SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -87,9 +90,9 @@ public class MyVediosActivity extends ListActivity {
         mDialog = DCPubic.getProgressDialog(this, "���ڽ��ܣ����Ժ�...");
         mPath = (TextView) findViewById(R.id.mPath);
         textView = (TextView) findViewById(R.id.cancel_tv_);
-//		findViewById(R.id.buttonConfirm).setOnClickListener(this);
-//		findViewById(R.id.buttonCancle).setOnClickListener(this);
-         sp = getSharedPreferences("videoPath", MODE_PRIVATE);
+        //		findViewById(R.id.buttonConfirm).setOnClickListener(this);
+        //		findViewById(R.id.buttonCancle).setOnClickListener(this);
+        sp = getSharedPreferences("videoPath", MODE_PRIVATE);
         String path = sp.getString("videoPath", "/mnt/sdcard/MyData");
         getFileDir(path); // curPath
         registerDialogDismissReceiver();
@@ -114,9 +117,9 @@ public class MyVediosActivity extends ListActivity {
         registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
-//	public void finish_MyFile(View v) {
-//		finish();
-//	}
+    //	public void finish_MyFile(View v) {
+    //		finish();
+    //	}
 
     /**
      * ��ȡָ��Ŀ¼�µ������ļ�(��)
@@ -176,7 +179,7 @@ public class MyVediosActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         File file = new File(paths.get(position));
-         //       ���ܲ�����
+        //       ���ܲ�����
         if (file.isDirectory()) {
             getFileDir(paths.get(position));
         } else {
@@ -186,6 +189,7 @@ public class MyVediosActivity extends ListActivity {
 
     /**
      * ����ļ��Ƿ��ѱ�����
+     *
      * @param file
      */
     private boolean checkFileIsDecryped(File file) {
@@ -194,12 +198,12 @@ public class MyVediosActivity extends ListActivity {
             File f = new File(path);
             String name = f.getName();
             if (name.endsWith("mp4")) {
-                String nameMp4 =   name.substring(0,name.lastIndexOf("."));
+                String nameMp4 = name.substring(0, name.lastIndexOf("."));
                 fileNamesMp4.add(nameMp4);
             }
 
         }
-        if (fileNamesMp4.contains(file.getName().substring(0,file.getName().lastIndexOf(".")))) {
+        if (fileNamesMp4.contains(file.getName().substring(0, file.getName().lastIndexOf(".")))) {
             Toast.makeText(this, "����Ƶ�ļ��Ѿ����ܹ���", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -210,10 +214,10 @@ public class MyVediosActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         Log.i("MyVediosActivity", "MyVediosActivity onDestroy");
-//		PmwsSetActivity.RECORD_DIALOG=0;
-        if (mDialog!=null) {
+        //		PmwsSetActivity.RECORD_DIALOG=0;
+        if (mDialog != null) {
             mDialog.dismiss();
-            mDialog=null;
+            mDialog = null;
         }
         unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
@@ -239,11 +243,11 @@ public class MyVediosActivity extends ListActivity {
 
             editor.commit();
 
-           intent = new Intent(getApplicationContext(), DecryptedFileService.class);
+            intent = new Intent(getApplicationContext(), DecryptedFileService.class);
 
             startService(intent);
             mDialog.show();
-            writeLog("decrypt fiel and play��", f);
+            PmwsLog.writeLog("decrypt fiel and play��", f);
             return;
 
         } else {
@@ -251,8 +255,9 @@ public class MyVediosActivity extends ListActivity {
             Uri uri = null;
             if (Build.VERSION.SDK_INT >= 24) {//7.0 Android N
                 //com.xxx.xxx.fileproviderΪ����manifest��provider��������ͬ
-                uri = FileProvider.getUriForFile(getApplicationContext(), "com.example.pmws.fileProvider",f);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0�Ժ�ϵͳҪ��������ʱuri��ȡȨ�ޣ���װ����Ժ�ϵͳ���Զ��ջ�Ȩ�ޣ��ù���û���û�����
+                uri = FileProvider.getUriForFile(getApplicationContext(), "com.example.pmws.fileProvider", f);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0�Ժ�ϵͳҪ��������ʱuri
+                // ��ȡȨ�ޣ���װ����Ժ�ϵͳ���Զ��ջ�Ȩ�ޣ��ù���û���û�����
             } else {//7.0����
                 uri = Uri.fromFile(f);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -308,31 +313,6 @@ public class MyVediosActivity extends ListActivity {
         return type;
     }
 
-    /**
-     * @param first
-     * @param f     дLOG��SD��
-     */
-    private void writeLog(String first, File f) {
-        //д��־��SD��
-        File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-
-        try {
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy��MM��dd��  HH:mm:ss ");
-            Date curDate = new Date(System.currentTimeMillis());//��ȡ��ǰʱ��
-            String str = formatter.format(curDate);
-
-            FileWriter writer = new FileWriter(dir + "/log.txt", true);
-            writer.write(first + str + ";" + f.getName() + "\r\n");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-    }
 
     @Override
     protected void onResume() {

@@ -328,6 +328,7 @@ public class CameraRecordService extends Service {
                 // showPreview(true);
             }
         } else if (ACTION_RESTART.equals(action)) {
+            PmwsLog.writeLog("cameraservice 重启 ACTION_RESTART");
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
         }
@@ -458,9 +459,8 @@ public class CameraRecordService extends Service {
 
 
     private void startRecording() {
-
         //        acquireWakeLock();
-
+        PmwsLog.writeLog("Start recording...");
         PmwsLog.d("Start recording...");
         if (timer == null) {
             timer = new Timer();
@@ -501,7 +501,7 @@ public class CameraRecordService extends Service {
 
     // 停止录像
     private void stopRecording() {
-
+        PmwsLog.writeLog("stopRecording...");
         if (timer != null) {
 
             timer.cancel();
@@ -512,7 +512,6 @@ public class CameraRecordService extends Service {
         mNotificationManager.cancel(NOTIFICATION_FLAG);
         // stop recording and release camera
         releaseMediaRecorder(); // release the MediaRecorder object
-
 
         //停止录像的时候就执行加密的操作
         Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
@@ -533,15 +532,13 @@ public class CameraRecordService extends Service {
      */
     private boolean prepareVideoRecorder() {
         PmwsLog.d("Prepare recording...");
-        int rate = 10;
+//        int rate = 10;
         mCamera = getCameraInstance();
-        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
-        if (rates != null) {
-            rate = rates.get(rates.size() - 1);
-        }
-        if (mMediaRecorder == null) {
-            mMediaRecorder = new MediaRecorder();
-        }
+//        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
+//        if (rates != null) {
+//            rate = rates.get(rates.size() - 1);
+//        }
+        mMediaRecorder = new MediaRecorder();
         mCamera.unlock();
         // Step 1: Unlock and set camera to MediaRecorder
         mMediaRecorder.setCamera(mCamera);
@@ -556,13 +553,13 @@ public class CameraRecordService extends Service {
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);// 音频格式
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         //设置编码比特率,不设置会使视频图像模糊
-        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
+//        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
         //        mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
         //            mMediaRecorder.setVideoSize(1280, 720);
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         //        帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
-        mMediaRecorder.setVideoFrameRate(rate);
+//        mMediaRecorder.setVideoFrameRate(rate);
 
         // Step 4: Set output file
         mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO)
