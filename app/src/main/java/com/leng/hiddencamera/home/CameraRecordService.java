@@ -196,7 +196,7 @@ public class CameraRecordService extends Service {
                         mHandler.sendMessageDelayed(
                                 mHandler.obtainMessage(MSG_STOP_RECORDING), 1000);
                         mHandler.sendMessageDelayed(
-                                mHandler.obtainMessage(MSG_START_RECORDING), 2000);
+                                mHandler.obtainMessage(MSG_START_RECORDING), 3000);
                         break;
                     case MSG_SHOW_PREVIEW:
                         showPreview(true);
@@ -206,8 +206,6 @@ public class CameraRecordService extends Service {
                             Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
 
                             stopRecording();
-
-                            releaseMediaRecorder(); // if you are using
                             // MediaRecorder,
                             // release it first
                             releaseCamera(); // release the camera immediately on
@@ -308,8 +306,6 @@ public class CameraRecordService extends Service {
             mHandler.removeMessages(MSG_START_RECORDING);
 
             stopRecording();
-
-            releaseMediaRecorder(); // if you are using MediaRecorder,
             // release it first
             releaseCamera(); // release the camera immediately on pause event
 
@@ -441,7 +437,6 @@ public class CameraRecordService extends Service {
                         stopRecording();
                     }
 
-                    releaseMediaRecorder(); // if you are using MediaRecorder,
                     // release it first
                     releaseCamera(); // release the camera immediately on pause
                     // event
@@ -472,6 +467,7 @@ public class CameraRecordService extends Service {
             // Camera is available and unlocked, MediaRecorder is
             // prepared,
             // now you can start recording
+
             mMediaRecorder.start();
 
             // inform the user that recording has started
@@ -508,8 +504,9 @@ public class CameraRecordService extends Service {
 
             timer = null;
         }
-
-        mNotificationManager.cancel(NOTIFICATION_FLAG);
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
+        }
         // stop recording and release camera
         releaseMediaRecorder(); // release the MediaRecorder object
 
@@ -532,15 +529,15 @@ public class CameraRecordService extends Service {
      */
     private boolean prepareVideoRecorder() {
         PmwsLog.d("Prepare recording...");
-//        int rate = 10;
+        //        int rate = 10;
         mCamera = getCameraInstance();
-//        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
-//        if (rates != null) {
-//            rate = rates.get(rates.size() - 1);
-//        }
+        //        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
+        //        if (rates != null) {
+        //            rate = rates.get(rates.size() - 1);
+        //        }
         mMediaRecorder = new MediaRecorder();
-        mCamera.unlock();
         // Step 1: Unlock and set camera to MediaRecorder
+        mCamera.unlock();
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
@@ -553,13 +550,13 @@ public class CameraRecordService extends Service {
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);// 音频格式
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         //设置编码比特率,不设置会使视频图像模糊
-//        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
+        //        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
         //        mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
         //            mMediaRecorder.setVideoSize(1280, 720);
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         //        帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
-//        mMediaRecorder.setVideoFrameRate(rate);
+        //        mMediaRecorder.setVideoFrameRate(rate);
 
         // Step 4: Set output file
         mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO)
@@ -604,9 +601,11 @@ public class CameraRecordService extends Service {
     }
 
     private void showNotification() {
-        mNotificationManager = (NotificationManager) this
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification n = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
+        if (mNotificationManager == null) {
+            mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        Notification notification = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification_start)
                 .setOngoing(true)
                 .setContentTitle("屏幕卫士").setContentText("屏幕卫士, 点击停止").build();
@@ -617,13 +616,13 @@ public class CameraRecordService extends Service {
 
         PendingIntent pi = PendingIntent.getService(getBaseContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        n.contentIntent = pi;
+        notification.contentIntent = pi;
 
         PendingIntent pi_delete = PendingIntent.getService(getBaseContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        n.deleteIntent = pi_delete;
+        notification.deleteIntent = pi_delete;
 
-        mNotificationManager.notify(NOTIFICATION_FLAG, n);
+        mNotificationManager.notify(NOTIFICATION_FLAG, notification);
         //        startForeground(NOTIFI_ID_SERVICE_STARTED, n);
 
         //        unbindService(mConn);
@@ -647,7 +646,6 @@ public class CameraRecordService extends Service {
 
     private void releaseCamera() {
         if (mCamera != null) {
-            mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
             mCamera.release(); // release the camera for other applications
             mCamera = null;
@@ -799,7 +797,7 @@ public class CameraRecordService extends Service {
     @Override
     public void onDestroy() {
         //        releaseWakeLock();
-
+        PmwsLog.writeLog("CameraRecordService  down了!   onDestroy");
         Log.i("CameraRecordService", "onDestroy");
         //        manager.unregisterOnePixelReceiver(this);//Activity退出时解注册
         if (mSensorListener != null)
@@ -811,13 +809,11 @@ public class CameraRecordService extends Service {
 
             timer = null;
         }
-
         unregisterReceiver(stopReCordingReceiver);
         //
         unregisterReceiver(valumeTest);
-        if (mIsRecording) {
-            stopRecording();
-        }
+        stopRecording();
+        releaseCamera();
         stopForeground(true);
         super.onDestroy();
 
@@ -833,7 +829,6 @@ public class CameraRecordService extends Service {
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "接收到了广播");
             stopRecording();
-            releaseMediaRecorder();
             releaseCamera();
             stopSelf();
         }
@@ -915,8 +910,6 @@ public class CameraRecordService extends Service {
             mHandler.removeMessages(MSG_START_RECORDING);
 
             stopRecording();
-
-            releaseMediaRecorder(); // if you are using MediaRecorder,
             // release it first
             releaseCamera(); // release the camera immediately on pause event
 
