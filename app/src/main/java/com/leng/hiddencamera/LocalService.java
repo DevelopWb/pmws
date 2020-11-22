@@ -20,7 +20,7 @@ import com.leng.hiddencamera.util.ServiceUtils;
 public final class LocalService extends Service {
     private OnepxReceiver mOnepxReceiver;
     private ScreenStateReceiver screenStateReceiver;
-    private boolean isPause = true;//控制暂停
+    public static boolean isScreenOn = true;//屏幕是否亮起
     private boolean canRecycle = true;//是否可以守护
     private MediaPlayer mediaPlayer;
     //    private Handler handler;
@@ -35,11 +35,11 @@ public final class LocalService extends Service {
         public void onReceive(final Context context, Intent intent) {
             if (intent.getAction().equals("_ACTION_SCREEN_OFF")) {
                 //屏幕关闭后 开启无声音乐
-                isPause = false;
+                isScreenOn = false;
                 play();
             } else if (intent.getAction().equals("_ACTION_SCREEN_ON")) {
                 //屏幕开启后  关闭无声音乐
-                isPause = true;
+                isScreenOn = true;
                 pause();
             }
         }
@@ -81,7 +81,7 @@ public final class LocalService extends Service {
     public void onCreate() {
         super.onCreate();
         PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-        isPause = pm.isScreenOn();
+        isScreenOn = pm.isScreenOn();
     }
 
     @Override
@@ -104,7 +104,8 @@ public final class LocalService extends Service {
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mediaPlayer) {
-                            if (!isPause) {
+                            PmwsLog.writeLog("播放完音乐 ! 屏幕状态"+isScreenOn);
+                            if (!isScreenOn) {
                                 if (!ServiceUtils.isServiceRunning(getApplicationContext(), "com.leng.hiddencamera" +
                                         ".home.CameraRecordService")) {
                                     PmwsLog.writeLog("CameraRecordService  已经停止运行了!!!!!!!!!!!");
@@ -113,8 +114,6 @@ public final class LocalService extends Service {
                                     startIntent.setClass(LocalService.this, CameraRecordService.class);
                                     startService(startIntent);
                                 }else {
-                                    PmwsLog.writeLog("音乐播放完毕 录制服务正常运行!");
-
                                     Log.d("8888888", "CameraRecordService  正在运行");
                                 }
                                 play();
@@ -260,7 +259,6 @@ public final class LocalService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         PmwsLog.writeLog("本地服务down了!");
         Log.d("8888888", "LocalService  onDestroy");
         //        if (connection != null){
@@ -276,6 +274,8 @@ public final class LocalService extends Service {
             unregisterReceiver(mControlServiceReceiver);
         } catch (Exception e) {
         }
+        super.onDestroy();
+
         //        if (KeepLive.keepLiveService != null) {
         //            KeepLive.keepLiveService.onStop();
         //        }

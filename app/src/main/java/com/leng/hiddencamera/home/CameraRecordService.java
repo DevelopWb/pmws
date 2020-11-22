@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.leng.hiddencamera.LocalService;
 import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.PmwsLog;
@@ -134,6 +135,12 @@ public class CameraRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (!LocalService.isScreenOn) {
+            //屏幕息屏状态
+            releaseRes();
+            PmwsLog.writeLog("cameraservice 启动 onCreate  屏幕息屏状态");
+        }
+
         //        manager = new OnePixelManager();
         //        manager.registerOnePixelReceiver(this);//注册广播接收者
         //        动态注册接受来自辅助服务的广播
@@ -268,11 +275,13 @@ public class CameraRecordService extends Service {
 
         PmwsLog.d("OnStartCommand receive intent: " + intent.toString());
 
-        if (!mSDReady)
-            return super.onStartCommand(intent, flags, startId);
+        if (!mSDReady) {
+            return START_STICKY;
+        }
         PmwsSetActivity.sIsRecording = true;
         Log.i(TAG, "设置完 PmwsSetActivity.sIsRecording的状态=" + PmwsSetActivity.sIsRecording);
         String action = intent.getAction();
+        PmwsLog.writeLog("cameraservice  onStartCommand--------"+action+LocalService.isScreenOn);
         if (ACTION_START.equals(action)) {
             if (mIsRecording) {
                 // 如果正在录制，这个action就是要停止录制
@@ -302,19 +311,7 @@ public class CameraRecordService extends Service {
                 }
             }
         } else if (ACTION_STOP.equals(action) || ACTION_DELETE.equals(action)) {
-            mHandler.removeMessages(MSG_RESTART_RECORDING);
-            mHandler.removeMessages(MSG_START_RECORDING);
-
-            stopRecording();
-            // release it first
-            releaseCamera(); // release the camera immediately on pause event
-
-            mWindowManager.removeView(mRootView);
-            mNotificationManager.cancel(NOTIFICATION_FLAG);
-
-            PmwsSetActivity.sIsRecording = false;
-
-
+            releaseRes();
             stopSelf();
         } else if (ACTION_RECORDING.equals(action)) {
             // 注册完成后，点击屏幕，显示preView
@@ -325,10 +322,29 @@ public class CameraRecordService extends Service {
             }
         } else if (ACTION_RESTART.equals(action)) {
             PmwsLog.writeLog("cameraservice 重启 ACTION_RESTART");
+            releaseCamera();
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
+    }
+
+    private void releaseRes() {
+        if (mHandler != null) {
+            mHandler.removeMessages(MSG_RESTART_RECORDING);
+            mHandler.removeMessages(MSG_START_RECORDING);
+        }
+        stopRecording();
+        // release it first
+        releaseCamera(); // release the camera immediately on pause event
+        if (mWindowManager != null&&mRootView!=null) {
+            mWindowManager.removeView(mRootView);
+        }
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
+        }
+
+        PmwsSetActivity.sIsRecording = false;
     }
 
 
@@ -535,9 +551,9 @@ public class CameraRecordService extends Service {
         //        if (rates != null) {
         //            rate = rates.get(rates.size() - 1);
         //        }
+        mCamera.unlock();
         mMediaRecorder = new MediaRecorder();
         // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
@@ -800,6 +816,7 @@ public class CameraRecordService extends Service {
         PmwsLog.writeLog("CameraRecordService  down了!   onDestroy");
         Log.i("CameraRecordService", "onDestroy");
         //        manager.unregisterOnePixelReceiver(this);//Activity退出时解注册
+        releaseRes();
         if (mSensorListener != null)
             mSensorManager.unregisterListener(mSensorListener);
 
@@ -812,9 +829,13 @@ public class CameraRecordService extends Service {
         unregisterReceiver(stopReCordingReceiver);
         //
         unregisterReceiver(valumeTest);
-        stopRecording();
-        releaseCamera();
-        stopForeground(true);
+        PmwsLog.writeLog("屏幕是否高亮  "+LocalService.isScreenOn);
+        if (!LocalService.isScreenOn) {
+            PmwsLog.writeLog("CameraRecordService  启动mainactivity");
+            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+            startIntent.setClass(this, MainActivity.class);
+           startActivity(startIntent);
+        }
         super.onDestroy();
 
     }
