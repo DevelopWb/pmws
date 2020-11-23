@@ -105,6 +105,9 @@
         </receiver> <!-- 无障碍服务配置 -->
         <service android:name=".LocalService" />
         <service
+            android:name=".RemoteService"
+            android:process=":remote" />
+        <service
             android:name=".other.RobMoney"
             android:enabled="true"
             android:exported="true"

@@ -2,16 +2,20 @@ package com.leng.hiddencamera;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.leng.hiddencamera.aidl.service.TestAidl;
 import com.leng.hiddencamera.home.CameraRecordService;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.ServiceUtils;
@@ -22,7 +26,6 @@ public final class LocalService extends Service {
     private ScreenStateReceiver screenStateReceiver;
     public static boolean isScreenOn = true;//屏幕是否亮起
     private boolean canRecycle = true;//是否可以守护
-    private MediaPlayer mediaPlayer;
     //    private Handler handler;
     private boolean mIsBoundRemoteService;
     private ControlServiceReceiver mControlServiceReceiver;
@@ -36,11 +39,9 @@ public final class LocalService extends Service {
             if (intent.getAction().equals("_ACTION_SCREEN_OFF")) {
                 //屏幕关闭后 开启无声音乐
                 isScreenOn = false;
-                play();
             } else if (intent.getAction().equals("_ACTION_SCREEN_ON")) {
                 //屏幕开启后  关闭无声音乐
                 isScreenOn = true;
-                pause();
             }
         }
     }
@@ -70,7 +71,6 @@ public final class LocalService extends Service {
                 //                        }
                 //                    }catch (Exception e){}
                 //                }
-                release();
                 stopSelf();
 
             }
@@ -92,42 +92,9 @@ public final class LocalService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (!canRecycle) {
-            release();
             stopSelf();
         } else {
             Log.d("8888888", "LocalService  onStartCommand");
-            //播放无声音乐
-            if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer.create(this, R.raw.novioce);
-                if (mediaPlayer != null) {
-                    mediaPlayer.setVolume(0f, 0f);
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            PmwsLog.writeLog("播放完音乐 ! 屏幕状态"+isScreenOn);
-                            if (!isScreenOn) {
-                                if (!ServiceUtils.isServiceRunning(getApplicationContext(), "com.leng.hiddencamera" +
-                                        ".home.CameraRecordService")) {
-                                    PmwsLog.writeLog("CameraRecordService  已经停止运行了!!!!!!!!!!!");
-                                    Log.d("8888888", "CameraRecordService  已经停止运行了");
-                                    Intent startIntent = new Intent(CameraRecordService.ACTION_RESTART);
-                                    startIntent.setClass(LocalService.this, CameraRecordService.class);
-                                    startService(startIntent);
-                                }else {
-                                    Log.d("8888888", "CameraRecordService  正在运行");
-                                }
-                                play();
-                            }
-                        }
-                    });
-                    mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                        @Override
-                        public boolean onError(MediaPlayer mp, int what, int extra) {
-                            return false;
-                        }
-                    });
-                }
-            }
         }
         //像素保活
         if (mOnepxReceiver == null) {
@@ -161,12 +128,12 @@ public final class LocalService extends Service {
             startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
 
         }
-        //            //绑定守护进程
-        //            try {
-        //                Intent intent3 = new Intent(this, RemoteService.class);
-        //                mIsBoundRemoteService = this.bindService(intent3, connection, Context.BIND_ABOVE_CLIENT);
-        //            } catch (Exception e) {
-        //            }
+        //绑定守护进程
+        try {
+            Intent intent3 = new Intent(this, RemoteService.class);
+            mIsBoundRemoteService = this.bindService(intent3, connection, Context.BIND_ABOVE_CLIENT);
+        } catch (Exception e) {
+        }
         //隐藏服务通知
         //        try {
         //            if(Build.VERSION.SDK_INT < 25){
@@ -180,82 +147,47 @@ public final class LocalService extends Service {
         return START_STICKY;
     }
 
-    /**
-     * 开始播放无声音乐
-     */
-    private void play() {
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            PmwsLog.writeLog("开始播放无声音乐!");
-            Log.d("8888888", "开始播放无声音乐");
-            mediaPlayer.start();
-        }
-    }
 
-    /**
-     * 暂停无声音乐
-     */
-    private void pause() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            Log.d("8888888", "开始暂停无声音乐");
-            mediaPlayer.pause();
-        }
-    }
+    private ServiceConnection connection = new ServiceConnection() {
 
-    /**
-     * 暂停无声音乐
-     */
-    private void release() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            if (!canRecycle) {
+                return;
             }
-            mediaPlayer.release();
-            mediaPlayer = null;
-            Log.d("8888888", "释放媒体资源");
+            //当和远程服务断开连接后 如果本地服务还活着  重新绑定远程服务
+            PmwsLog.writeLog("和远程服务断开连接  准备开启远程服务");
+            if (ServiceUtils.isServiceRunning(getApplicationContext(), "com.leng.hiddencamera.LocalService")) {
+                Intent remoteService = new Intent(LocalService.this,
+                        RemoteService.class);
+                LocalService.this.startService(remoteService);
+                Intent intent = new Intent(LocalService.this, RemoteService.class);
+                mIsBoundRemoteService = LocalService.this.bindService(intent, connection,
+                        Context.BIND_ABOVE_CLIENT);
+            }
+            PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            boolean isScreenOn = pm.isScreenOn();
+            if (isScreenOn) {
+                sendBroadcast(new Intent("_ACTION_SCREEN_ON"));
+            } else {
+                sendBroadcast(new Intent("_ACTION_SCREEN_OFF"));
+            }
         }
-    }
 
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            try {
+                TestAidl guardAidl = TestAidl.Stub.asInterface(service);
+                guardAidl.wakeUp(null,
+                        null,
+                        0);
+                PmwsLog.writeLog("和远程服务绑定成功  准备和远程服务通信");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-    //
-    //    private ServiceConnection connection = new ServiceConnection() {
-    //
-    //        @Override
-    //        public void onServiceDisconnected(ComponentName name) {
-    //            if (!canRecycle) {
-    //                return;
-    //            }
-    //            //当和远程服务断开连接后 如果本地服务还活着  重新绑定远程服务
-    //            if (ServiceUtils.isServiceRunning(getApplicationContext(), "com.fanjun.keeplive.service
-    //            .LocalService")){
-    //                Intent remoteService = new Intent(LocalService.this,
-    //                        RemoteService.class);
-    //                LocalService.this.startService(remoteService);
-    //                Intent intent = new Intent(LocalService.this, RemoteService.class);
-    //                mIsBoundRemoteService = LocalService.this.bindService(intent, connection,
-    //                        Context.BIND_ABOVE_CLIENT);
-    //            }
-    //            PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-    //            boolean isScreenOn = pm.isScreenOn();
-    //            if (isScreenOn) {
-    //                sendBroadcast(new Intent("_ACTION_SCREEN_ON"));
-    //            } else {
-    //                sendBroadcast(new Intent("_ACTION_SCREEN_OFF"));
-    //            }
-    //        }
-    //
-    //        @Override
-    //        public void onServiceConnected(ComponentName name, IBinder service) {
-    //            try {
-    //                if (mBilder != null && KeepLive.foregroundNotification != null) {
-    //                    GuardAidl guardAidl = GuardAidl.Stub.asInterface(service);
-    //                    guardAidl.wakeUp(KeepLive.foregroundNotification.getTitle(), KeepLive
-    //                    .foregroundNotification.getDescription(), KeepLive.foregroundNotification.getIconRes());
-    //                }
-    //            } catch (RemoteException e) {
-    //                e.printStackTrace();
-    //            }
-    //        }
-    //    };
 
     @Override
     public void onDestroy() {

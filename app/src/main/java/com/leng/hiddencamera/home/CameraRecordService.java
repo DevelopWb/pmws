@@ -6,9 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -17,11 +19,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.StatFs;
+import android.os.PowerManager;
+import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,10 +37,13 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
 import com.leng.hiddencamera.LocalService;
+import com.leng.hiddencamera.RemoteService;
+import com.leng.hiddencamera.aidl.service.TestAidl;
 import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.SdCard;
+import com.leng.hiddencamera.util.ServiceUtils;
 import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.CameraPreview;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService2;
@@ -48,7 +53,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -76,6 +80,7 @@ public class CameraRecordService extends Service {
     private static final int MSG_HIDE_PREVIEW = 4;
     private static final int MSG_RESTART_RECORDING = 5;
     private static final int MSG_SEND_MESSAGE = 10;
+    private MyBilder mBilder;
 
     private static final long LOW_STORAGE_SIZE = 2000288000;
 
@@ -87,7 +92,6 @@ public class CameraRecordService extends Service {
     private int mCameraId;
     private MediaRecorder mMediaRecorder;
     private CameraPreview mPreview;
-    private Handler mHandler;
     private Button mCaptureButton;
     private Button mQuitButton;
     private boolean mIsRecording = false;
@@ -130,19 +134,61 @@ public class CameraRecordService extends Service {
     private int VolumeEmbellish = 1;
     private int initStatus = 1;
     private boolean mPreviewEnabled;
+    private Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            int what = msg.what;
+            switch (what) {
+                case MSG_START_RECORDING:
+                    startRecording();
+                    break;
+                case MSG_STOP_RECORDING:
+                    stopRecording();
+                    break;
+                case MSG_RESTART_RECORDING:
+                    PmwsLog.d("Max duration reached, restart the recording");
+                    mHandler.sendMessageDelayed(
+                            mHandler.obtainMessage(MSG_STOP_RECORDING), 1000);
+                    mHandler.sendMessageDelayed(
+                            mHandler.obtainMessage(MSG_START_RECORDING), 3000);
+                    break;
+                case MSG_SHOW_PREVIEW:
+                    showPreview(true);
+                    break;
+                case MSG_SEND_MESSAGE:
+                    if (time < 300) {
+                        Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
+
+                        stopRecording();
+                        // MediaRecorder,
+                        // release it first
+                        releaseCamera(); // release the camera immediately on
+                        // pause event
+                        mHandler.removeMessages(MSG_RESTART_RECORDING);
+                        mHandler.removeMessages(MSG_START_RECORDING);
+
+                        mWindowManager.removeView(mRootView);
+                        mNotificationManager.cancel(NOTIFICATION_FLAG);
+
+                        PmwsSetActivity.sIsRecording = false;
+                        stopSelf();
+                    }
+
+                    break;
+            }
+
+        }
+    };
 
     //    private    MyConn mConn;
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!LocalService.isScreenOn) {
-            //屏幕息屏状态
-            releaseRes();
-            PmwsLog.writeLog("cameraservice 启动 onCreate  屏幕息屏状态");
+        if (mBilder == null) {
+            mBilder = new MyBilder();
         }
-
-        //        manager = new OnePixelManager();
-        //        manager.registerOnePixelReceiver(this);//注册广播接收者
+        PmwsLog.writeLog("cameraservice  onCreate--------");
         //        动态注册接受来自辅助服务的广播
         valumeTest = new ValumeChangeCarme();
         IntentFilter intentFilter2 = new IntentFilter();
@@ -186,52 +232,7 @@ public class CameraRecordService extends Service {
                 .getSystemService(Context.WINDOW_SERVICE));
 
         loadSettings();
-        mHandler = new Handler() {
 
-            @Override
-            public void handleMessage(Message msg) {
-                int what = msg.what;
-                switch (what) {
-                    case MSG_START_RECORDING:
-                        startRecording();
-                        break;
-                    case MSG_STOP_RECORDING:
-                        stopRecording();
-                        break;
-                    case MSG_RESTART_RECORDING:
-                        PmwsLog.d("Max duration reached, restart the recording");
-                        mHandler.sendMessageDelayed(
-                                mHandler.obtainMessage(MSG_STOP_RECORDING), 1000);
-                        mHandler.sendMessageDelayed(
-                                mHandler.obtainMessage(MSG_START_RECORDING), 3000);
-                        break;
-                    case MSG_SHOW_PREVIEW:
-                        showPreview(true);
-                        break;
-                    case MSG_SEND_MESSAGE:
-                        if (time < 300) {
-                            Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
-
-                            stopRecording();
-                            // MediaRecorder,
-                            // release it first
-                            releaseCamera(); // release the camera immediately on
-                            // pause event
-                            mHandler.removeMessages(MSG_RESTART_RECORDING);
-                            mHandler.removeMessages(MSG_START_RECORDING);
-
-                            mWindowManager.removeView(mRootView);
-                            mNotificationManager.cancel(NOTIFICATION_FLAG);
-
-                            PmwsSetActivity.sIsRecording = false;
-                            stopSelf();
-                        }
-
-                        break;
-                }
-
-            }
-        };
         /*
          * TimerTask task = new TimerTask() { public void run() { Message msg =
          * new Message(); msg.what = 10; mHandler.sendMessage(msg); } };
@@ -245,6 +246,13 @@ public class CameraRecordService extends Service {
         registerReceiver(stopReCordingReceiver, intentFilter);
         Log.i(TAG, "onCreate");
         startForeground(NOTIFICATION_FLAG, NotificationTool.getNotification(this));
+    }
+    private final class MyBilder extends TestAidl.Stub {
+
+        @Override
+        public void wakeUp(String title, String discription, int iconRes) throws RemoteException {
+
+        }
     }
 
     private void setTimerTask() {
@@ -265,9 +273,56 @@ public class CameraRecordService extends Service {
         timer.schedule(task, 1000, 1000);/* 表示1000毫秒之後，每隔1000毫秒執行一次 */
     }
 
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            //            if (!canRecycle) {
+            //                return;
+            //            }
+            //当和远程服务断开连接后 如果本地服务还活着  重新绑定远程服务
+            PmwsLog.writeLog("和远程服务断开连接  准备开启远程服务");
+            if (ServiceUtils.isServiceRunning(getApplicationContext(), "com.leng.hiddencamera.LocalService")) {
+                Intent remoteService = new Intent(CameraRecordService.this,
+                        RemoteService.class);
+                startService(remoteService);
+                Intent intent = new Intent(CameraRecordService.this, RemoteService.class);
+                bindService(intent, connection,
+                        Context.BIND_ABOVE_CLIENT);
+            }
+            PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            boolean isScreenOn = pm.isScreenOn();
+            if (isScreenOn) {
+                sendBroadcast(new Intent("_ACTION_SCREEN_ON"));
+            } else {
+                sendBroadcast(new Intent("_ACTION_SCREEN_OFF"));
+            }
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            try {
+                TestAidl guardAidl = TestAidl.Stub.asInterface(service);
+                guardAidl.wakeUp(null,
+                        null,
+                        0);
+                PmwsLog.writeLog("和远程服务绑定成功  准备和远程服务通信");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
+        //绑定守护进程
+        try {
+            Intent intent3 = new Intent(this, RemoteService.class);
+            bindService(intent3, connection, Context.BIND_ABOVE_CLIENT);
+        } catch (Exception e) {
+        }
         if (intent == null) {
             return START_STICKY;
         }
@@ -281,7 +336,7 @@ public class CameraRecordService extends Service {
         PmwsSetActivity.sIsRecording = true;
         Log.i(TAG, "设置完 PmwsSetActivity.sIsRecording的状态=" + PmwsSetActivity.sIsRecording);
         String action = intent.getAction();
-        PmwsLog.writeLog("cameraservice  onStartCommand--------"+action+LocalService.isScreenOn);
+        PmwsLog.writeLog("cameraservice  onStartCommand--------" + action + LocalService.isScreenOn);
         if (ACTION_START.equals(action)) {
             if (mIsRecording) {
                 // 如果正在录制，这个action就是要停止录制
@@ -329,6 +384,9 @@ public class CameraRecordService extends Service {
         return START_STICKY;
     }
 
+    /**
+     * 释放资源
+     */
     private void releaseRes() {
         if (mHandler != null) {
             mHandler.removeMessages(MSG_RESTART_RECORDING);
@@ -337,7 +395,7 @@ public class CameraRecordService extends Service {
         stopRecording();
         // release it first
         releaseCamera(); // release the camera immediately on pause event
-        if (mWindowManager != null&&mRootView!=null) {
+        if (mWindowManager != null && mRootView != null) {
             mWindowManager.removeView(mRootView);
         }
         if (mNotificationManager != null) {
@@ -347,7 +405,9 @@ public class CameraRecordService extends Service {
         PmwsSetActivity.sIsRecording = false;
     }
 
-
+    /**
+     * 加载配置数据
+     */
     private void loadSettings() {
 
         // 是否展示预览
@@ -390,7 +450,9 @@ public class CameraRecordService extends Service {
 
     }
 
-
+    /**
+     * 动态添加surfaceview
+     */
     private void initView() {
         mWindowLayoutParams = new WindowManager.LayoutParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//6.0
@@ -468,7 +530,9 @@ public class CameraRecordService extends Service {
         mWindowManager.addView(mRootView, mWindowLayoutParams);
     }
 
-
+    /**
+     * 开始录像
+     */
     private void startRecording() {
         //        acquireWakeLock();
         PmwsLog.writeLog("Start recording...");
@@ -497,7 +561,7 @@ public class CameraRecordService extends Service {
             if (mMaxDuration > 0) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                        300 * 1000);
+                        60 * 1000);
             }
 
         } else {
@@ -511,7 +575,9 @@ public class CameraRecordService extends Service {
 
     }
 
-    // 停止录像
+    /**
+     * 停止录像
+     */
     private void stopRecording() {
         PmwsLog.writeLog("stopRecording...");
         if (timer != null) {
@@ -538,10 +604,10 @@ public class CameraRecordService extends Service {
 
     }
 
-    /*
-     * public static string getSdcardAvailable(){ StatFs fs = new
-     * StatFs(Environment.getDataDirectory().getPath()); return
-     * Formatter.formatFileSize(this,fs.getAvailableBlocks()); }
+    /**
+     * 录像前得准备
+     *
+     * @return
      */
     private boolean prepareVideoRecorder() {
         PmwsLog.d("Prepare recording...");
@@ -579,7 +645,8 @@ public class CameraRecordService extends Service {
                 .toString());
 
         // Step 5: Set the preview output
-        // mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
+        //        mPreview.surfaceCreated(mPreview.getHolder());
+        //        mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
 
         mMediaRecorder.setOrientationHint(getRecorderPlayOrientation(this,
                 mCameraId));
@@ -599,7 +666,11 @@ public class CameraRecordService extends Service {
         return true;
     }
 
-
+    /**
+     * 是否展示预览
+     *
+     * @param showFlag
+     */
     private void showPreview(boolean showFlag) {
         PmwsLog.d("Switch priview status: " + showFlag);
 
@@ -616,6 +687,9 @@ public class CameraRecordService extends Service {
 
     }
 
+    /**
+     * 展示notification
+     */
     private void showNotification() {
         if (mNotificationManager == null) {
             mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -645,10 +719,8 @@ public class CameraRecordService extends Service {
     }
 
 
-    /*
-     * @Override protected void onPause() { super.onPause();
-     * releaseMediaRecorder(); // if you are using MediaRecorder, release it //
-     * first releaseCamera(); // release the camera immediately on pause event }
+    /**
+     * 释放mMediaRecorder
      */
     private void releaseMediaRecorder() {
         if (mMediaRecorder != null) {
@@ -660,6 +732,9 @@ public class CameraRecordService extends Service {
         }
     }
 
+    /**
+     * 释放camera
+     */
     private void releaseCamera() {
         if (mCamera != null) {
             mCamera.stopPreview();
@@ -668,7 +743,12 @@ public class CameraRecordService extends Service {
         }
     }
 
-    public Camera getCameraInstance() {
+    /**
+     * 获取摄像头对象
+     *
+     * @return
+     */
+    private Camera getCameraInstance() {
         if (mCamera != null) {
             return mCamera;
         }
@@ -684,6 +764,12 @@ public class CameraRecordService extends Service {
         return c; // returns null if camera is unavailable
     }
 
+    /**
+     * 获取摄像头预览位置
+     *
+     * @param cameraId
+     * @return
+     */
     private int getCameraDisplayOrientation(int cameraId) {
         int orientation = 0;
         if (cameraId == 0) {
@@ -700,6 +786,12 @@ public class CameraRecordService extends Service {
 
     }
 
+    /**
+     * 获取录像预览位置
+     *
+     * @param cameraId
+     * @return
+     */
     private int getRecorderPlayOrientation(Context activity, int cameraId) {
         int orientation = 0;
         if (cameraId == 0) {
@@ -758,56 +850,11 @@ public class CameraRecordService extends Service {
 
     }
 
-    private long[] getSdCardTotalSize() {
-        return calcSize(getSdCardPath());
-    }
-
-    private static String getSdCardPath() {
-        File file = Environment.getExternalStorageDirectory();
-        if (file == null || !file.exists()) {
-            return null;
-        }
-        return file.getPath();
-    }
-
-    private long[] calcSize(String path) {
-        if (externalMemoryAvailable()) {
-            try {
-                if (path == null) {
-                    return null;
-                }
-                StatFs stat = new StatFs(path);
-                long blockSize = stat.getBlockSize();
-                long totalBlocks = stat.getBlockCount();
-                long availableBlocks = stat.getAvailableBlocks();
-                long totalSize = totalBlocks * blockSize;
-                long availableSize = availableBlocks * blockSize;
-                long[] size = new long[]{totalSize, availableSize};
-                return size;
-            } catch (Exception e) {
-                e.printStackTrace();
-                PmwsLog.d("SD卡 错误信息是：" + e.getMessage());
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 外部存储是否可用
-     *
-     * @return
-     */
-    private boolean externalMemoryAvailable() {
-        return android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
-        return null;
+        return mBilder;
     }
 
     @Override
@@ -829,12 +876,12 @@ public class CameraRecordService extends Service {
         unregisterReceiver(stopReCordingReceiver);
         //
         unregisterReceiver(valumeTest);
-        PmwsLog.writeLog("屏幕是否高亮  "+LocalService.isScreenOn);
+        PmwsLog.writeLog("屏幕是否高亮  " + LocalService.isScreenOn);
         if (!LocalService.isScreenOn) {
             PmwsLog.writeLog("CameraRecordService  启动mainactivity");
             Intent startIntent = new Intent(CameraRecordService.ACTION_START);
             startIntent.setClass(this, MainActivity.class);
-           startActivity(startIntent);
+            startActivity(startIntent);
         }
         super.onDestroy();
 
@@ -896,13 +943,13 @@ public class CameraRecordService extends Service {
     private void VolumeCarmeChange() {
 
         if (mCameraId == 0) {
-            SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_FRONT);
+            saveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_FRONT);
         }
         if (mCameraId == 1) {
-            SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_SPECIAL);
+            saveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_SPECIAL);
         }
         if (mCameraId == 2) {
-            SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_BACK);
+            saveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_BACK);
         }
     }
 
@@ -944,8 +991,13 @@ public class CameraRecordService extends Service {
         }
     }
 
-
-    private void SaveToSp(String key, String value) {
+    /**
+     * 保存到sp中
+     *
+     * @param key
+     * @param value
+     */
+    private void saveToSp(String key, String value) {
         SharedPreferences.Editor et = sp.edit();
         et.putString(key, value);
         et.commit();
