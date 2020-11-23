@@ -36,9 +36,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
-import com.leng.hiddencamera.LocalService;
-import com.leng.hiddencamera.RemoteService;
-import com.leng.hiddencamera.aidl.service.TestAidl;
 import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.PmwsLog;
@@ -80,7 +77,6 @@ public class CameraRecordService extends Service {
     private static final int MSG_HIDE_PREVIEW = 4;
     private static final int MSG_RESTART_RECORDING = 5;
     private static final int MSG_SEND_MESSAGE = 10;
-    private MyBilder mBilder;
 
     private static final long LOW_STORAGE_SIZE = 2000288000;
 
@@ -185,9 +181,6 @@ public class CameraRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (mBilder == null) {
-            mBilder = new MyBilder();
-        }
         PmwsLog.writeLog("cameraservice  onCreate--------");
         //        动态注册接受来自辅助服务的广播
         valumeTest = new ValumeChangeCarme();
@@ -247,13 +240,6 @@ public class CameraRecordService extends Service {
         Log.i(TAG, "onCreate");
         startForeground(NOTIFICATION_FLAG, NotificationTool.getNotification(this));
     }
-    private final class MyBilder extends TestAidl.Stub {
-
-        @Override
-        public void wakeUp(String title, String discription, int iconRes) throws RemoteException {
-
-        }
-    }
 
     private void setTimerTask() {
 
@@ -273,56 +259,11 @@ public class CameraRecordService extends Service {
         timer.schedule(task, 1000, 1000);/* 表示1000毫秒之後，每隔1000毫秒執行一次 */
     }
 
-    private ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            //            if (!canRecycle) {
-            //                return;
-            //            }
-            //当和远程服务断开连接后 如果本地服务还活着  重新绑定远程服务
-            PmwsLog.writeLog("和远程服务断开连接  准备开启远程服务");
-            if (ServiceUtils.isServiceRunning(getApplicationContext(), "com.leng.hiddencamera.LocalService")) {
-                Intent remoteService = new Intent(CameraRecordService.this,
-                        RemoteService.class);
-                startService(remoteService);
-                Intent intent = new Intent(CameraRecordService.this, RemoteService.class);
-                bindService(intent, connection,
-                        Context.BIND_ABOVE_CLIENT);
-            }
-            PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-            boolean isScreenOn = pm.isScreenOn();
-            if (isScreenOn) {
-                sendBroadcast(new Intent("_ACTION_SCREEN_ON"));
-            } else {
-                sendBroadcast(new Intent("_ACTION_SCREEN_OFF"));
-            }
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            try {
-                TestAidl guardAidl = TestAidl.Stub.asInterface(service);
-                guardAidl.wakeUp(null,
-                        null,
-                        0);
-                PmwsLog.writeLog("和远程服务绑定成功  准备和远程服务通信");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
-        //绑定守护进程
-        try {
-            Intent intent3 = new Intent(this, RemoteService.class);
-            bindService(intent3, connection, Context.BIND_ABOVE_CLIENT);
-        } catch (Exception e) {
-        }
         if (intent == null) {
             return START_STICKY;
         }
@@ -336,7 +277,7 @@ public class CameraRecordService extends Service {
         PmwsSetActivity.sIsRecording = true;
         Log.i(TAG, "设置完 PmwsSetActivity.sIsRecording的状态=" + PmwsSetActivity.sIsRecording);
         String action = intent.getAction();
-        PmwsLog.writeLog("cameraservice  onStartCommand--------" + action + LocalService.isScreenOn);
+        PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
             if (mIsRecording) {
                 // 如果正在录制，这个action就是要停止录制
@@ -617,9 +558,10 @@ public class CameraRecordService extends Service {
         //        if (rates != null) {
         //            rate = rates.get(rates.size() - 1);
         //        }
-        mCamera.unlock();
+
         mMediaRecorder = new MediaRecorder();
         // Step 1: Unlock and set camera to MediaRecorder
+        mCamera.unlock();
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
@@ -854,7 +796,7 @@ public class CameraRecordService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
-        return mBilder;
+        return null;
     }
 
     @Override
@@ -876,13 +818,6 @@ public class CameraRecordService extends Service {
         unregisterReceiver(stopReCordingReceiver);
         //
         unregisterReceiver(valumeTest);
-        PmwsLog.writeLog("屏幕是否高亮  " + LocalService.isScreenOn);
-        if (!LocalService.isScreenOn) {
-            PmwsLog.writeLog("CameraRecordService  启动mainactivity");
-            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-            startIntent.setClass(this, MainActivity.class);
-            startActivity(startIntent);
-        }
         super.onDestroy();
 
     }

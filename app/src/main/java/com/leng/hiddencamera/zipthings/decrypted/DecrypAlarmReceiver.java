@@ -26,23 +26,23 @@ public class DecrypAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //����֪ͨ���ݲ���onReceive()�������ִ��ʱ����    ������ ��ѹ����ֱ�Ӳ��ţ�����֪ͨ��
+        //?????????????onReceive()???????????????    ?????? ??????????????????????
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification.Builder  builder = new Notification.Builder(context)
 				.setSmallIcon(R.drawable.app_icon)
-				.setContentTitle("��Ļ��ʿ")
-				.setContentText("�������")
+				.setContentTitle("??????")
+				.setContentText("???????")
 				.setAutoCancel(true);
         manager.notify(1, builder.build());
 
 
-		Log.i("unZipReceiver","������ɣ�׼��������Ƶ");
+		Log.i("unZipReceiver","??????????????????");
 
 
 
 		openVideo(context);
         
-        //�ٴο���LongRunningService������񣬴Ӷ�����
+        //??��???LongRunningService?????????????
 //        Intent i = new Intent(context, LongRunningService.class);
 //        context.startService(i);
     }
@@ -61,10 +61,10 @@ public class DecrypAlarmReceiver extends BroadcastReceiver {
 		Uri uri = null;
 		File file = new File(pathString);
 		if (Build.VERSION.SDK_INT >= 24) {//7.0 Android N
-			//com.xxx.xxx.fileproviderΪ����manifest��provider��������ͬ
+			//com.xxx.xxx.fileprovider?????manifest??provider?????????
 			uri = FileProvider.getUriForFile(context, "com.example.pmws.fileProvider",file);
-			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0�Ժ�ϵͳҪ��������ʱuri��ȡȨ�ޣ���װ����Ժ�ϵͳ���Զ��ջ�Ȩ�ޣ��ù���û���û�����
-		} else {//7.0����
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0???????????????uri???????????????????????????????��?????????????
+		} else {//7.0????
 			uri = Uri.fromFile(file);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		}

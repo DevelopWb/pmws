@@ -22,14 +22,14 @@ public class AlertActivity extends Activity {
 
     private TextView showMessage;
     private Button okButton;
-    public static String MESSAGE="�洢�ռ���ܲ���";
+    public static String MESSAGE="?��?????????";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.alert_activity);
-        this.setFinishOnTouchOutside(false);  //����������������ʧ
+        this.setFinishOnTouchOutside(false);  //?????????????????
         showMessage= (TextView) findViewById(R.id.show_message);
         showMessage.setText(MESSAGE);
         okButton= (Button) findViewById(R.id.btn_ok);

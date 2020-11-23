@@ -47,39 +47,39 @@ public class EncryptedService extends IntentService {
 
 
         if (fList.size() == 0) {
-            Log.i(TAG, "��Ƶ�ļ��ĸ���Ϊ0����ִ�м��ܲ���");
+            Log.i(TAG, "????????????0??????��??????");
             return;
         }
         for (int i = 0; i < fList.size(); i++) {
-            Log.i(TAG, "���ܵ�ʱ���ļ���=" + fList.get(i));
+            Log.i(TAG, "?????????????=" + fList.get(i));
             final String temFileName = fList.get(i);
             String newFileName = temFileName.replace(".mp4", "");
-            Log.i(TAG, "���ܿ�ʼ��ʱ��" + GetTime());
+            Log.i(TAG, "???????????" + GetTime());
 
-            //7.25 ���ĵ��µļ��ܷ���
+            //7.25 ??????????????
             try {
                 AddFilesWithAESEncryption.damageFile(newFileName + ".m9xs", fList.get(i));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                Log.i(TAG, "���ܵ�ʱ��׽���쳣");
+                Log.i(TAG, "?????????????");
 
-                //Ҫ�ǿռ䲻���ʱ����¼��
+                //????????????????
                 if (PmwsSetActivity.sIsRecording) {
                     Intent intent_ = new Intent("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
                     sendBroadcast(intent_);
                 }
 
 
-                AlertActivity.MESSAGE = "�洢�ռ䲻�㲻�ܼ��ܣ��������" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "�ռ�֮���ֶ�����";
-                //��dialog�ķ�ʽչʾһ��activity
+                AlertActivity.MESSAGE = "?��??????????????????" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "?????????????";
+                //??dialog?????????activity
                 Intent it = new Intent(getApplicationContext(), AlertActivity.class);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(it);
 
 
-                //����ʧ��֮����ɾ��û�гɹ����ļ�����֪��Ϊʲôû�гɹ����Ժ�����
+                //?????????????????��???????????????????��???????????
                 File failedfile = new File(newFileName + ".m9xs");
-                Log.i(TAG, "����������֮����ļ���" + newFileName + ".m9xs");
+                Log.i(TAG, "???????????????????" + newFileName + ".m9xs");
                 if (failedfile.exists()) {
                     failedfile.delete();
                 }
@@ -91,39 +91,39 @@ public class EncryptedService extends IntentService {
 
 
 //
-            Log.i(TAG, "���ܽ�����ʱ��" + GetTime());
+            Log.i(TAG, "????????????" + GetTime());
 //
-            // ��������֮��ɾ��Դ�ļ�
+            // ??????????????????
             File file = new File(fList.get(i));
             file.delete();
 
 
         }
-        //�ر�dialog
+        //???dialog
         Intent intentCloseDialog = new Intent("CloseDialog");
         sendBroadcast(intentCloseDialog);
 
-        //�µķ���֪ͨ�Ĵ���
+        //?????????????
 
 
-        //ע���Ժ���ʾ�������Notification����ע����������ʾ
+        //????????????????Notification????????????????
 //                NotificationCompat.Builder builder = new NotificationCompat.Builder(
 //                        getApplicationContext());
 //
-//                // ����֪ͨ�Ļ�����Ϣ��icon�����⡢����
+//                // ????????????????icon??????????
 //                builder.setSmallIcon(R.drawable.app_icon);
-//                builder.setContentTitle("��Ļ��ʿ");
-//                builder.setContentText("�������");
+//                builder.setContentTitle("??????");
+//                builder.setContentText("???????");
 //
 //
 //                Notification notification = builder.build();
-//                // ����֪ͨ id ��Ҫ��Ӧ����Ψһ
+//                // ?????? id ??????????��?
 //                NotificationManager notificationManager = (NotificationManager) getSystemService
 //                        (Context.NOTIFICATION_SERVICE);
 //                notificationManager.notify(1, notification);
 
 
-        Log.i(TAG, "����ִ�����");
+        Log.i(TAG, "??????????");
 
     }
 
@@ -136,12 +136,12 @@ public class EncryptedService extends IntentService {
     public static List<String> getFileList(String strPath, String endsWith) {
         List<String> filelist = new ArrayList<String>();
         File dir = new File(strPath);
-        File[] files = dir.listFiles(); // ���ļ�Ŀ¼���ļ�ȫ����������
+        File[] files = dir.listFiles(); // ???????????????????????
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
-                if (files[i].isDirectory()) { // �ж����ļ������ļ���
-                    getFileList(files[i].getAbsolutePath(), endsWith); // ��ȡ�ļ�����·��
+                if (files[i].isDirectory()) { // ?��???????????????
+                    getFileList(files[i].getAbsolutePath(), endsWith); // ??????????��??
                 } else if (fileName.endsWith(endsWith)) {
                     String strFileName = files[i].getAbsolutePath();
                     System.out.println(strFileName);
@@ -158,8 +158,8 @@ public class EncryptedService extends IntentService {
 
     private String GetTime() {
         SimpleDateFormat formatter = new SimpleDateFormat(
-                "yyyy��MM��dd��    HH:mm:ss     ");
-        Date curDate = new Date(System.currentTimeMillis());// ��ȡ��ǰʱ��
+                "yyyy??MM??dd??    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());// ?????????
         String str = formatter.format(curDate);
         return str;
     }
@@ -169,7 +169,7 @@ public class EncryptedService extends IntentService {
         Log.i(TAG, "EncryptedService is Desotrying");
         super.onDestroy();
 
-//        // ��Service������ر�AlarmManager
+//        // ??Service????????AlarmManager
 //        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 //        Intent i = new Intent(this, AlarmReceiver.class);
 //        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
@@ -179,7 +179,7 @@ public class EncryptedService extends IntentService {
 
 
     /**
-     * ��ȡָ���ļ���С
+     * ???????????��
      *
      * @param filename
      * @return
@@ -202,14 +202,14 @@ public class EncryptedService extends IntentService {
             }
         } else {
 
-            Log.i("EncryptedService", "�ļ�������!");
+            Log.i("EncryptedService", "?????????!");
         }
         return size;
     }
 
 
     /**
-     * ת���ļ���С
+     * ????????��
      *
      * @param fileS
      * @return

@@ -59,7 +59,7 @@ public class RobMoney extends AccessibilityService {
         Log.i("QWEQWE", "RobMoney::onCreate");
         // Toast.makeText(this, "RobMoney::onCreate", Toast.LENGTH_SHORT).show();
 
-        //��̬ע��㲥������
+        //?????????????
 //        CameraRecordService.ValumeTest valumeTest = new  CameraRecordService.ValumeTest();
 //        IntentFilter intentFilter = new IntentFilter();
 //        intentFilter.addAction("asasqwe");
@@ -68,7 +68,7 @@ public class RobMoney extends AccessibilityService {
     }
 
     /**
-     * ��������ı仯
+     * ?????????��
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
