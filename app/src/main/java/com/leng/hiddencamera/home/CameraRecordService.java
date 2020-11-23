@@ -61,7 +61,7 @@ import static android.content.Intent.ACTION_DELETE;
  * @date 2020/11/15 17:00
  */
 public class CameraRecordService extends Service {
-    public static final int NOTIFICATION_FLAG = 10086;
+    public static final int NOTIFICATION_FLAG = 13691;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
@@ -502,7 +502,7 @@ public class CameraRecordService extends Service {
             if (mMaxDuration > 0) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                        60 * 1000);
+                        300 * 1000);
             }
 
         } else {

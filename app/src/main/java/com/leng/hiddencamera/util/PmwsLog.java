@@ -24,7 +24,7 @@ public class PmwsLog {
 		}
 	}
 	public static void writeLog(String content) {
-		//写日志到SD卡
+		//写志到SD卡
 		File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
 		if (!dir.exists()) {
 			dir.mkdir();
@@ -32,7 +32,7 @@ public class PmwsLog {
 
 		try {
 
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日  HH:mm:ss ");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd  HH:mm:ss ");
 			Date curDate = new Date(System.currentTimeMillis());//获取当前时间
 			String str = formatter.format(curDate);
 
@@ -45,7 +45,7 @@ public class PmwsLog {
 		}
 	}
 	public static void writeLog(String content, File f) {
-		//写日志到SD卡
+		//写志到SD卡
 		File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
 		if (!dir.exists()) {
 			dir.mkdir();
@@ -53,7 +53,7 @@ public class PmwsLog {
 
 		try {
 
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日  HH:mm:ss ");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd  HH:mm:ss ");
 			Date curDate = new Date(System.currentTimeMillis());//获取当前时间
 			String str = formatter.format(curDate);
 
