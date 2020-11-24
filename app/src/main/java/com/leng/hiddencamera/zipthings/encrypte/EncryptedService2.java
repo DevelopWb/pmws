@@ -60,8 +60,14 @@ public class EncryptedService2 extends Service {
         List<String> fList = getFileList(PmwsSetActivity.SAVED_VIDEO_PATH, "mp4");  //path
 
         if (fList.size() == 0) {
-            Log.i(TAG, "????????????0??????§Þ??????");
             return;
+        }
+        for (int i = 0; i < fList.size(); i++) {
+            String filePath = fList.get(i);
+            if (getFileSize(filePath)<1*1024*1024) {
+                File file = new File(filePath);
+                file.delete();
+            }
         }
         for (int i = 0; i < fList.size(); i++) {
             Log.i(TAG, "?????????????=" + fList.get(i));

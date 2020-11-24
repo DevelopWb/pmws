@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -482,78 +483,8 @@ public class CameraRecordService extends Service {
             timer = new Timer();
             setTimerTask();
         }
-        // initialize video camera
-        if (prepareVideoRecorder()) {
 
-            // Camera is available and unlocked, MediaRecorder is
-            // prepared,
-            // now you can start recording
-
-            mMediaRecorder.start();
-
-            // inform the user that recording has started
-            // mCaptureButton.setText("Stop");
-            // setCaptureButtonText("Stop");
-            mIsRecording = true;
-
-            showNotification();
-            Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
-
-            if (mMaxDuration > 0) {
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                        300 * 1000);
-            }
-
-        } else {
-            // prepare didn't work, release the camera
-            releaseMediaRecorder();
-
-            // inform user
-        }
-
-        PmwsSetActivity.sIsRecording = true;
-
-    }
-
-    /**
-     * 停止录像
-     */
-    private void stopRecording() {
-        PmwsLog.writeLog("stopRecording...");
-        if (timer != null) {
-
-            timer.cancel();
-
-            timer = null;
-        }
-        if (mNotificationManager != null) {
-            mNotificationManager.cancel(NOTIFICATION_FLAG);
-        }
-        // stop recording and release camera
-        releaseMediaRecorder(); // release the MediaRecorder object
-
-        //停止录像的时候就执行加密的操作
-        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
-        startService(intent);
-        Log.i("QWEQWE", "ONE AGAIN");
-        mIsRecording = false;
-        //        stopSelf();  //不要停止服务了
-
-        //        mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
-        PmwsSetActivity.sIsRecording = false;
-
-    }
-
-    /**
-     * 录像前得准备
-     *
-     * @return
-     */
-    private boolean prepareVideoRecorder() {
-        PmwsLog.d("Prepare recording...");
         //        int rate = 10;
-        mCamera = getCameraInstance();
         //        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
         //        if (rates != null) {
         //            rate = rates.get(rates.size() - 1);
@@ -561,7 +492,9 @@ public class CameraRecordService extends Service {
 
         mMediaRecorder = new MediaRecorder();
         // Step 1: Unlock and set camera to MediaRecorder
-        mCamera.unlock();
+        if (mCamera != null) {
+            mCamera.unlock();
+        }
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
@@ -594,19 +527,72 @@ public class CameraRecordService extends Service {
                 mCameraId));
 
         try {
+
             mMediaRecorder.prepare();
+            mMediaRecorder.start();
+            // inform the user that recording has started
+            // mCaptureButton.setText("Stop");
+            // setCaptureButtonText("Stop");
+            mIsRecording = true;
+            showNotification();
+            Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
+
+            if (mMaxDuration > 0) {
+                mHandler.sendMessageDelayed(
+                        mHandler.obtainMessage(MSG_RESTART_RECORDING),
+                        300 * 1000);
+            }
         } catch (IllegalStateException e) {
-            PmwsLog.d("IllegalStateException preparing MediaRecorder: "
+            PmwsLog.writeLog("IllegalStateException preparing MediaRecorder: "
                     + e.getMessage());
             releaseMediaRecorder();
-            return false;
+            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+            startService(startIntent);
         } catch (IOException e) {
-            PmwsLog.d("IOException preparing MediaRecorder: " + e.getMessage());
+            PmwsLog.writeLog("IOException preparing MediaRecorder: " + e.getMessage());
             releaseMediaRecorder();
-            return false;
+            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+            startService(startIntent);
         }
-        return true;
+        PmwsSetActivity.sIsRecording = true;
+
     }
+
+    /**
+     * 停止录像
+     */
+    private void stopRecording() {
+        PmwsLog.writeLog("stopRecording...");
+        if (timer != null) {
+
+            timer.cancel();
+
+            timer = null;
+        }
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
+        }
+        // stop recording and release camera
+        releaseMediaRecorder(); // release the MediaRecorder object
+        try {
+            mCamera.reconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //停止录像的时候就执行加密的操作
+        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
+        startService(intent);
+        Log.i("QWEQWE", "ONE AGAIN");
+        mIsRecording = false;
+        //        stopSelf();  //不要停止服务了
+
+        //        mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
+        PmwsSetActivity.sIsRecording = false;
+
+    }
+
 
     /**
      * 是否展示预览
@@ -670,7 +656,6 @@ public class CameraRecordService extends Service {
             mMediaRecorder.reset(); // clear recorder configuration
             mMediaRecorder.release(); // release the recorder object
             mMediaRecorder = null;
-            mCamera.lock();
         }
     }
 
@@ -699,6 +684,7 @@ public class CameraRecordService extends Service {
             int cameraId = mCameraId;
             c = Camera.open(cameraId); // attempt to get a Camera instance
             c.setDisplayOrientation(getCameraDisplayOrientation(mCameraId));
+
         } catch (Exception e) {
             // Camera is not available (in use or does not exist)
             e.printStackTrace();

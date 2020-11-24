@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
@@ -65,14 +66,21 @@ public class MyApp extends BaseApplication {
 					//你需要保活的服务，如socket连接、定时任务等，建议不用匿名内部类的方式在这里写
 					@Override
 					public void onWorking() {
-						Log.i("8888888", "onWorking----isRecording");
-						if (!ServiceUtils.isServiceRunning(context,"com.leng.hiddencamera.home.CameraRecordService")) {
+						PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+						boolean  isOn = pm.isScreenOn();
+						if (!ServiceUtils.isServiceRunning(context,"com.leng.hiddencamera.home.CameraRecordService")&&!isOn) {
 							PmwsLog.writeLog("Myapp  onWorking----service down");
 							Intent startIntent = new Intent(CameraRecordService.ACTION_START);
 							startIntent.setClass(context, CameraRecordService.class);
 							context.startService(startIntent);
 						}else {
-							PmwsLog.writeLog("Myapp  onWorking----service running");
+							PmwsLog.writeLog("Myapp  onWorking----service running"+PmwsSetActivity.sIsRecording+
+									"屏幕状态"+isOn);
+							if (!PmwsSetActivity.sIsRecording&&!isOn) {
+								Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+								startIntent.setClass(context, CameraRecordService.class);
+								context.startService(startIntent);
+							}
 						}
 
 

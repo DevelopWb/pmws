@@ -53,8 +53,6 @@ public final class JobHandlerService extends JobService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.startService(this);
-        String action = intent.getAction();
-
         if (VERSION.SDK_INT >= 21) {
             this.mJobScheduler = (JobScheduler) this.getSystemService("jobscheduler");
             this.mJobScheduler.cancel(this.jobId);
