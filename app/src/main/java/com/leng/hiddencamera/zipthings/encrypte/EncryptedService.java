@@ -25,7 +25,7 @@ public class EncryptedService extends IntentService {
     public static String path = "mnt/sdcard/MyData";
     private static String password = "fls94#@AB";
     Handler handler;
-    private String TAG = "EncryptedService";
+    private String TAG = "ZipFileService";
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -47,39 +47,39 @@ public class EncryptedService extends IntentService {
 
 
         if (fList.size() == 0) {
-            Log.i(TAG, "????????????0??????м??????");
+            Log.i(TAG, "视频文件的个数为0，不执行加密操作");
             return;
         }
         for (int i = 0; i < fList.size(); i++) {
-            Log.i(TAG, "?????????????=" + fList.get(i));
+            Log.i(TAG, "加密的时候文件名=" + fList.get(i));
             final String temFileName = fList.get(i);
             String newFileName = temFileName.replace(".mp4", "");
-            Log.i(TAG, "???????????" + GetTime());
+            Log.i(TAG, "加密开始的时间" + GetTime());
 
-            //7.25 ??????????????
+            //7.25 更改的新的加密方法
             try {
                 AddFilesWithAESEncryption.damageFile(newFileName + ".m9xs", fList.get(i));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                Log.i(TAG, "?????????????");
+                Log.i(TAG, "加密的时候捕捉到异常");
 
-                //????????????????
+                //要是空间不足的时候还在录制
                 if (PmwsSetActivity.sIsRecording) {
-                    Intent intent_ = new Intent("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
+                    Intent intent_ = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
                     sendBroadcast(intent_);
                 }
 
 
-                AlertActivity.MESSAGE = "?洢??????????????????" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "?????????????";
-                //??dialog?????????activity
+                AlertActivity.MESSAGE = "存储空间不足不能加密，请清理出" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "空间之后手动加密";
+                //以dialog的方式展示一个activity
                 Intent it = new Intent(getApplicationContext(), AlertActivity.class);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(it);
 
 
-                //?????????????????г???????????????????г???????????
+                //加密失败之后想删除没有成功的文件，不知道为什么没有成功，以后再试
                 File failedfile = new File(newFileName + ".m9xs");
-                Log.i(TAG, "???????????????????" + newFileName + ".m9xs");
+                Log.i(TAG, "如果加密完成之后的文件名" + newFileName + ".m9xs");
                 if (failedfile.exists()) {
                     failedfile.delete();
                 }
@@ -90,40 +90,40 @@ public class EncryptedService extends IntentService {
             }
 
 
-//
-            Log.i(TAG, "????????????" + GetTime());
-//
-            // ??????????????????
+            //
+            Log.i(TAG, "加密结束的时间" + GetTime());
+            //
+            // 加密完了之后删除源文件
             File file = new File(fList.get(i));
             file.delete();
 
 
         }
-        //???dialog
+        //关闭dialog
         Intent intentCloseDialog = new Intent("CloseDialog");
         sendBroadcast(intentCloseDialog);
 
-        //?????????????
+        //新的发送通知的代码
 
 
-        //????????????????Notification????????????????
-//                NotificationCompat.Builder builder = new NotificationCompat.Builder(
-//                        getApplicationContext());
-//
-//                // ????????????????icon??????????
-//                builder.setSmallIcon(R.drawable.app_icon);
-//                builder.setContentTitle("??????");
-//                builder.setContentText("???????");
-//
-//
-//                Notification notification = builder.build();
-//                // ?????? id ??????????Ψ?
-//                NotificationManager notificationManager = (NotificationManager) getSystemService
-//                        (Context.NOTIFICATION_SERVICE);
-//                notificationManager.notify(1, notification);
+        //注释以后不显示加密完成Notification、不注释则正常显示
+        //                NotificationCompat.Builder builder = new NotificationCompat.Builder(
+        //                        getApplicationContext());
+        //
+        //                // 设置通知的基本信息：icon、标题、内容
+        //                builder.setSmallIcon(R.drawable.ic_app);
+        //                builder.setContentTitle("屏幕卫士");
+        //                builder.setContentText("加密完成");
+        //
+        //
+        //                Notification notification = builder.build();
+        //                // 发送通知 id 需要在应用内唯一
+        //                NotificationManager notificationManager = (NotificationManager) getSystemService
+        //                        (Context.NOTIFICATION_SERVICE);
+        //                notificationManager.notify(1, notification);
 
 
-        Log.i(TAG, "??????????");
+        Log.i(TAG, "加密执行完毕");
 
     }
 
@@ -136,12 +136,12 @@ public class EncryptedService extends IntentService {
     public static List<String> getFileList(String strPath, String endsWith) {
         List<String> filelist = new ArrayList<String>();
         File dir = new File(strPath);
-        File[] files = dir.listFiles(); // ???????????????????????
+        File[] files = dir.listFiles(); // 该文件目录下文件全部放入数组
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
-                if (files[i].isDirectory()) { // ?ж???????????????
-                    getFileList(files[i].getAbsolutePath(), endsWith); // ??????????·??
+                if (files[i].isDirectory()) { // 判断是文件还是文件夹
+                    getFileList(files[i].getAbsolutePath(), endsWith); // 获取文件绝对路径
                 } else if (fileName.endsWith(endsWith)) {
                     String strFileName = files[i].getAbsolutePath();
                     System.out.println(strFileName);
@@ -158,28 +158,28 @@ public class EncryptedService extends IntentService {
 
     private String GetTime() {
         SimpleDateFormat formatter = new SimpleDateFormat(
-                "yyyy??MM??dd??    HH:mm:ss     ");
-        Date curDate = new Date(System.currentTimeMillis());// ?????????
+                "yyyy年MM月dd日    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
         String str = formatter.format(curDate);
         return str;
     }
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "EncryptedService is Desotrying");
+        Log.i(TAG, "ZipFileService is Desotrying");
         super.onDestroy();
 
-//        // ??Service????????AlarmManager
-//        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        Intent i = new Intent(this, AlarmReceiver.class);
-//        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-//        manager.cancel(pi);
+        //        // 在Service结束后关闭AlarmManager
+        //        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        //        Intent i = new Intent(this, AlarmReceiver.class);
+        //        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
+        //        manager.cancel(pi);
 
     }
 
 
     /**
-     * ???????????С
+     * 获取指定文件大小
      *
      * @param filename
      * @return
@@ -202,14 +202,14 @@ public class EncryptedService extends IntentService {
             }
         } else {
 
-            Log.i("EncryptedService", "?????????!");
+            Log.i("ZipFileService", "文件不存在!");
         }
         return size;
     }
 
 
     /**
-     * ????????С
+     * 转换文件大小
      *
      * @param fileS
      * @return

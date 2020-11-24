@@ -334,16 +334,16 @@ public class CameraRecordService extends Service {
             mHandler.removeMessages(MSG_RESTART_RECORDING);
             mHandler.removeMessages(MSG_START_RECORDING);
         }
-        stopRecording();
+
         // release it first
-        releaseCamera(); // release the camera immediately on pause event
         if (mWindowManager != null && mRootView != null) {
             mWindowManager.removeView(mRootView);
         }
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-
+        stopRecording();
+        releaseCamera(); // release the camera immediately on pause event
         PmwsSetActivity.sIsRecording = false;
     }
 
@@ -577,7 +577,10 @@ public class CameraRecordService extends Service {
         // stop recording and release camera
         releaseMediaRecorder(); // release the MediaRecorder object
         try {
-            mCamera.reconnect();
+            if (mCamera != null) {
+                mCamera.reconnect();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -791,7 +794,6 @@ public class CameraRecordService extends Service {
         PmwsLog.writeLog("CameraRecordService  down了!   onDestroy");
         Log.i("CameraRecordService", "onDestroy");
         //        manager.unregisterOnePixelReceiver(this);//Activity退出时解注册
-        releaseRes();
         if (mSensorListener != null)
             mSensorManager.unregisterListener(mSensorListener);
 
