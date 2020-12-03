@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,7 +63,7 @@ import static android.content.Intent.ACTION_DELETE;
  * @description 描述  后台录像的服务
  * @date 2020/11/15 17:00
  */
-public class CameraRecordService extends Service implements  MediaPlayer.OnCompletionListener {
+public class CameraRecordService extends Service implements MediaPlayer.OnCompletionListener {
     public static final int NOTIFICATION_FLAG = 13691;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
@@ -326,12 +327,12 @@ public class CameraRecordService extends Service implements  MediaPlayer.OnCompl
                 // showPreview(true);
             }
         }
-//        else if (ACTION_RESTART.equals(action)) {
-//            PmwsLog.writeLog("cameraservice 重启 ACTION_RESTART");
-//            releaseCamera();
-//            mHandler.sendMessageDelayed(
-//                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
-//        }
+        //        else if (ACTION_RESTART.equals(action)) {
+        //            PmwsLog.writeLog("cameraservice 重启 ACTION_RESTART");
+        //            releaseCamera();
+        //            mHandler.sendMessageDelayed(
+        //                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
+        //        }
 
         mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.novioce);
         mMediaPlayer.setLooping(true);
@@ -500,11 +501,11 @@ public class CameraRecordService extends Service implements  MediaPlayer.OnCompl
             setTimerTask();
         }
 
-        //        int rate = 10;
-        //        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
-        //        if (rates != null) {
-        //            rate = rates.get(rates.size() - 1);
-        //        }
+        int rate = 10;
+        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
+        if (rates != null) {
+            rate = rates.get(rates.size() - 1);
+        }
 
         mMediaRecorder = new MediaRecorder();
         // Step 1: Unlock and set camera to MediaRecorder
@@ -523,13 +524,13 @@ public class CameraRecordService extends Service implements  MediaPlayer.OnCompl
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);// 音频格式
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         //设置编码比特率,不设置会使视频图像模糊
-        //        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
-        //        mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
-        // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
-        //            mMediaRecorder.setVideoSize(1280, 720);
-        // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
-        //        帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
-        //        mMediaRecorder.setVideoFrameRate(rate);
+        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
+        //                mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
+        //         设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
+        mMediaRecorder.setVideoSize(1280, 720);
+        //         设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
+        //                帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
+        mMediaRecorder.setVideoFrameRate(rate);
 
         // Step 4: Set output file
         mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO)
@@ -561,18 +562,18 @@ public class CameraRecordService extends Service implements  MediaPlayer.OnCompl
         } catch (IllegalStateException e) {
             PmwsLog.writeLog("IllegalStateException preparing MediaRecorder: "
                     + e.getMessage());
-           stopRecording();
+            stopRecording();
             stopSelf();
-//            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-//            startIntent.setClass(getBaseContext(), CameraRecordService.class);
-//            startService(startIntent);
+            //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+            //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+            //            startService(startIntent);
         } catch (IOException e) {
             PmwsLog.writeLog("IOException preparing MediaRecorder: " + e.getMessage());
-           stopRecording();
+            stopRecording();
             stopSelf();
-//            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-//            startIntent.setClass(getBaseContext(), CameraRecordService.class);
-//            startService(startIntent);
+            //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+            //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+            //            startService(startIntent);
         }
         PmwsSetActivity.sIsRecording = true;
 
@@ -949,8 +950,8 @@ public class CameraRecordService extends Service implements  MediaPlayer.OnCompl
         et.putString(key, value);
         et.commit();
     }
-    public void exitService()
-    {
+
+    public void exitService() {
         stopForeground(true);
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
