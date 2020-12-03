@@ -17,6 +17,7 @@ import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
@@ -61,7 +62,7 @@ import static android.content.Intent.ACTION_DELETE;
  * @description 描述  后台录像的服务
  * @date 2020/11/15 17:00
  */
-public class CameraRecordService extends Service {
+public class CameraRecordService extends Service implements  MediaPlayer.OnCompletionListener {
     public static final int NOTIFICATION_FLAG = 13691;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
@@ -131,6 +132,13 @@ public class CameraRecordService extends Service {
     private int VolumeEmbellish = 1;
     private int initStatus = 1;
     private boolean mPreviewEnabled;
+
+
+    private PowerManager pm;
+    private PowerManager.WakeLock wakeLock = null;
+    private MediaPlayer mMediaPlayer;
+
+
     private Handler mHandler = new Handler() {
 
         @Override
@@ -182,6 +190,10 @@ public class CameraRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
+        wakeLock.acquire();
+
         PmwsLog.writeLog("cameraservice  onCreate--------");
         //        动态注册接受来自辅助服务的广播
         valumeTest = new ValumeChangeCarme();
@@ -265,9 +277,6 @@ public class CameraRecordService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
-        if (intent == null) {
-            return START_STICKY;
-        }
         //		checkInfo();
 
         PmwsLog.d("OnStartCommand receive intent: " + intent.toString());
@@ -309,7 +318,6 @@ public class CameraRecordService extends Service {
             }
         } else if (ACTION_STOP.equals(action) || ACTION_DELETE.equals(action)) {
             releaseRes();
-            stopSelf();
         } else if (ACTION_RECORDING.equals(action)) {
             // 注册完成后，点击屏幕，显示preView
             if (mIsRecording) {
@@ -317,13 +325,21 @@ public class CameraRecordService extends Service {
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
                 // showPreview(true);
             }
-        } else if (ACTION_RESTART.equals(action)) {
-            PmwsLog.writeLog("cameraservice 重启 ACTION_RESTART");
-            releaseCamera();
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
         }
-        return START_STICKY;
+//        else if (ACTION_RESTART.equals(action)) {
+//            PmwsLog.writeLog("cameraservice 重启 ACTION_RESTART");
+//            releaseCamera();
+//            mHandler.sendMessageDelayed(
+//                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
+//        }
+
+        mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.novioce);
+        mMediaPlayer.setLooping(true);
+        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
+            mMediaPlayer.setOnCompletionListener(this);
+            mMediaPlayer.start();
+        }
+        return START_NOT_STICKY;
     }
 
     /**
@@ -808,7 +824,13 @@ public class CameraRecordService extends Service {
         unregisterReceiver(stopReCordingReceiver);
         //
         unregisterReceiver(valumeTest);
+        exitService();
         super.onDestroy();
+
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
 
     }
 
@@ -927,5 +949,16 @@ public class CameraRecordService extends Service {
         et.putString(key, value);
         et.commit();
     }
-
+    public void exitService()
+    {
+        stopForeground(true);
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+        }
+        if (wakeLock != null) {
+            wakeLock.release();
+            wakeLock = null;
+        }
+        this.stopSelf();
+    }
 }

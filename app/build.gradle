@@ -49,6 +49,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation project(path: ':pmws_set')
     implementation project(path: ':RegMode')
-    implementation project(path: ':keeplive')
     compile project(path: ':base_net_lib')
 }
