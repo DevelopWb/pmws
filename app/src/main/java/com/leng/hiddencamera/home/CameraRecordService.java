@@ -545,16 +545,18 @@ public class CameraRecordService extends Service {
         } catch (IllegalStateException e) {
             PmwsLog.writeLog("IllegalStateException preparing MediaRecorder: "
                     + e.getMessage());
-            releaseMediaRecorder();
-            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-            startIntent.setClass(getBaseContext(), CameraRecordService.class);
-            startService(startIntent);
+           stopRecording();
+            stopSelf();
+//            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+//            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+//            startService(startIntent);
         } catch (IOException e) {
             PmwsLog.writeLog("IOException preparing MediaRecorder: " + e.getMessage());
-            releaseMediaRecorder();
-            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-            startIntent.setClass(getBaseContext(), CameraRecordService.class);
-            startService(startIntent);
+           stopRecording();
+            stopSelf();
+//            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+//            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+//            startService(startIntent);
         }
         PmwsSetActivity.sIsRecording = true;
 

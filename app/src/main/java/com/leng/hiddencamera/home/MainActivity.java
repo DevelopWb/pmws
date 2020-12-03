@@ -37,10 +37,10 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void toDoNext(String input) {
-//                    //启动本地服务
-//                    Intent localIntent = new Intent(MainActivity.this, LocalService.class);
-//                    //启动守护进程
-//                    startService(localIntent);
+                    //                    //启动本地服务
+                    //                    Intent localIntent = new Intent(MainActivity.this, LocalService.class);
+                    //                    //启动守护进程
+                    //                    startService(localIntent);
                     if (PmwsSetActivity.sIsRecording) {
                         startCameraService(CameraRecordService.ACTION_RECORDING);
                     } else {
@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
             // Pre-O behavior.
             startService(startIntent);
         }
-                finish();
+        finish();
     }
 
 }
