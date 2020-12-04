@@ -6,11 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -24,13 +22,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -42,7 +38,6 @@ import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.SdCard;
-import com.leng.hiddencamera.util.ServiceUtils;
 import com.leng.hiddencamera.util.SettingsUtil;
 import com.leng.hiddencamera.view.CameraPreview;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService2;
@@ -63,7 +58,7 @@ import static android.content.Intent.ACTION_DELETE;
  * @description 描述  后台录像的服务
  * @date 2020/11/15 17:00
  */
-public class CameraRecordService extends Service implements MediaPlayer.OnCompletionListener {
+public class CameraRecordService extends Service  {
     public static final int NOTIFICATION_FLAG = 13691;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
@@ -80,6 +75,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
     private static final int MSG_HIDE_PREVIEW = 4;
     private static final int MSG_RESTART_RECORDING = 5;
     private static final int MSG_SEND_MESSAGE = 10;
+    private static final int MSG_OPEN_CAMERA = 6;
 
     private static final long LOW_STORAGE_SIZE = 2000288000;
 
@@ -137,7 +133,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
 
     private PowerManager pm;
     private PowerManager.WakeLock wakeLock = null;
-    private MediaPlayer mMediaPlayer;
+//    private MediaPlayer mMediaPlayer;
 
 
     private Handler mHandler = new Handler() {
@@ -152,12 +148,18 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
                 case MSG_STOP_RECORDING:
                     stopRecording();
                     break;
+                case MSG_OPEN_CAMERA:
+                    addSurfaceView();
+                    showPreview(false);
+                    mHandler.sendMessageDelayed(
+                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
+                    break;
                 case MSG_RESTART_RECORDING:
                     PmwsLog.d("Max duration reached, restart the recording");
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_STOP_RECORDING), 1000);
+                            mHandler.obtainMessage(MSG_STOP_RECORDING), 500);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 3000);
+                            mHandler.obtainMessage(MSG_OPEN_CAMERA), 1000);
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
@@ -173,8 +175,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
                         // pause event
                         mHandler.removeMessages(MSG_RESTART_RECORDING);
                         mHandler.removeMessages(MSG_START_RECORDING);
-
-                        mWindowManager.removeView(mRootView);
+                        removeSurfaceView();
                         mNotificationManager.cancel(NOTIFICATION_FLAG);
 
                         PmwsSetActivity.sIsRecording = false;
@@ -186,6 +187,10 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
 
         }
     };
+
+    private void removeSurfaceView() {
+        mWindowManager.removeView(mRootView);
+    }
 
     //    private    MyConn mConn;
     @Override
@@ -245,7 +250,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
          * new Message(); msg.what = 10; mHandler.sendMessage(msg); } };
          */
 
-        initView();
+        addSurfaceView();
         //动态注册广播接收器
         stopReCordingReceiver = new StopRecordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -334,12 +339,12 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
         //                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
         //        }
 
-        mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.novioce);
-        mMediaPlayer.setLooping(true);
-        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
-            mMediaPlayer.setOnCompletionListener(this);
-            mMediaPlayer.start();
-        }
+//        mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.novioce);
+//        mMediaPlayer.setLooping(true);
+//        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
+//            mMediaPlayer.setOnCompletionListener(this);
+//            mMediaPlayer.start();
+//        }
         return START_NOT_STICKY;
     }
 
@@ -354,7 +359,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
 
         // release it first
         if (mWindowManager != null && mRootView != null) {
-            mWindowManager.removeView(mRootView);
+            removeSurfaceView();
         }
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
@@ -412,7 +417,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
     /**
      * 动态添加surfaceview
      */
-    private void initView() {
+    private void addSurfaceView() {
         mWindowLayoutParams = new WindowManager.LayoutParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//6.0
             mWindowLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -477,7 +482,7 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
                     // release it first
                     releaseCamera(); // release the camera immediately on pause
                     // event
-                    mWindowManager.removeView(mRootView);
+                    removeSurfaceView();
                     mNotificationManager.cancel(NOTIFICATION_FLAG);
 
                     stopSelf();
@@ -500,13 +505,11 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
             timer = new Timer();
             setTimerTask();
         }
-
         int rate = 10;
         List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
         if (rates != null) {
             rate = rates.get(rates.size() - 1);
         }
-
         mMediaRecorder = new MediaRecorder();
         // Step 1: Unlock and set camera to MediaRecorder
         if (mCamera != null) {
@@ -521,8 +524,8 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
         // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         // 设置录制的视频编码h263 h264
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);// 音频格式
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);// 音频格式
+        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
         //设置编码比特率,不设置会使视频图像模糊
         mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
         //                mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
@@ -542,23 +545,10 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
 
         mMediaRecorder.setOrientationHint(getRecorderPlayOrientation(this,
                 mCameraId));
-
         try {
 
             mMediaRecorder.prepare();
-            mMediaRecorder.start();
-            // inform the user that recording has started
-            // mCaptureButton.setText("Stop");
-            // setCaptureButtonText("Stop");
-            mIsRecording = true;
-            showNotification();
-            Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
 
-            if (mMaxDuration > 0) {
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                        300 * 1000);
-            }
         } catch (IllegalStateException e) {
             PmwsLog.writeLog("IllegalStateException preparing MediaRecorder: "
                     + e.getMessage());
@@ -574,6 +564,19 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
             //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
             //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
             //            startService(startIntent);
+        }
+        mMediaRecorder.start();
+        // inform the user that recording has started
+        // mCaptureButton.setText("Stop");
+        // setCaptureButtonText("Stop");
+        mIsRecording = true;
+        showNotification();
+        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
+
+        if (mMaxDuration > 0) {
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
+                    10 * 1000);
         }
         PmwsSetActivity.sIsRecording = true;
 
@@ -594,15 +597,17 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
         // stop recording and release camera
-        releaseMediaRecorder(); // release the MediaRecorder object
-        try {
-            if (mCamera != null) {
-                mCamera.reconnect();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        releaseMediaRecorder();
+        releaseCamera();
+        removeSurfaceView();
+        //        try {
+        //            if (mCamera != null) {
+        //                mCamera.reconnect();
+        //            }
+        //
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
         //停止录像的时候就执行加密的操作
         Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
         startService(intent);
@@ -830,10 +835,10 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
 
     }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-
-    }
+//    @Override
+//    public void onCompletion(MediaPlayer mp) {
+//        PmwsLog.writeLog("MediaPlayer!   onCompletion");
+//    }
 
 
     /**
@@ -953,9 +958,9 @@ public class CameraRecordService extends Service implements MediaPlayer.OnComple
 
     public void exitService() {
         stopForeground(true);
-        if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
-        }
+//        if (mMediaPlayer != null) {
+//            mMediaPlayer.stop();
+//        }
         if (wakeLock != null) {
             wakeLock.release();
             wakeLock = null;
