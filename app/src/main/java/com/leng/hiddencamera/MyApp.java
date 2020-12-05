@@ -41,24 +41,24 @@ public class MyApp extends BaseApplication {
 		super.onCreate();
 	}
 //	public static void aaa(Application context) {
-//		//¶¨ÒåÇ°Ì¨·şÎñµÄÄ¬ÈÏÑùÊ½¡£¼´±êÌâ¡¢ÃèÊöºÍÍ¼±ê
+//		//å®šä¹‰å‰å°æœåŠ¡çš„é»˜è®¤æ ·å¼ã€‚å³æ ‡é¢˜ã€æè¿°å’Œå›¾æ ‡
 //		final ForegroundNotification foregroundNotification =
 //				new ForegroundNotification(context.getString(R.string.pmws_app_name)
-//						, "ÕıÔÚÔËĞĞ",
+//						, "æ­£åœ¨è¿è¡Œ",
 //						R.drawable.app_icon,
-//						//¶¨ÒåÇ°Ì¨·şÎñµÄÍ¨Öªµã»÷ÊÂ¼ş
+//						//å®šä¹‰å‰å°æœåŠ¡çš„é€šçŸ¥ç‚¹å‡»äº‹ä»¶
 //						new ForegroundNotificationClickListener() {
 //
 //							@Override
 //							public void foregroundNotificationClick(Context context, Intent intent) {
-//								Log.d("8888888", "Myapp  ·¢ËÍ¹Ø±Õ·şÎñµÄ¹ã²¥");
-//								PmwsLog.writeLog("Myapp  ·¢ËÍ¹Ø±Õ·şÎñµÄ¹ã²¥");
+//								Log.d("8888888", "Myapp  å‘é€å…³é—­æœåŠ¡çš„å¹¿æ’­");
+//								PmwsLog.writeLog("Myapp  å‘é€å…³é—­æœåŠ¡çš„å¹¿æ’­");
 //								context.sendBroadcast(new Intent("ACTION_STOP_ALL_SERVICE"));
 //							}
 //						});
-//		//Æô¶¯±£»î·şÎñ
+//		//å¯åŠ¨ä¿æ´»æœåŠ¡
 //		KeepLive.startWork(context, KeepLive.RunMode.ROGUE, foregroundNotification, new KeepLiveService() {
-//					//ÄãĞèÒª±£»îµÄ·şÎñ£¬ÈçsocketÁ¬½Ó¡¢¶¨Ê±ÈÎÎñµÈ£¬½¨Òé²»ÓÃÄäÃûÄÚ²¿ÀàµÄ·½Ê½ÔÚÕâÀïĞ´
+//					//ä½ éœ€è¦ä¿æ´»çš„æœåŠ¡ï¼Œå¦‚socketè¿æ¥ã€å®šæ—¶ä»»åŠ¡ç­‰ï¼Œå»ºè®®ä¸ç”¨åŒ¿åå†…éƒ¨ç±»çš„æ–¹å¼åœ¨è¿™é‡Œå†™
 //					@Override
 //					public void onWorking() {
 //						PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -70,7 +70,7 @@ public class MyApp extends BaseApplication {
 //							context.startService(startIntent);
 //						}else {
 //							PmwsLog.writeLog("Myapp  onWorking----service running"+PmwsSetActivity.sIsRecording+
-//									"ÆÁÄ»×´Ì¬"+isOn);
+//									"å±å¹•çŠ¶æ€"+isOn);
 //							if (!PmwsSetActivity.sIsRecording&&!isOn) {
 //								Intent startIntent = new Intent(CameraRecordService.ACTION_START);
 //								startIntent.setClass(context, CameraRecordService.class);

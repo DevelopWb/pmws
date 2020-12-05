@@ -47,39 +47,39 @@ public class EncryptedService extends IntentService {
 
 
         if (fList.size() == 0) {
-            Log.i(TAG, "ÊÓÆµÎÄ¼şµÄ¸öÊıÎª0£¬²»Ö´ĞĞ¼ÓÃÜ²Ù×÷");
+            Log.i(TAG, "è§†é¢‘æ–‡ä»¶çš„ä¸ªæ•°ä¸º0ï¼Œä¸æ‰§è¡ŒåŠ å¯†æ“ä½œ");
             return;
         }
         for (int i = 0; i < fList.size(); i++) {
-            Log.i(TAG, "¼ÓÃÜµÄÊ±ºòÎÄ¼şÃû=" + fList.get(i));
+            Log.i(TAG, "åŠ å¯†çš„æ—¶å€™æ–‡ä»¶å=" + fList.get(i));
             final String temFileName = fList.get(i);
             String newFileName = temFileName.replace(".mp4", "");
-            Log.i(TAG, "¼ÓÃÜ¿ªÊ¼µÄÊ±¼ä" + GetTime());
+            Log.i(TAG, "åŠ å¯†å¼€å§‹çš„æ—¶é—´" + GetTime());
 
-            //7.25 ¸ü¸ÄµÄĞÂµÄ¼ÓÃÜ·½·¨
+            //7.25 æ›´æ”¹çš„æ–°çš„åŠ å¯†æ–¹æ³•
             try {
                 AddFilesWithAESEncryption.damageFile(newFileName + ".m9xs", fList.get(i));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                Log.i(TAG, "¼ÓÃÜµÄÊ±ºò²¶×½µ½Òì³£");
+                Log.i(TAG, "åŠ å¯†çš„æ—¶å€™æ•æ‰åˆ°å¼‚å¸¸");
 
-                //ÒªÊÇ¿Õ¼ä²»×ãµÄÊ±ºò»¹ÔÚÂ¼ÖÆ
+                //è¦æ˜¯ç©ºé—´ä¸è¶³çš„æ—¶å€™è¿˜åœ¨å½•åˆ¶
                 if (PmwsSetActivity.sIsRecording) {
                     Intent intent_ = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
                     sendBroadcast(intent_);
                 }
 
 
-                AlertActivity.MESSAGE = "´æ´¢¿Õ¼ä²»×ã²»ÄÜ¼ÓÃÜ£¬ÇëÇåÀí³ö" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "¿Õ¼äÖ®ºóÊÖ¶¯¼ÓÃÜ";
-                //ÒÔdialogµÄ·½Ê½Õ¹Ê¾Ò»¸öactivity
+                AlertActivity.MESSAGE = "å­˜å‚¨ç©ºé—´ä¸è¶³ä¸èƒ½åŠ å¯†ï¼Œè¯·æ¸…ç†å‡º" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "ç©ºé—´ä¹‹åæ‰‹åŠ¨åŠ å¯†";
+                //ä»¥dialogçš„æ–¹å¼å±•ç¤ºä¸€ä¸ªactivity
                 Intent it = new Intent(getApplicationContext(), AlertActivity.class);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(it);
 
 
-                //¼ÓÃÜÊ§°ÜÖ®ºóÏëÉ¾³ıÃ»ÓĞ³É¹¦µÄÎÄ¼ş£¬²»ÖªµÀÎªÊ²Ã´Ã»ÓĞ³É¹¦£¬ÒÔºóÔÙÊÔ
+                //åŠ å¯†å¤±è´¥ä¹‹åæƒ³åˆ é™¤æ²¡æœ‰æˆåŠŸçš„æ–‡ä»¶ï¼Œä¸çŸ¥é“ä¸ºä»€ä¹ˆæ²¡æœ‰æˆåŠŸï¼Œä»¥åå†è¯•
                 File failedfile = new File(newFileName + ".m9xs");
-                Log.i(TAG, "Èç¹û¼ÓÃÜÍê³ÉÖ®ºóµÄÎÄ¼şÃû" + newFileName + ".m9xs");
+                Log.i(TAG, "å¦‚æœåŠ å¯†å®Œæˆä¹‹åçš„æ–‡ä»¶å" + newFileName + ".m9xs");
                 if (failedfile.exists()) {
                     failedfile.delete();
                 }
@@ -91,39 +91,39 @@ public class EncryptedService extends IntentService {
 
 
             //
-            Log.i(TAG, "¼ÓÃÜ½áÊøµÄÊ±¼ä" + GetTime());
+            Log.i(TAG, "åŠ å¯†ç»“æŸçš„æ—¶é—´" + GetTime());
             //
-            // ¼ÓÃÜÍêÁËÖ®ºóÉ¾³ıÔ´ÎÄ¼ş
+            // åŠ å¯†å®Œäº†ä¹‹ååˆ é™¤æºæ–‡ä»¶
             File file = new File(fList.get(i));
             file.delete();
 
 
         }
-        //¹Ø±Õdialog
+        //å…³é—­dialog
         Intent intentCloseDialog = new Intent("CloseDialog");
         sendBroadcast(intentCloseDialog);
 
-        //ĞÂµÄ·¢ËÍÍ¨ÖªµÄ´úÂë
+        //æ–°çš„å‘é€é€šçŸ¥çš„ä»£ç 
 
 
-        //×¢ÊÍÒÔºó²»ÏÔÊ¾¼ÓÃÜÍê³ÉNotification¡¢²»×¢ÊÍÔòÕı³£ÏÔÊ¾
+        //æ³¨é‡Šä»¥åä¸æ˜¾ç¤ºåŠ å¯†å®ŒæˆNotificationã€ä¸æ³¨é‡Šåˆ™æ­£å¸¸æ˜¾ç¤º
         //                NotificationCompat.Builder builder = new NotificationCompat.Builder(
         //                        getApplicationContext());
         //
-        //                // ÉèÖÃÍ¨ÖªµÄ»ù±¾ĞÅÏ¢£ºicon¡¢±êÌâ¡¢ÄÚÈİ
+        //                // è®¾ç½®é€šçŸ¥çš„åŸºæœ¬ä¿¡æ¯ï¼šiconã€æ ‡é¢˜ã€å†…å®¹
         //                builder.setSmallIcon(R.drawable.ic_app);
-        //                builder.setContentTitle("ÆÁÄ»ÎÀÊ¿");
-        //                builder.setContentText("¼ÓÃÜÍê³É");
+        //                builder.setContentTitle("å±å¹•å«å£«");
+        //                builder.setContentText("åŠ å¯†å®Œæˆ");
         //
         //
         //                Notification notification = builder.build();
-        //                // ·¢ËÍÍ¨Öª id ĞèÒªÔÚÓ¦ÓÃÄÚÎ¨Ò»
+        //                // å‘é€é€šçŸ¥ id éœ€è¦åœ¨åº”ç”¨å†…å”¯ä¸€
         //                NotificationManager notificationManager = (NotificationManager) getSystemService
         //                        (Context.NOTIFICATION_SERVICE);
         //                notificationManager.notify(1, notification);
 
 
-        Log.i(TAG, "¼ÓÃÜÖ´ĞĞÍê±Ï");
+        Log.i(TAG, "åŠ å¯†æ‰§è¡Œå®Œæ¯•");
 
     }
 
@@ -136,12 +136,12 @@ public class EncryptedService extends IntentService {
     public static List<String> getFileList(String strPath, String endsWith) {
         List<String> filelist = new ArrayList<String>();
         File dir = new File(strPath);
-        File[] files = dir.listFiles(); // ¸ÃÎÄ¼şÄ¿Â¼ÏÂÎÄ¼şÈ«²¿·ÅÈëÊı×é
+        File[] files = dir.listFiles(); // è¯¥æ–‡ä»¶ç›®å½•ä¸‹æ–‡ä»¶å…¨éƒ¨æ”¾å…¥æ•°ç»„
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
-                if (files[i].isDirectory()) { // ÅĞ¶ÏÊÇÎÄ¼ş»¹ÊÇÎÄ¼ş¼Ğ
-                    getFileList(files[i].getAbsolutePath(), endsWith); // »ñÈ¡ÎÄ¼ş¾ø¶ÔÂ·¾¶
+                if (files[i].isDirectory()) { // åˆ¤æ–­æ˜¯æ–‡ä»¶è¿˜æ˜¯æ–‡ä»¶å¤¹
+                    getFileList(files[i].getAbsolutePath(), endsWith); // è·å–æ–‡ä»¶ç»å¯¹è·¯å¾„
                 } else if (fileName.endsWith(endsWith)) {
                     String strFileName = files[i].getAbsolutePath();
                     System.out.println(strFileName);
@@ -158,8 +158,8 @@ public class EncryptedService extends IntentService {
 
     private String GetTime() {
         SimpleDateFormat formatter = new SimpleDateFormat(
-                "yyyyÄêMMÔÂddÈÕ    HH:mm:ss     ");
-        Date curDate = new Date(System.currentTimeMillis());// »ñÈ¡µ±Ç°Ê±¼ä
+                "yyyyå¹´MMæœˆddæ—¥    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());// è·å–å½“å‰æ—¶é—´
         String str = formatter.format(curDate);
         return str;
     }
@@ -169,7 +169,7 @@ public class EncryptedService extends IntentService {
         Log.i(TAG, "ZipFileService is Desotrying");
         super.onDestroy();
 
-        //        // ÔÚService½áÊøºó¹Ø±ÕAlarmManager
+        //        // åœ¨Serviceç»“æŸåå…³é—­AlarmManager
         //        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         //        Intent i = new Intent(this, AlarmReceiver.class);
         //        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
@@ -179,7 +179,7 @@ public class EncryptedService extends IntentService {
 
 
     /**
-     * »ñÈ¡Ö¸¶¨ÎÄ¼ş´óĞ¡
+     * è·å–æŒ‡å®šæ–‡ä»¶å¤§å°
      *
      * @param filename
      * @return
@@ -202,14 +202,14 @@ public class EncryptedService extends IntentService {
             }
         } else {
 
-            Log.i("ZipFileService", "ÎÄ¼ş²»´æÔÚ!");
+            Log.i("ZipFileService", "æ–‡ä»¶ä¸å­˜åœ¨!");
         }
         return size;
     }
 
 
     /**
-     * ×ª»»ÎÄ¼ş´óĞ¡
+     * è½¬æ¢æ–‡ä»¶å¤§å°
      *
      * @param fileS
      * @return

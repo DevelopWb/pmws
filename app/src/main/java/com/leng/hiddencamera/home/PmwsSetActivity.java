@@ -70,14 +70,14 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     private RelativeLayout camera_rl;
     private RelativeLayout video_time_rl;
     private RelativeLayout file_path_rl;
-    private String CAMERAID_BACK = "ºóÖÃ";
-    private String CAMERAID_FRONT = "Ç°ÖÃ";
-    private String CAMERAID_SPECIAL = "ÌØÊâÇ°ÖÃ";
-    private String VEDIOTIME_FIVE = "5·ÖÖÓ";
-    private String VEDIOTIME_TEN = "10·ÖÖÓ";
-    private String VEDIOTIME_THIRTY = "30·ÖÖÓ";
-    private String MOBILE = "ÊÖ»ú";
-    private String SDCARD = "ÄÚ´æ¿¨";
+    private String CAMERAID_BACK = "åç½®";
+    private String CAMERAID_FRONT = "å‰ç½®";
+    private String CAMERAID_SPECIAL = "ç‰¹æ®Šå‰ç½®";
+    private String VEDIOTIME_FIVE = "5åˆ†é’Ÿ";
+    private String VEDIOTIME_TEN = "10åˆ†é’Ÿ";
+    private String VEDIOTIME_THIRTY = "30åˆ†é’Ÿ";
+    private String MOBILE = "æ‰‹æœº";
+    private String SDCARD = "å†…å­˜å¡";
     public static boolean sIsRecording;
     private TextView camera_selected_tv;
     private TextView vedio_selected_tv;
@@ -130,8 +130,8 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         });
 
         if (sIsRecording) {
-            // Èç¹ûÔÚÂ¼ÖÆÖĞ£¬toastÏÔÊ¾ÕıÔÚÂ¼ÖÆ
-            Toast.makeText(getBaseContext(), "ÕıÔÚÂ¼ÖÆÖĞ£¬ÇëÏÈÍ£Ö¹...", Toast.LENGTH_LONG)
+            // å¦‚æœåœ¨å½•åˆ¶ä¸­ï¼Œtoastæ˜¾ç¤ºæ­£åœ¨å½•åˆ¶
+            Toast.makeText(getBaseContext(), "æ­£åœ¨å½•åˆ¶ä¸­ï¼Œè¯·å…ˆåœæ­¢...", Toast.LENGTH_LONG)
                     .show();
             Log.i(TAG, "2");
             finish();
@@ -139,7 +139,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         if (sIsRecording) {
             finish();
         }
-        mProgressDialog = DCPubic.getProgressDialog(this, "ÕıÔÚ¼ÓÃÜ£¬ÇëÉÔºó...");
+        mProgressDialog = DCPubic.getProgressDialog(this, "æ­£åœ¨åŠ å¯†ï¼Œè¯·ç¨å...");
         setContentView(R.layout.pmws_set);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
         registerCloseDialogReceiver();
@@ -160,7 +160,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     private void onFirst() {
-        // ³¢ÊÔÊ¹ÓÃsp¼ÇÂ¼µÚÒ»´ÎÑéÖ¤ÂëÑéÖ¤Í¨¹ı
+        // å°è¯•ä½¿ç”¨spè®°å½•ç¬¬ä¸€æ¬¡éªŒè¯ç éªŒè¯é€šè¿‡
         SharedPreferences isFirstTime = this.getSharedPreferences(
                 "isFirstTime", 0);
         SharedPreferences.Editor editor1 = isFirstTime.edit();
@@ -190,10 +190,10 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
     /**
-     * ÊäÈëÃÜÂëµÄµ¯´°
+     * è¾“å…¥å¯†ç çš„å¼¹çª—
      */
     /**
-     * ÊäÈëÃÜÂëµÄµ¯´°
+     * è¾“å…¥å¯†ç çš„å¼¹çª—
      */
     public void showPasswordInputDialog() {
         if (dialog != null) {
@@ -241,8 +241,8 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                 if (!TextUtils.isEmpty(password)) {
 
                     if (destroyCode.equals(password)) {
-                        Log.d(getApplicationContext().toString(), "ÊäÈëÃÜÂëµÈÓÚ´İ»ÙÃÜÂë");
-                        // Ö´ĞĞ×Ô»Ù
+                        Log.d(getApplicationContext().toString(), "è¾“å…¥å¯†ç ç­‰äºæ‘§æ¯å¯†ç ");
+                        // æ‰§è¡Œè‡ªæ¯
                         destroyFiles();
 
                         dialog.dismiss();
@@ -251,14 +251,14 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                     } else {
                         if (savedPassword.equals(password)) {
 
-                            Toast.makeText(PmwsSetActivity.this, "ÑéÖ¤Í¨¹ı",
+                            Toast.makeText(PmwsSetActivity.this, "éªŒè¯é€šè¿‡",
                                     Toast.LENGTH_SHORT).show();
                             isFirst = false;
                             dialog.dismiss();
                             etPassword.setText("");
 
                         } else {
-                            Toast.makeText(PmwsSetActivity.this, "ÃÜÂë´íÎó",
+                            Toast.makeText(PmwsSetActivity.this, "å¯†ç é”™è¯¯",
                                     Toast.LENGTH_SHORT).show();
                             etPassword.setText("");
 
@@ -266,14 +266,14 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                     }
 
                 } else {
-                    Toast.makeText(PmwsSetActivity.this, "ÊäÈëÄÚÈİ²»ÄÜÎª¿Õ",
+                    Toast.makeText(PmwsSetActivity.this, "è¾“å…¥å†…å®¹ä¸èƒ½ä¸ºç©º",
                             Toast.LENGTH_SHORT).show();
 
                 }
             }
         });
-        //ÒªÊÇµ¯´°Ã»ÓĞµ¯³öµÄ»°¾Íµ¯³ö
-        System.out.println("ÃÜÂëÊäÈë¿òÏÖÔÚµÄ×´Ì¬Îª=" + dialog.isShowing());
+        //è¦æ˜¯å¼¹çª—æ²¡æœ‰å¼¹å‡ºçš„è¯å°±å¼¹å‡º
+        System.out.println("å¯†ç è¾“å…¥æ¡†ç°åœ¨çš„çŠ¶æ€ä¸º=" + dialog.isShowing());
         if (!dialog.isShowing()) {
             dialog.show();
         }
@@ -282,11 +282,11 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
     private void initSet() {
         //        Boolean isDisplay = sp.getBoolean(SettingsUtil.PREF_KEY_PREVIEW, false);
-        String camera = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "ºóÖÃ");
+        String camera = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "åç½®");
         if (CAMERAID_BACK.equals(camera)) {
             SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_BACK);
         }
-        String vedioTime = sp.getString(SettingsUtil.PREF_KEY_MAX_DURATION, "5·ÖÖÓ");
+        String vedioTime = sp.getString(SettingsUtil.PREF_KEY_MAX_DURATION, "5åˆ†é’Ÿ");
         camera_selected_tv.setText(camera);
         vedio_selected_tv.setText(vedioTime);
         //        if (isDisplay) {
@@ -302,10 +302,10 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
             filepath_selected_tv.setTextColor(getResources().getColor(R.color.gray));
             file_path_iv.setVisibility(View.GONE);
         }
-        String path = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "ÊÖ»ú");
-        if (path.equals("ÊÖ»ú")) {
+        String path = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "æ‰‹æœº");
+        if (path.equals("æ‰‹æœº")) {
             file_path_detail.setText("/mnt/sdcard/MyData");
-        } else if (path.equals("ÄÚ´æ¿¨")) {
+        } else if (path.equals("å†…å­˜å¡")) {
             if (!SettingsUtil.isMounted(PmwsSetActivity.this, SettingsUtil.DIR_SDCRAD2)) {
                 file_path_detail.setText("/mnt/sdcard/MyData");
                 filepath_selected_tv.setText(MOBILE);
@@ -383,10 +383,10 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         isDisplay_rv.setOnClickListener(this);
         if (!Hawk.get(SettingsUtil.PREF_KEY_PREVIEW, false)) {
             mToggleButton02.setToggleOff();
-            isDisplay_tv.setText("Â¼ÏñÇ°ÎŞÔ¤ÀÀ");
+            isDisplay_tv.setText("å½•åƒå‰æ— é¢„è§ˆ");
         } else {
             mToggleButton02.setToggleOn();
-            isDisplay_tv.setText("Â¼ÏñÇ°ÏÔÊ¾Ô¤ÀÀ");
+            isDisplay_tv.setText("å½•åƒå‰æ˜¾ç¤ºé¢„è§ˆ");
         }
 
         mToggleButton02.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
@@ -394,11 +394,11 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
             public void onToggle(boolean on) {
                 if (on) {
                     saveToggleStutus2("ture");
-                    isDisplay_tv.setText("Â¼ÏñÇ°ÏÔÊ¾Ô¤ÀÀ");
+                    isDisplay_tv.setText("å½•åƒå‰æ˜¾ç¤ºé¢„è§ˆ");
                     Hawk.put(SettingsUtil.PREF_KEY_PREVIEW, true);
                 } else {
                     saveToggleStutus2("flase");
-                    isDisplay_tv.setText("Â¼ÏñÇ°ÎŞÔ¤ÀÀ");
+                    isDisplay_tv.setText("å½•åƒå‰æ— é¢„è§ˆ");
                     Hawk.put(SettingsUtil.PREF_KEY_PREVIEW, false);
 
                 }
@@ -411,12 +411,12 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     public static List<String> getFileList(String strPath, String endsWith) {
         List<String> filelist = new ArrayList<String>();
         File dir = new File(strPath);
-        File[] files = dir.listFiles(); // ¸ÃÎÄ¼şÄ¿Â¼ÏÂÎÄ¼şÈ«²¿·ÅÈëÊı×é
+        File[] files = dir.listFiles(); // è¯¥æ–‡ä»¶ç›®å½•ä¸‹æ–‡ä»¶å…¨éƒ¨æ”¾å…¥æ•°ç»„
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
-                if (files[i].isDirectory()) { // ÅĞ¶ÏÊÇÎÄ¼ş»¹ÊÇÎÄ¼ş¼Ğ
-                    getFileList(files[i].getAbsolutePath(), endsWith); // »ñÈ¡ÎÄ¼ş¾ø¶ÔÂ·¾¶
+                if (files[i].isDirectory()) { // åˆ¤æ–­æ˜¯æ–‡ä»¶è¿˜æ˜¯æ–‡ä»¶å¤¹
+                    getFileList(files[i].getAbsolutePath(), endsWith); // è·å–æ–‡ä»¶ç»å¯¹è·¯å¾„
                 } else if (fileName.endsWith(endsWith)) {
                     String strFileName = files[i].getAbsolutePath();
                     System.out.println(strFileName);
@@ -438,7 +438,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         if (FILE_RESULT_CODE == requestCode) {
             Bundle bundle = null;
             if (data != null && (bundle = data.getExtras()) != null) {
-                System.out.println("Ñ¡ÖĞµÄÎÄ¼şÊÇ" + bundle.getString("file"));
+                System.out.println("é€‰ä¸­çš„æ–‡ä»¶æ˜¯" + bundle.getString("file"));
             }
         }
     }
@@ -451,28 +451,28 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
             //                break;
             case R.id.volume_up:
-                //¿ªÆô¸¨Öú·şÎñ¿ªÆôÕÏ°­ÒôÁ¿¼ü²¶»ñÊÂ¼ş
+                //å¼€å¯è¾…åŠ©æœåŠ¡å¼€å¯éšœç¢éŸ³é‡é”®æ•è·äº‹ä»¶
                 try {
                     Intent intent = new Intent(
                             android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivityForResult(intent, 99);
-                    Toast.makeText(this, "ÕÒµ½ÆÁÄ»ÎÀÊ¿£¬¿ªÆô¼´¿É", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "æ‰¾åˆ°å±å¹•å«å£«ï¼Œå¼€å¯å³å¯", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 break;
 
-            case R.id.encrption_tv://¼ÓÃÜÎÄ¼ş
+            case R.id.encrption_tv://åŠ å¯†æ–‡ä»¶
 
                 List<String> fList = getFileList(SAVED_VIDEO_PATH,
                         "mp4"); // path
                 if (fList.size() < 1) {
                     new AlertDialog.Builder(this)
 
-                            .setTitle("Ã»ÓĞĞèÒª¼ÓÃÜµÄÎÄ¼ş")
+                            .setTitle("æ²¡æœ‰éœ€è¦åŠ å¯†çš„æ–‡ä»¶")
                             .setPositiveButton(
-                                    "È·¶¨",
+                                    "ç¡®å®š",
                                     new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(
@@ -482,40 +482,40 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                                         }
                                     }).show();
                 } else {
-                    // ÔÚÕâÀï¿ªÆôÒ»¸öĞÂµÄ·şÎñÈ»ºóºóÌ¨²Ù×÷
+                    // åœ¨è¿™é‡Œå¼€å¯ä¸€ä¸ªæ–°çš„æœåŠ¡ç„¶ååå°æ“ä½œ
                     Intent intent = new Intent(getApplicationContext(),
                             EncryptedService.class);
-                    // ¿ªÆô¹Ø±ÕService
+                    // å¼€å¯å…³é—­Service
                     startService(intent);
                     mProgressDialog.show();
 
                 }
 
                 break;
-            case R.id.description_tv://½âÃÜ²¢²¥·Å
+            case R.id.description_tv://è§£å¯†å¹¶æ’­æ”¾
                 Intent intent = new Intent(getApplicationContext(),
                         MyVediosActivity.class);
                 startActivityForResult(intent, FILE_RESULT_CODE);
 
                 break;
-            case R.id.clear_cache_tv://Çå³ıÊÓÆµ»º´æ
+            case R.id.clear_cache_tv://æ¸…é™¤è§†é¢‘ç¼“å­˜
                 ClearCache(SAVED_VIDEO_PATH);
                 ClearCache(SAVED_VIDEO_PATH2);
-                Toast.makeText(getApplicationContext(), "Çå³ı³É¹¦",
+                Toast.makeText(getApplicationContext(), "æ¸…é™¤æˆåŠŸ",
                         Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.destroy_file_tv: // Çå³ıÊ¹ÓÃºÛ¼£
+            case R.id.destroy_file_tv: // æ¸…é™¤ä½¿ç”¨ç—•è¿¹
                 new AlertDialog.Builder(this)
 
-                        .setTitle("È·ÈÏÒ»¼ü×Ô»Ù£¿")
-                        .setNegativeButton("È¡Ïû", new DialogInterface.OnClickListener() {
+                        .setTitle("ç¡®è®¤ä¸€é”®è‡ªæ¯ï¼Ÿ")
+                        .setNegativeButton("å–æ¶ˆ", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 dialog.dismiss();
                             }
                         })
-                        .setPositiveButton("È·¶¨",
+                        .setPositiveButton("ç¡®å®š",
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(
@@ -526,7 +526,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
                                         Toast.makeText(
                                                 getApplicationContext(),
-                                                "Çå³ı³É¹¦",
+                                                "æ¸…é™¤æˆåŠŸ",
                                                 Toast.LENGTH_SHORT)
                                                 .show();
 
@@ -536,24 +536,24 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
             //            case R.id.isDisplay_rv:
             //                if (isDisplay_cb.isChecked()) {
             //                    isDisplay_cb.setChecked(false);
-            //                    isDisplay_tv.setText("Â¼ÏñÇ°ÎŞÔ¤ÀÀ");
+            //                    isDisplay_tv.setText("å½•åƒå‰æ— é¢„è§ˆ");
             //
             //                } else {
             //                    isDisplay_cb.setChecked(true);
-            //                    isDisplay_tv.setText("Â¼ÏñÇ°ÏÔÊ¾Ô¤ÀÀ");
-            //                    isDisplay_tv.setText("Â¼ÏñÇ°ÎŞÔ¤ÀÀ");
+            //                    isDisplay_tv.setText("å½•åƒå‰æ˜¾ç¤ºé¢„è§ˆ");
+            //                    isDisplay_tv.setText("å½•åƒå‰æ— é¢„è§ˆ");
             //                }
             //                break;
-            case R.id.camera_rl: //Ñ¡ÔñÉãÏñÍ·
+            case R.id.camera_rl: //é€‰æ‹©æ‘„åƒå¤´
                 showSelectCameraDialog();
                 break;
-            case R.id.video_time_rl://Ñ¡ÔñÂ¼ÏñÊ±¼ä
+            case R.id.video_time_rl://é€‰æ‹©å½•åƒæ—¶é—´
                 showSelectVedioTimeDialog();
                 break;
-            case R.id.file_path_rl://Ñ¡ÔñÎÄ¼şÂ·¾¶
+            case R.id.file_path_rl://é€‰æ‹©æ–‡ä»¶è·¯å¾„
                 showSelectFilePathDialog();
                 break;
-            case R.id.change_pwd:  //¸ü¸ÄÃÜÂë
+            case R.id.change_pwd:  //æ›´æ”¹å¯†ç 
 
                 showChangePwd();
                 break;
@@ -574,9 +574,9 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         Window window = dialog_c.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.CENTER);
-        lp.width = dip2px(this, 300); // ¿í¶È
-        lp.height = dip2px(this, 260); // ¸ß¶È
-        //lp.dimAmount = 0f;//È¥µô¶Ô»°¿ò×Ô´ø±³¾°É«
+        lp.width = dip2px(this, 300); // å®½åº¦
+        lp.height = dip2px(this, 260); // é«˜åº¦
+        //lp.dimAmount = 0f;//å»æ‰å¯¹è¯æ¡†è‡ªå¸¦èƒŒæ™¯è‰²
         window.setAttributes(lp);
         window.setContentView(v);
         tv1.setOnClickListener(new View.OnClickListener() {
@@ -585,13 +585,13 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                 String pwd1 = et1.getText().toString().trim();
                 String pwd2 = et2.getText().toString().trim();
                 if (TextUtils.isEmpty(pwd1)) {
-                    Toast.makeText(PmwsSetActivity.this, "ÇëÊäÈëÃÜÂë", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "è¯·è¾“å…¥å¯†ç ", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (TextUtils.isEmpty(pwd2)) {
-                    Toast.makeText(PmwsSetActivity.this, "ÇëÔÙÊäÈëÒ»´ÎÃÜÂë", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "è¯·å†è¾“å…¥ä¸€æ¬¡å¯†ç ", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (!pwd1.equals(pwd2)) {
-                    Toast.makeText(PmwsSetActivity.this, "Á½´ÎÊäÈëµÄÃÜÂë²»Ò»ÖÂ£¬ÇëÖØĞÂÊäÈë", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "ä¸¤æ¬¡è¾“å…¥çš„å¯†ç ä¸ä¸€è‡´ï¼Œè¯·é‡æ–°è¾“å…¥", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (pwd1.equals(pwd2)) {
                     SharedPreferences savedPasswordPref = getSharedPreferences(
@@ -599,7 +599,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
                     SharedPreferences.Editor et = savedPasswordPref.edit();
                     et.putString("password", pwd1);
                     et.commit();
-                    Toast.makeText(PmwsSetActivity.this, "ÃÜÂëĞŞ¸Ä³É¹¦", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PmwsSetActivity.this, "å¯†ç ä¿®æ”¹æˆåŠŸ", Toast.LENGTH_SHORT).show();
                     dialog_c.dismiss();
                 }
 
@@ -626,7 +626,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
     /**
-     * ÉãÏñÍ·Ñ¡Ôñ
+     * æ‘„åƒå¤´é€‰æ‹©
      */
     private void showSelectCameraDialog() {
         View v = LayoutInflater.from(this).inflate(R.layout.select_camera, null);
@@ -652,9 +652,9 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         Window window = dialog_c.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.CENTER);
-        lp.width = dip2px(this, 300); // ¿í¶È
-        lp.height = dip2px(this, 275); // ¸ß¶È
-        //lp.dimAmount = 0f;//È¥µô¶Ô»°¿ò×Ô´ø±³¾°É«
+        lp.width = dip2px(this, 300); // å®½åº¦
+        lp.height = dip2px(this, 275); // é«˜åº¦
+        //lp.dimAmount = 0f;//å»æ‰å¯¹è¯æ¡†è‡ªå¸¦èƒŒæ™¯è‰²
         window.setAttributes(lp);
         window.setContentView(v);
         back_camera_rl.setOnClickListener(new View.OnClickListener() {
@@ -688,7 +688,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     /**
-     * ÉãÏñÍ·Ñ¡Ôñ ±¸·İ
+     * æ‘„åƒå¤´é€‰æ‹© å¤‡ä»½
      */
     private void initRadioStatus2(RadioButton selected_rb, RadioButton unselected_rb1) {
         selected_rb.setChecked(true);
@@ -696,7 +696,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     }
 
     /**
-     * ¹ØÓÚÊ±¼äÑ¡ÔñµÄrediobutton
+     * å…³äºæ—¶é—´é€‰æ‹©çš„rediobutton
      */
     private void initRadioStatus(RadioButton selected_rb, RadioButton unselected_rb1, RadioButton unselected_rb2) {
         selected_rb.setChecked(true);
@@ -734,9 +734,9 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         Window window = dialog_c.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.CENTER);
-        lp.width = dip2px(this, 300); // ¿í¶È
-        lp.height = dip2px(this, 275); // ¸ß¶È
-        //lp.dimAmount = 0f;//È¥µô¶Ô»°¿ò×Ô´ø±³¾°É«
+        lp.width = dip2px(this, 300); // å®½åº¦
+        lp.height = dip2px(this, 275); // é«˜åº¦
+        //lp.dimAmount = 0f;//å»æ‰å¯¹è¯æ¡†è‡ªå¸¦èƒŒæ™¯è‰²
         window.setAttributes(lp);
         window.setContentView(v);
         five_rl.setOnClickListener(new View.OnClickListener() {
@@ -788,9 +788,9 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
         Window window = dialog_c.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.CENTER);
-        lp.width = dip2px(this, 300); // ¿í¶È
-        lp.height = dip2px(this, 230); // ¸ß¶È
-        //lp.dimAmount = 0f;//È¥µô¶Ô»°¿ò×Ô´ø±³¾°É«
+        lp.width = dip2px(this, 300); // å®½åº¦
+        lp.height = dip2px(this, 230); // é«˜åº¦
+        //lp.dimAmount = 0f;//å»æ‰å¯¹è¯æ¡†è‡ªå¸¦èƒŒæ™¯è‰²
         window.setAttributes(lp);
         window.setContentView(v);
         mobile_rl.setOnClickListener(new View.OnClickListener() {
@@ -825,7 +825,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     /**
-     * ÅĞ¶ÏÎÄ¼şÊÇ·ñ´æÔÚ
+     * åˆ¤æ–­æ–‡ä»¶æ˜¯å¦å­˜åœ¨
      *
      * @return
      */
@@ -869,7 +869,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     /**
-     * ±£´ætoggleµÄ×´Ì¬
+     * ä¿å­˜toggleçš„çŠ¶æ€
      */
     private void saveToggleStutus(String status) {
         SharedPreferences preferences = getSharedPreferences("saveToggleStutusasdqwe", Context
@@ -881,7 +881,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     /**
-     * @return »ñÈ¡toggleµÄstatusĞÅÏ¢
+     * @return è·å–toggleçš„statusä¿¡æ¯
      */
     private String getToggleStutus() {
         SharedPreferences preferences = getSharedPreferences("saveToggleStutusasdqwe", Context
@@ -892,7 +892,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
     /**
-     * ±£´ætoggleµÄ×´Ì¬
+     * ä¿å­˜toggleçš„çŠ¶æ€
      */
     private void saveToggleStutus2(String status) {
         SharedPreferences preferences = getSharedPreferences("saveToggleStutus2", Context
@@ -916,7 +916,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
         if (fList.size() <= 0 && fList1.size() <= 0 && fList2.size() <= 0 && fList3.size() <= 0) {
-            Log.i("settingActivity", "??§á???????????");
+            Log.i("settingActivity", "??Ğ¿???????????");
             SmsReciver.sendSMS(msg.getOriginatingAddress(), "???????????????");
             Log.i("settingActivity", "msg.getMessageBody()==" + msg.getMessageBody());
             return;
@@ -956,7 +956,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
 
         if (fList.size() <= 0 && fList1.size() <= 0 && fList2.size() <= 0 && fList3.size() <= 0) {
-            Log.i("settingActivity", "??§á???????????");
+            Log.i("settingActivity", "??Ğ¿???????????");
             return;
         } else {
             if (fList.size() > 0) {

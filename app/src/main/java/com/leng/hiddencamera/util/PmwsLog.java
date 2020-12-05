@@ -24,7 +24,7 @@ public class PmwsLog {
 		}
 	}
 	public static void writeLog(String content) {
-		//Ğ´Ö¾µ½SD¿¨
+		//å†™å¿—åˆ°SDå¡
 		File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
 		if (!dir.exists()) {
 			dir.mkdir();
@@ -33,7 +33,7 @@ public class PmwsLog {
 		try {
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd  HH:mm:ss ");
-			Date curDate = new Date(System.currentTimeMillis());//»ñÈ¡µ±Ç°Ê±¼ä
+			Date curDate = new Date(System.currentTimeMillis());//è·å–å½“å‰æ—¶é—´
 			String str = formatter.format(curDate);
 
 			FileWriter writer = new FileWriter(dir + "/log.txt", true);
@@ -45,7 +45,7 @@ public class PmwsLog {
 		}
 	}
 	public static void writeLog(String content, File f) {
-		//Ğ´Ö¾µ½SD¿¨
+		//å†™å¿—åˆ°SDå¡
 		File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
 		if (!dir.exists()) {
 			dir.mkdir();
@@ -54,7 +54,7 @@ public class PmwsLog {
 		try {
 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd  HH:mm:ss ");
-			Date curDate = new Date(System.currentTimeMillis());//»ñÈ¡µ±Ç°Ê±¼ä
+			Date curDate = new Date(System.currentTimeMillis());//è·å–å½“å‰æ—¶é—´
 			String str = formatter.format(curDate);
 
 			FileWriter writer = new FileWriter(dir + "/log.txt", true);

@@ -40,29 +40,29 @@ public class MyVediosActivity extends ListActivity {
 
     String TAG = "MyFileManager";
     /**
-     * ÎÄ¼ş£¨¼Ğ£©Ãû×Ö
+     * æ–‡ä»¶ï¼ˆå¤¹ï¼‰åå­—
      */
     private List<String> items = null;
     /**
-     * ÎÄ¼ş£¨¼Ğ£©Â·¾¶
+     * æ–‡ä»¶ï¼ˆå¤¹ï¼‰è·¯å¾„
      */
     private List<String> paths = null;
     /**
-     * ¸ùÄ¿Â¼
+     * æ ¹ç›®å½•
      **/
     private String rootPath = "/";
 
     /**
-     * ÏÔÊ¾µ±Ç°Ä¿Â¼
+     * æ˜¾ç¤ºå½“å‰ç›®å½•
      **/
     private TextView mPath;
 
     /**
-     * NotificationµÄID
+     * Notificationçš„ID
      */
     int notifyId = 102;
     /**
-     * NotificationµÄ½ø¶ÈÌõÊıÖµ
+     * Notificationçš„è¿›åº¦æ¡æ•°å€¼
      */
     int progress = 0;
 
@@ -78,7 +78,7 @@ public class MyVediosActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.fileselect);
-        mDialog = DCPubic.getProgressDialog(this, "ÕıÔÚ½âÃÜ£¬ÇëÉÔºó...");
+        mDialog = DCPubic.getProgressDialog(this, "æ­£åœ¨è§£å¯†ï¼Œè¯·ç¨å...");
         mPath = (TextView) findViewById(R.id.mPath);
         textView = (TextView) findViewById(R.id.cancel_tv_);
         //		findViewById(R.id.buttonConfirm).setOnClickListener(this);
@@ -113,7 +113,7 @@ public class MyVediosActivity extends ListActivity {
     //	}
 
     /**
-     * »ñÈ¡Ö¸¶¨Ä¿Â¼ÏÂµÄËùÓĞÎÄ¼ş(¼Ğ)
+     * è·å–æŒ‡å®šç›®å½•ä¸‹çš„æ‰€æœ‰æ–‡ä»¶(å¤¹)
      *
      * @param filePath
      */
@@ -124,7 +124,7 @@ public class MyVediosActivity extends ListActivity {
         File f = new File(filePath);
         File[] files = f.listFiles();
 
-        // ÓÃÀ´ÏÔÊ¾ ¡°·µ»Ø¸ùÄ¿Â¼¡±+"ÉÏ¼¶Ä¿Â¼"
+        // ç”¨æ¥æ˜¾ç¤º â€œè¿”å›æ ¹ç›®å½•â€+"ä¸Šçº§ç›®å½•"
         if (!filePath.equals(rootPath)) {
             items.add("rootPath");
             paths.add(rootPath);
@@ -133,7 +133,7 @@ public class MyVediosActivity extends ListActivity {
             paths.add(f.getParent());
         }
 
-        // ÏÈÅÅĞò
+        // å…ˆæ’åº
         List<File> resultList = null;
         if (files != null) {
             Log.i("hnyer", files.length + " " + filePath);
@@ -161,7 +161,7 @@ public class MyVediosActivity extends ListActivity {
                 paths.add(file.getPath());
             }
         } else {
-            Log.i("hnyer", filePath + "ÎŞ×ÓÎÄ¼ş");
+            Log.i("hnyer", filePath + "æ— å­æ–‡ä»¶");
         }
 
         setListAdapter(new MyAdapter(this, items, paths));
@@ -170,7 +170,7 @@ public class MyVediosActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         File file = new File(paths.get(position));
-        //       ½âÃÜ²¢²¥·Å
+        //       è§£å¯†å¹¶æ’­æ”¾
         if (file.isDirectory()) {
             getFileDir(paths.get(position));
         } else {
@@ -179,7 +179,7 @@ public class MyVediosActivity extends ListActivity {
     }
 
     /**
-     * ¼ì²âÎÄ¼şÊÇ·ñÒÑ±»½âÃÜ
+     * æ£€æµ‹æ–‡ä»¶æ˜¯å¦å·²è¢«è§£å¯†
      * @param file
      */
     private boolean checkFileIsDecryped(File file) {
@@ -194,7 +194,7 @@ public class MyVediosActivity extends ListActivity {
 
         }
         if (fileNamesMp4.contains(file.getName().substring(0,file.getName().lastIndexOf(".")))) {
-            Toast.makeText(this, "´ËÊÓÆµÎÄ¼şÒÑ¾­½âÃÜ¹ıÁË", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "æ­¤è§†é¢‘æ–‡ä»¶å·²ç»è§£å¯†è¿‡äº†", Toast.LENGTH_SHORT).show();
             return true;
         }
         return false;
@@ -237,29 +237,29 @@ public class MyVediosActivity extends ListActivity {
 
             startService(intent);
             mDialog.show();
-            writeLog("decrypt fiel and play£»", f);
+            writeLog("decrypt fiel and playï¼›", f);
             return;
 
         } else {
-            //mp4¸ñÊ½²¥·Å
+            //mp4æ ¼å¼æ’­æ”¾
             intent.setDataAndType(Uri.fromFile(f), type);
             startActivity(intent);
         }
 
     }
 
-    // Õâ¸ö·½·¨µÄ´æÔÚ¾ÍÊÇÎªÁËÇø·ÖÊÇ²»ÊÇÌØ¶¨µÄÎÄ¼ş£¬±ÈÈçzip,Èç¹ûÊÇµÄ»°ÔÙ½øĞĞ²Ù×÷µÄ£¬ÒªÊÇ²»ÊÇµÄ»°¾Í²»²Ù×÷£¬¼øÓÚÏÖÔÚÖ»ÊÇ¶ÔÓÚÌØ¶¨µÄÎÄ¼ş½øĞĞ²Ù×÷£¬
-    // ÄÇÎÒ»¹Òª²»Òª¼ÌĞøÑĞ¾¿Õâ¸öÀàĞÍß@‚€–|Î÷£¬ß€ÊÇÈ¥ÑĞ¾¿V²¥
+    // è¿™ä¸ªæ–¹æ³•çš„å­˜åœ¨å°±æ˜¯ä¸ºäº†åŒºåˆ†æ˜¯ä¸æ˜¯ç‰¹å®šçš„æ–‡ä»¶ï¼Œæ¯”å¦‚zip,å¦‚æœæ˜¯çš„è¯å†è¿›è¡Œæ“ä½œçš„ï¼Œè¦æ˜¯ä¸æ˜¯çš„è¯å°±ä¸æ“ä½œï¼Œé‰´äºç°åœ¨åªæ˜¯å¯¹äºç‰¹å®šçš„æ–‡ä»¶è¿›è¡Œæ“ä½œï¼Œ
+    // é‚£æˆ‘è¿˜è¦ä¸è¦ç»§ç»­ç ”ç©¶è¿™ä¸ªç±»å‹é€™å€‹æ±è¥¿ï¼Œé‚„æ˜¯å»ç ”ç©¶å»£æ’­
 
     /**
      * @param f
-     * @return ·µ»ØµÄÊÇÎÄ¼şºó×ºÃû£¬Ô­À´ºó×ºÃûÒªĞ¡Ğ©£¬´óĞ´¸ù±¾Ã»ÓÃ£¬ËùÒÔ¸ù±¾Ã»±È½Ïµ½£¬ºÇºÇÁË
+     * @return è¿”å›çš„æ˜¯æ–‡ä»¶åç¼€åï¼ŒåŸæ¥åç¼€åè¦å°äº›ï¼Œå¤§å†™æ ¹æœ¬æ²¡ç”¨ï¼Œæ‰€ä»¥æ ¹æœ¬æ²¡æ¯”è¾ƒåˆ°ï¼Œå‘µå‘µäº†
      */
     private String getMIMEType(File f) {
         String type = "";
         String fName = f.getName();
 
-        // ½«À´½âÑ¹ºÃµÄÊÓÆµÎÄ¼şÃû£¬È»ºó±£´æµ½SharedPreferences
+        // å°†æ¥è§£å‹å¥½çš„è§†é¢‘æ–‡ä»¶åï¼Œç„¶åä¿å­˜åˆ°SharedPreferences
         SharedPreferences tmpFileName = getSharedPreferences("tmpFileName", 0);
 
         SharedPreferences.Editor editor = tmpFileName.edit();
@@ -295,10 +295,10 @@ public class MyVediosActivity extends ListActivity {
 
     /**
      * @param first
-     * @param f     Ğ´LOGµ½SD¿¨
+     * @param f     å†™LOGåˆ°SDå¡
      */
     private void writeLog(String first, File f) {
-        //Ğ´ÈÕÖ¾µ½SD¿¨
+        //å†™æ—¥å¿—åˆ°SDå¡
         File dir = new File(Environment.getExternalStorageDirectory(), "PMWSLog");
         if (!dir.exists()) {
             dir.mkdir();
@@ -306,8 +306,8 @@ public class MyVediosActivity extends ListActivity {
 
         try {
 
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyÄêMMÔÂddÈÕ  HH:mm:ss ");
-            Date curDate = new Date(System.currentTimeMillis());//»ñÈ¡µ±Ç°Ê±¼ä
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyå¹´MMæœˆddæ—¥  HH:mm:ss ");
+            Date curDate = new Date(System.currentTimeMillis());//è·å–å½“å‰æ—¶é—´
             String str = formatter.format(curDate);
 
             FileWriter writer = new FileWriter(dir + "/log.txt", true);

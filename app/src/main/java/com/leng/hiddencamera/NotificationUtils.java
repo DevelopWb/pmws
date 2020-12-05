@@ -49,7 +49,7 @@ public class NotificationUtils extends ContextWrapper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Notification.Builder getChannelNotification(String title, String content, int icon, Intent intent) {
-        //PendingIntent.FLAG_UPDATE_CURRENT Õâ¸öÀàĞÍ²ÅÄÜ´«Öµ
+        //PendingIntent.FLAG_UPDATE_CURRENT è¿™ä¸ªç±»å‹æ‰èƒ½ä¼ å€¼
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new Notification.Builder(context, id)
                 .setContentTitle(title)
@@ -59,7 +59,7 @@ public class NotificationUtils extends ContextWrapper {
                 .setContentIntent(pendingIntent);
     }
     public NotificationCompat.Builder getNotification_25(String title, String content, int icon, Intent intent) {
-        //PendingIntent.FLAG_UPDATE_CURRENT Õâ¸öÀàĞÍ²ÅÄÜ´«Öµ
+        //PendingIntent.FLAG_UPDATE_CURRENT è¿™ä¸ªç±»å‹æ‰èƒ½ä¼ å€¼
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(context, id)
                 .setContentTitle(title)

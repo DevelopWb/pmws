@@ -55,7 +55,7 @@ import static android.content.Intent.ACTION_DELETE;
 
 /**
  * @aouther tobato
- * @description ÃèÊö  ºóÌ¨Â¼ÏñµÄ·şÎñ
+ * @description æè¿°  åå°å½•åƒçš„æœåŠ¡
  * @date 2020/11/15 17:00
  */
 public class CameraRecordService extends Service  {
@@ -107,11 +107,11 @@ public class CameraRecordService extends Service  {
     private Timer timer;
     private TimerTask task;
 
-    // Note3,Note4ÆÁÄ»Ô¤ÀÀ´óĞ¡
+    // Note3,Note4å±å¹•é¢„è§ˆå¤§å°
     // private final int mPreviewWidth = 600;
     // private final int mPreviewHeight = 800;
 
-    // HTCĞ¡ÆÁÄ»´óĞ¡
+    // HTCå°å±å¹•å¤§å°
     private final int mPreviewWidth = 400;
     private final int mPreviewHeight = 500;
     private long availableInternalMemorySize;
@@ -122,9 +122,9 @@ public class CameraRecordService extends Service  {
     private StopRecordingReceiver stopReCordingReceiver;
     private ValumeChangeCarme valumeTest;
 
-    private String CAMERAID_BACK = "ºóÖÃ";
-    private String CAMERAID_FRONT = "Ç°ÖÃ";
-    private String CAMERAID_SPECIAL = "ÌØÊâÇ°ÖÃ";
+    private String CAMERAID_BACK = "åç½®";
+    private String CAMERAID_FRONT = "å‰ç½®";
+    private String CAMERAID_SPECIAL = "ç‰¹æ®Šå‰ç½®";
 
     private int VolumeEmbellish = 1;
     private int initStatus = 1;
@@ -166,7 +166,7 @@ public class CameraRecordService extends Service  {
                     break;
                 case MSG_SEND_MESSAGE:
                     if (time < 300) {
-                        Toast.makeText(CameraRecordService.this, "´æ´¢¿Õ¼ä²»×ã", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraRecordService.this, "å­˜å‚¨ç©ºé—´ä¸è¶³", Toast.LENGTH_SHORT).show();
 
                         stopRecording();
                         // MediaRecorder,
@@ -201,18 +201,18 @@ public class CameraRecordService extends Service  {
         wakeLock.acquire();
 
         PmwsLog.writeLog("cameraservice  onCreate--------");
-        //        ¶¯Ì¬×¢²á½ÓÊÜÀ´×Ô¸¨Öú·şÎñµÄ¹ã²¥
+        //        åŠ¨æ€æ³¨å†Œæ¥å—æ¥è‡ªè¾…åŠ©æœåŠ¡çš„å¹¿æ’­
         valumeTest = new ValumeChangeCarme();
         IntentFilter intentFilter2 = new IntentFilter();
         intentFilter2.addAction("asasqwe");
         registerReceiver(valumeTest, intentFilter2);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
-        // ÎÄ¼ş´æ´¢Â·¾¶Ñ¡Ôñ
-        String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "ÊÖ»ú");
-        if (mFilepath.equals("ÊÖ»ú")) {
+        // æ–‡ä»¶å­˜å‚¨è·¯å¾„é€‰æ‹©
+        String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "æ‰‹æœº");
+        if (mFilepath.equals("æ‰‹æœº")) {
             mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
             available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
-        } else if (mFilepath.equals("ÄÚ´æ¿¨")) {
+        } else if (mFilepath.equals("å†…å­˜å¡")) {
             if (!SettingsUtil.isMounted(this, SettingsUtil.DIR_SDCRAD2)) {
                 mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
                 available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
@@ -223,16 +223,16 @@ public class CameraRecordService extends Service  {
         }
         time = (int) (available_ / 2.03986711);
         if (time < 300) {
-            Toast.makeText(getBaseContext(), "´æ´¢¿Õ¼ä²»×ãÇë¼°Ê±´¦Àí", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "å­˜å‚¨ç©ºé—´ä¸è¶³è¯·åŠæ—¶å¤„ç†", Toast.LENGTH_SHORT).show();
             stopSelf();
             return;
         }
 
         if (available_ < 500) {
-            Toast.makeText(getBaseContext(), "´æ´¢¿Õ¼ä²»×ãÇë¼°Ê±´¦Àí", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "å­˜å‚¨ç©ºé—´ä¸è¶³è¯·åŠæ—¶å¤„ç†", Toast.LENGTH_SHORT).show();
 
             PmwsSetActivity.sIsRecording = false;
-            //¶ş´ÎÉèÖÃÎª
+            //äºŒæ¬¡è®¾ç½®ä¸º
             stopSelf();
             return;
         } else {
@@ -251,7 +251,7 @@ public class CameraRecordService extends Service  {
          */
 
         addSurfaceView();
-        //¶¯Ì¬×¢²á¹ã²¥½ÓÊÕÆ÷
+        //åŠ¨æ€æ³¨å†Œå¹¿æ’­æ¥æ”¶å™¨
         stopReCordingReceiver = new StopRecordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
@@ -275,7 +275,7 @@ public class CameraRecordService extends Service  {
 
             }
         };
-        timer.schedule(task, 1000, 1000);/* ±íÊ¾1000ºÁÃëÖ®áá£¬Ã¿¸ô1000ºÁÃëˆÌĞĞÒ»´Î */
+        timer.schedule(task, 1000, 1000);/* è¡¨ç¤º1000æ¯«ç§’ä¹‹å¾Œï¼Œæ¯éš”1000æ¯«ç§’åŸ·è¡Œä¸€æ¬¡ */
     }
 
 
@@ -291,31 +291,31 @@ public class CameraRecordService extends Service  {
             return START_STICKY;
         }
         PmwsSetActivity.sIsRecording = true;
-        Log.i(TAG, "ÉèÖÃÍê PmwsSetActivity.sIsRecordingµÄ×´Ì¬=" + PmwsSetActivity.sIsRecording);
+        Log.i(TAG, "è®¾ç½®å®Œ PmwsSetActivity.sIsRecordingçš„çŠ¶æ€=" + PmwsSetActivity.sIsRecording);
         String action = intent.getAction();
         PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
             if (mIsRecording) {
-                // Èç¹ûÕıÔÚÂ¼ÖÆ£¬Õâ¸öaction¾ÍÊÇÒªÍ£Ö¹Â¼ÖÆ
+                // å¦‚æœæ­£åœ¨å½•åˆ¶ï¼Œè¿™ä¸ªactionå°±æ˜¯è¦åœæ­¢å½•åˆ¶
                 PmwsLog.d("The service has been started before, stop the recording");
                 mHandler.removeMessages(MSG_RESTART_RECORDING);
                 mHandler.removeMessages(MSG_START_RECORDING);
 
                 stopRecording();
-                // Èç¹ûÂ¼ÖÆ¹ı³ÌÖĞ£¬µã»÷³ÌĞò£¬ÏÔÊ¾Ô¤ÀÀ
+                // å¦‚æœå½•åˆ¶è¿‡ç¨‹ä¸­ï¼Œç‚¹å‡»ç¨‹åºï¼Œæ˜¾ç¤ºé¢„è§ˆ
                 if (mPreviewEnabled) {
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
                 }
             } else {
-                // Èç¹ûÃ»ÓĞÂ¼ÖÆ£¬³ÌĞò±»µã»÷£¬ÏÔÊ¾Ô¤ÀÀ
+                // å¦‚æœæ²¡æœ‰å½•åˆ¶ï¼Œç¨‹åºè¢«ç‚¹å‡»ï¼Œæ˜¾ç¤ºé¢„è§ˆ
                 if (mPreviewEnabled) {
                     PmwsLog.d("The service not started and preview enabled start the preview");
                     showPreview(true);
                     // mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_RECORDING),
                     // 1000);
                 } else {
-                    // Èç¹ûÃ»ÓĞ±»µã»÷£¬²»ÏÔÊ¾Ô¤ÀÀ£¬¿ªÊ¼Â¼ÖÆ
+                    // å¦‚æœæ²¡æœ‰è¢«ç‚¹å‡»ï¼Œä¸æ˜¾ç¤ºé¢„è§ˆï¼Œå¼€å§‹å½•åˆ¶
                     PmwsLog.d("The service not started but preview disabled start the recording");
                     showPreview(false);
                     mHandler.sendMessageDelayed(
@@ -325,7 +325,7 @@ public class CameraRecordService extends Service  {
         } else if (ACTION_STOP.equals(action) || ACTION_DELETE.equals(action)) {
             releaseRes();
         } else if (ACTION_RECORDING.equals(action)) {
-            // ×¢²áÍê³Éºó£¬µã»÷ÆÁÄ»£¬ÏÔÊ¾preView
+            // æ³¨å†Œå®Œæˆåï¼Œç‚¹å‡»å±å¹•ï¼Œæ˜¾ç¤ºpreView
             if (mIsRecording) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
@@ -333,7 +333,7 @@ public class CameraRecordService extends Service  {
             }
         }
         //        else if (ACTION_RESTART.equals(action)) {
-        //            PmwsLog.writeLog("cameraservice ÖØÆô ACTION_RESTART");
+        //            PmwsLog.writeLog("cameraservice é‡å¯ ACTION_RESTART");
         //            releaseCamera();
         //            mHandler.sendMessageDelayed(
         //                    mHandler.obtainMessage(MSG_RESTART_RECORDING), 1000);
@@ -349,7 +349,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ÊÍ·Å×ÊÔ´
+     * é‡Šæ”¾èµ„æº
      */
     private void releaseRes() {
         if (mHandler != null) {
@@ -370,52 +370,52 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ¼ÓÔØÅäÖÃÊı¾İ
+     * åŠ è½½é…ç½®æ•°æ®
      */
     private void loadSettings() {
 
-        // ÊÇ·ñÕ¹Ê¾Ô¤ÀÀ
+        // æ˜¯å¦å±•ç¤ºé¢„è§ˆ
         mPreviewEnabled = Hawk.get(SettingsUtil.PREF_KEY_PREVIEW, false);
         String cameraIdStr = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
 
         if (cameraIdStr != null) {
-            if (cameraIdStr.equals("Ç°ÖÃ")) {
+            if (cameraIdStr.equals("å‰ç½®")) {
                 mCameraId = 1;
 
             } else {
                 mCameraId = 0;
             }
         } else {
-            if (cameraIdStr.equals("Ç°ÖÃ")) {
-                Toast.makeText(this, "Ç°ÖÃÉãÏñ", Toast.LENGTH_SHORT).show();
+            if (cameraIdStr.equals("å‰ç½®")) {
+                Toast.makeText(this, "å‰ç½®æ‘„åƒ", Toast.LENGTH_SHORT).show();
                 mCameraId = 1;
-                //                Toast.makeText(this, "ÌØÊâÇ°ÖÃÉãÏñ", Toast.LENGTH_SHORT).show();
-            } else if (cameraIdStr.equals("ºóÖÃ")) {
-                Toast.makeText(this, "ºóÖÃÉãÏñ", Toast.LENGTH_SHORT).show();
+                //                Toast.makeText(this, "ç‰¹æ®Šå‰ç½®æ‘„åƒ", Toast.LENGTH_SHORT).show();
+            } else if (cameraIdStr.equals("åç½®")) {
+                Toast.makeText(this, "åç½®æ‘„åƒ", Toast.LENGTH_SHORT).show();
                 mCameraId = 0;
             } else {
-                Toast.makeText(this, "ÌØÊâÉãÏñ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "ç‰¹æ®Šæ‘„åƒ", Toast.LENGTH_SHORT).show();
                 mCameraId = 2;
             }
         }
 
-        //        // Â¼ÏñÊ±¼äÑ¡Ôñ  Â¼ÏñÊ±¼ä
+        //        // å½•åƒæ—¶é—´é€‰æ‹©  å½•åƒæ—¶é—´
         String maxDuration = "";
         String vedio_time = sp.getString(SettingsUtil.PREF_KEY_MAX_DURATION, "");
-        if (vedio_time.equals("5·ÖÖÓ") || vedio_time.equals("")) {
+        if (vedio_time.equals("5åˆ†é’Ÿ") || vedio_time.equals("")) {
             maxDuration = "5";
-        } else if (vedio_time.equals("10·ÖÖÓ")) {
+        } else if (vedio_time.equals("10åˆ†é’Ÿ")) {
             maxDuration = "10";
-        } else if (vedio_time.equals("30·ÖÖÓ")) {
+        } else if (vedio_time.equals("30åˆ†é’Ÿ")) {
             maxDuration = "30";
         }
         mMaxDuration = Integer.valueOf(maxDuration) * 60 * 1000;// * 60 *
-        // 1000;±íÊ¾1fen
+        // 1000;è¡¨ç¤º1fen
 
     }
 
     /**
-     * ¶¯Ì¬Ìí¼Ósurfaceview
+     * åŠ¨æ€æ·»åŠ surfaceview
      */
     private void addSurfaceView() {
         mWindowLayoutParams = new WindowManager.LayoutParams();
@@ -441,13 +441,13 @@ public class CameraRecordService extends Service  {
         FrameLayout preview = (FrameLayout) mRootView
                 .findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-        // Ô¤ÀÀ½çÃæµÄµã»÷ÊÂ¼ş
+        // é¢„è§ˆç•Œé¢çš„ç‚¹å‡»äº‹ä»¶
         mPreview.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 PmwsLog.d("Preview clicked, hide the preview first");
-                Toast.makeText(CameraRecordService.this, "¿ªÆôÂ¼ÖÆÖĞÇëÎğ²Ù×÷", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraRecordService.this, "å¼€å¯å½•åˆ¶ä¸­è¯·å‹¿æ“ä½œ", Toast.LENGTH_SHORT).show();
                 showPreview(false);
                 if (mIsRecording)
                     return;
@@ -455,7 +455,7 @@ public class CameraRecordService extends Service  {
 
 
                 PmwsLog.d("Preview clicked, recording not started, start recording");
-                // Ô¤ÀÀ½çÃæµã»÷ºó£¬Òş²Ø£¬È»ºó¿ªÊ¼Â¼ÖÆ
+                // é¢„è§ˆç•Œé¢ç‚¹å‡»åï¼Œéšè—ï¼Œç„¶åå¼€å§‹å½•åˆ¶
                 mPreview.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -495,7 +495,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ¿ªÊ¼Â¼Ïñ
+     * å¼€å§‹å½•åƒ
      */
     private void startRecording() {
         //        acquireWakeLock();
@@ -521,18 +521,18 @@ public class CameraRecordService extends Service  {
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-        // ÉèÖÃÂ¼ÖÆÍê³ÉºóÊÓÆµµÄ·â×°¸ñÊ½THREE_GPPÎª3gp.MPEG_4Îªmp4
+        // è®¾ç½®å½•åˆ¶å®Œæˆåè§†é¢‘çš„å°è£…æ ¼å¼THREE_GPPä¸º3gp.MPEG_4ä¸ºmp4
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        // ÉèÖÃÂ¼ÖÆµÄÊÓÆµ±àÂëh263 h264
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);// ÒôÆµ¸ñÊ½
+        // è®¾ç½®å½•åˆ¶çš„è§†é¢‘ç¼–ç h263 h264
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);// éŸ³é¢‘æ ¼å¼
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
-        //ÉèÖÃ±àÂë±ÈÌØÂÊ,²»ÉèÖÃ»áÊ¹ÊÓÆµÍ¼ÏñÄ£ºı
-        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //ÇåÎú
-        //                mediarecorder.setVideoEncodingBitRate(900*1024); //½ÏÎªÇåÎú£¬ÇÒÎÄ¼ş´óĞ¡Îª3.26M(30Ãë)
-        //         ÉèÖÃÊÓÆµÂ¼ÖÆµÄ·Ö±æÂÊ¡£±ØĞë·ÅÔÚÉèÖÃ±àÂëºÍ¸ñÊ½µÄºóÃæ£¬·ñÔò±¨´í
+        //è®¾ç½®ç¼–ç æ¯”ç‰¹ç‡,ä¸è®¾ç½®ä¼šä½¿è§†é¢‘å›¾åƒæ¨¡ç³Š
+        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //æ¸…æ™°
+        //                mediarecorder.setVideoEncodingBitRate(900*1024); //è¾ƒä¸ºæ¸…æ™°ï¼Œä¸”æ–‡ä»¶å¤§å°ä¸º3.26M(30ç§’)
+        //         è®¾ç½®è§†é¢‘å½•åˆ¶çš„åˆ†è¾¨ç‡ã€‚å¿…é¡»æ”¾åœ¨è®¾ç½®ç¼–ç å’Œæ ¼å¼çš„åé¢ï¼Œå¦åˆ™æŠ¥é”™
         mMediaRecorder.setVideoSize(1280, 720);
-        //         ÉèÖÃÂ¼ÖÆµÄÊÓÆµÖ¡ÂÊ¡£±ØĞë·ÅÔÚÉèÖÃ±àÂëºÍ¸ñÊ½µÄºóÃæ£¬·ñÔò±¨´í
-        //                Ö¡ÂÊ²»¿ÉÒÔËæ±ã¶¨Òå£¬Èç¹ûÏµÍ³²»Ö§³Ö¾Í»á±¨´í¡£Ó¦¸ÃÏÈÍ¨¹ıcamera»ñÈ¡Ö§³ÖµÄÖ¡ÂÊ£¬È»ºóÔÙÉèÖÃ
+        //         è®¾ç½®å½•åˆ¶çš„è§†é¢‘å¸§ç‡ã€‚å¿…é¡»æ”¾åœ¨è®¾ç½®ç¼–ç å’Œæ ¼å¼çš„åé¢ï¼Œå¦åˆ™æŠ¥é”™
+        //                å¸§ç‡ä¸å¯ä»¥éšä¾¿å®šä¹‰ï¼Œå¦‚æœç³»ç»Ÿä¸æ”¯æŒå°±ä¼šæŠ¥é”™ã€‚åº”è¯¥å…ˆé€šè¿‡cameraè·å–æ”¯æŒçš„å¸§ç‡ï¼Œç„¶åå†è®¾ç½®
         mMediaRecorder.setVideoFrameRate(rate);
 
         // Step 4: Set output file
@@ -571,7 +571,7 @@ public class CameraRecordService extends Service  {
         // setCaptureButtonText("Stop");
         mIsRecording = true;
         showNotification();
-        Toast.makeText(this, "¿ªÆô³É¹¦", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "å¼€å¯æˆåŠŸ", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
             mHandler.sendMessageDelayed(
@@ -583,7 +583,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * Í£Ö¹Â¼Ïñ
+     * åœæ­¢å½•åƒ
      */
     private void stopRecording() {
         PmwsLog.writeLog("stopRecording...");
@@ -608,12 +608,12 @@ public class CameraRecordService extends Service  {
         //        } catch (IOException e) {
         //            e.printStackTrace();
         //        }
-        //Í£Ö¹Â¼ÏñµÄÊ±ºò¾ÍÖ´ĞĞ¼ÓÃÜµÄ²Ù×÷
+        //åœæ­¢å½•åƒçš„æ—¶å€™å°±æ‰§è¡ŒåŠ å¯†çš„æ“ä½œ
         Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
         startService(intent);
         Log.i("QWEQWE", "ONE AGAIN");
         mIsRecording = false;
-        //        stopSelf();  //²»ÒªÍ£Ö¹·şÎñÁË
+        //        stopSelf();  //ä¸è¦åœæ­¢æœåŠ¡äº†
 
         //        mNotificationManager.cancel(NOTIFI_ID_SERVICE_STARTED);
         PmwsSetActivity.sIsRecording = false;
@@ -622,7 +622,7 @@ public class CameraRecordService extends Service  {
 
 
     /**
-     * ÊÇ·ñÕ¹Ê¾Ô¤ÀÀ
+     * æ˜¯å¦å±•ç¤ºé¢„è§ˆ
      *
      * @param showFlag
      */
@@ -643,7 +643,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * Õ¹Ê¾notification
+     * å±•ç¤ºnotification
      */
     private void showNotification() {
         if (mNotificationManager == null) {
@@ -653,8 +653,8 @@ public class CameraRecordService extends Service  {
         Notification notification = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification_start)
                 .setOngoing(true)
-                .setContentTitle("ÆÁÄ»ÎÀÊ¿").setContentText("ÆÁÄ»ÎÀÊ¿, µã»÷Í£Ö¹").build();
-        //        n.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; //°ÑÍ¨ÖªÉèÖÃÎªÕıÔÚÔËĞĞ
+                .setContentTitle("å±å¹•å«å£«").setContentText("å±å¹•å«å£«, ç‚¹å‡»åœæ­¢").build();
+        //        n.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; //æŠŠé€šçŸ¥è®¾ç½®ä¸ºæ­£åœ¨è¿è¡Œ
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());
@@ -675,7 +675,7 @@ public class CameraRecordService extends Service  {
 
 
     /**
-     * ÊÍ·ÅmMediaRecorder
+     * é‡Šæ”¾mMediaRecorder
      */
     private void releaseMediaRecorder() {
         if (mMediaRecorder != null) {
@@ -687,7 +687,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ÊÍ·Åcamera
+     * é‡Šæ”¾camera
      */
     private void releaseCamera() {
         if (mCamera != null) {
@@ -698,7 +698,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * »ñÈ¡ÉãÏñÍ·¶ÔÏó
+     * è·å–æ‘„åƒå¤´å¯¹è±¡
      *
      * @return
      */
@@ -720,7 +720,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * »ñÈ¡ÉãÏñÍ·Ô¤ÀÀÎ»ÖÃ
+     * è·å–æ‘„åƒå¤´é¢„è§ˆä½ç½®
      *
      * @param cameraId
      * @return
@@ -742,7 +742,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * »ñÈ¡Â¼ÏñÔ¤ÀÀÎ»ÖÃ
+     * è·å–å½•åƒé¢„è§ˆä½ç½®
      *
      * @param cameraId
      * @return
@@ -815,9 +815,9 @@ public class CameraRecordService extends Service  {
     @Override
     public void onDestroy() {
         //        releaseWakeLock();
-        PmwsLog.writeLog("CameraRecordService  downÁË!   onDestroy");
+        PmwsLog.writeLog("CameraRecordService  downäº†!   onDestroy");
         Log.i("CameraRecordService", "onDestroy");
-        //        manager.unregisterOnePixelReceiver(this);//ActivityÍË³öÊ±½â×¢²á
+        //        manager.unregisterOnePixelReceiver(this);//Activityé€€å‡ºæ—¶è§£æ³¨å†Œ
         if (mSensorListener != null)
             mSensorManager.unregisterListener(mSensorListener);
 
@@ -842,13 +842,13 @@ public class CameraRecordService extends Service  {
 
 
     /**
-     * ¶¯Ì¬¹ã²¥½ÓÊÕÆ÷
+     * åŠ¨æ€å¹¿æ’­æ¥æ”¶å™¨
      */
     public class StopRecordingReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "½ÓÊÕµ½ÁË¹ã²¥");
+            Log.i(TAG, "æ¥æ”¶åˆ°äº†å¹¿æ’­");
             stopRecording();
             releaseCamera();
             stopSelf();
@@ -857,7 +857,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ÒôÁ¿+-¼üÇĞ»»surfaceÔ¤ÀÀ´°¿Ú
+     * éŸ³é‡+-é”®åˆ‡æ¢surfaceé¢„è§ˆçª—å£
      */
 
     public class ValumeChangeCarme extends BroadcastReceiver {
@@ -865,25 +865,25 @@ public class CameraRecordService extends Service  {
         public void onReceive(Context context, Intent intent) {
             String qubie = intent.getStringExtra("ABC");
             if (qubie != null && qubie.equals("KEYCODE_VOLUME_DOWN")) {
-                TestsBroadStop();//µã»÷ÒôÁ¿¼üÍ£Ö¹ÊÓÆµÂ¼ÖÆ
-                //µÈÓÚ1ÊÇÔòÊÇÃ»ÓĞ¿ªÊ¼Â¼ÖÆ
+                TestsBroadStop();//ç‚¹å‡»éŸ³é‡é”®åœæ­¢è§†é¢‘å½•åˆ¶
+                //ç­‰äº1æ˜¯åˆ™æ˜¯æ²¡æœ‰å¼€å§‹å½•åˆ¶
                 if (VolumeEmbellish == 1) {
                     VolumeCarmeChange();
                     Log.i("qweqwe", "KEYCODE_VOLUME_DOWN=1");
                 }
-                //Æô¶¯ÁíÍâ·şÎñ¿ªÆô£¬µã»÷ÒôÁ¿¼ü
+                //å¯åŠ¨å¦å¤–æœåŠ¡å¼€å¯ï¼Œç‚¹å‡»éŸ³é‡é”®
                 Intent i = new Intent(getBaseContext(), MyServiceStart.class);
                 startService(i);
             }
             if (qubie != null && qubie.equals("KEYCODE_VOLUME_UP")) {
                 Log.i("qweqwe", "KEYCODE_VOLUME_UP=1");
-                TestsBroadStop();//µã»÷ÒôÁ¿¼üÍ£Ö¹ÕıÔÚÂ¼ÖÆ
-                //µÈÓÚ1ÊÇÔòÊÇÃ»ÓĞ¿ªÊ¼Â¼ÖÆ
+                TestsBroadStop();//ç‚¹å‡»éŸ³é‡é”®åœæ­¢æ­£åœ¨å½•åˆ¶
+                //ç­‰äº1æ˜¯åˆ™æ˜¯æ²¡æœ‰å¼€å§‹å½•åˆ¶
                 if (VolumeEmbellish == 1) {
                     VolumeCarmeChange();
                     Log.i("qweqwe", "KEYCODE_VOLUME_DOWN=1");
                 }
-                //Æô¶¯ÁíÍâ·şÎñ¿ªÆô£¬µã»÷ÒôÁ¿¼ü
+                //å¯åŠ¨å¦å¤–æœåŠ¡å¼€å¯ï¼Œç‚¹å‡»éŸ³é‡é”®
                 Intent i = new Intent(getBaseContext(), MyServiceStart.class);
                 startService(i);
             }
@@ -891,7 +891,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ÒôÁ¿¼üÉãÏñÍ·ÇĞ»»Ñ¡Ôñ
+     * éŸ³é‡é”®æ‘„åƒå¤´åˆ‡æ¢é€‰æ‹©
      */
     private void VolumeCarmeChange() {
 
@@ -908,14 +908,14 @@ public class CameraRecordService extends Service  {
 
 
     /**
-     * Èç¹ûÔÚÂ¼ÖÆÍ£Ö¹£¬Èç¹ûÃ»ÓĞÂ¼ÖÆÔòÇĞ»»ÉãÏñÍ·
+     * å¦‚æœåœ¨å½•åˆ¶åœæ­¢ï¼Œå¦‚æœæ²¡æœ‰å½•åˆ¶åˆ™åˆ‡æ¢æ‘„åƒå¤´
      *
-     * @VolumeEmbellish ÅĞ¶ÏÉãÏñÍ·µÄÑ¡Ôñ
-     * @VolumeCarmeChange ¸Ä±äÏµÍ³ÅäÖÃµÄÉãÏñÍ·
+     * @VolumeEmbellish åˆ¤æ–­æ‘„åƒå¤´çš„é€‰æ‹©
+     * @VolumeCarmeChange æ”¹å˜ç³»ç»Ÿé…ç½®çš„æ‘„åƒå¤´
      */
     private void TestsBroadStop() {
         if (mIsRecording == false) {
-            Log.i(TAG, "ÖØĞÂ³õÊ¼»¯");
+            Log.i(TAG, "é‡æ–°åˆå§‹åŒ–");
             VolumeCarmeChange();
             VolumeEmbellish = 2;
             Log.i("VolumeEmbellish", "VolumeEmbellish=2");
@@ -925,8 +925,8 @@ public class CameraRecordService extends Service  {
             //            mWindowManager.removeView(mRootView);
             stopSelf();
         } else {
-            // Toast.makeText(this, "Â¼ÖÆÒÑ¾­Í£Ö¹", Toast.LENGTH_SHORT).show();
-            // Toast.makeText(this, "Â¼ÖÆÒÑ¾­Í£Ö¹", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "å½•åˆ¶å·²ç»åœæ­¢", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "å½•åˆ¶å·²ç»åœæ­¢", Toast.LENGTH_SHORT).show();
             mHandler.removeMessages(MSG_RESTART_RECORDING);
             mHandler.removeMessages(MSG_START_RECORDING);
 
@@ -945,7 +945,7 @@ public class CameraRecordService extends Service  {
     }
 
     /**
-     * ±£´æµ½spÖĞ
+     * ä¿å­˜åˆ°spä¸­
      *
      * @param key
      * @param value

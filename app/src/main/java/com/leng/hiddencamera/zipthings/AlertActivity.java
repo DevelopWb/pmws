@@ -22,7 +22,7 @@ public class AlertActivity extends Activity {
 
     private TextView showMessage;
     private Button okButton;
-    public static String MESSAGE="?›¥?????????";
+    public static String MESSAGE="?æ´¢?????????";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

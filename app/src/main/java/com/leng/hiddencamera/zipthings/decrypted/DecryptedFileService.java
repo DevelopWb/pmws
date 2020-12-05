@@ -27,9 +27,9 @@ public class DecryptedFileService extends IntentService {
 	public static String path = "mnt/sdcard/MyData";
 	private static String password = "fls94#@AB";
 
-	/** NotificationµÄID */
+	/** Notificationçš„ID */
 	int notifyId = 102;
-	/** NotificationµÄ½ø¶ÈÌõÊıÖµ */
+	/** Notificationçš„è¿›åº¦æ¡æ•°å€¼ */
 	int progress = 0;
 	NotificationCompat.Builder mBuilder;
 	public NotificationManager mNotificationManager;
@@ -57,29 +57,29 @@ public class DecryptedFileService extends IntentService {
 		SharedPreferences targetPath = getSharedPreferences(
 				"targetPath", 0);
 		final String target = targetPath.getString("target", "");
-		Log.i(TAG, "½«Òª½âÃÜÎÄ¼ş--"+target);
+		Log.i(TAG, "å°†è¦è§£å¯†æ–‡ä»¶--"+target);
 
-		//·¢ËÍÍ¨ÖªµÄ´úÂë
+		//å‘é€é€šçŸ¥çš„ä»£ç 
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				getApplicationContext());
 
-		// ÉèÖÃÍ¨ÖªµÄ»ù±¾ĞÅÏ¢£ºicon¡¢±êÌâ¡¢ÄÚÈİ
+		// è®¾ç½®é€šçŸ¥çš„åŸºæœ¬ä¿¡æ¯ï¼šiconã€æ ‡é¢˜ã€å†…å®¹
 		builder.setSmallIcon(R.drawable.app_icon);
-		builder.setContentTitle("ÆÁÄ»ÎÀÊ¿");
-		builder.setContentText("ÕıÔÚ½Ó½âÃÜ£¬ÇëÉÔºó£¬½âÃÜÍê»á×Ô¶¯²¥·Å");
+		builder.setContentTitle("å±å¹•å«å£«");
+		builder.setContentText("æ­£åœ¨æ¥è§£å¯†ï¼Œè¯·ç¨åï¼Œè§£å¯†å®Œä¼šè‡ªåŠ¨æ’­æ”¾");
 
-		// ÉèÖÃÍ¨Öª²»±»Çå³ı
+		// è®¾ç½®é€šçŸ¥ä¸è¢«æ¸…é™¤
 		Notification notification = builder.build();
 		notification.flags |= Notification.FLAG_NO_CLEAR;
 
-		// ·¢ËÍÍ¨Öª id ĞèÒªÔÚÓ¦ÓÃÄÚÎ¨Ò»
+		// å‘é€é€šçŸ¥ id éœ€è¦åœ¨åº”ç”¨å†…å”¯ä¸€
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(1, notification);
 
 
-		//ÏÂÃæÊÇ7.25ÈÕ ĞÂµÄ ½âÃÜÎÄ¼ş ĞŞ¸´ÎÄ¼şµÄ·½·¨
-		//¸ü¸ÄÎÄ¼şÃû
+		//ä¸‹é¢æ˜¯7.25æ—¥ æ–°çš„ è§£å¯†æ–‡ä»¶ ä¿®å¤æ–‡ä»¶çš„æ–¹æ³•
+		//æ›´æ”¹æ–‡ä»¶å
 		String newFileName=target.replace(".m9xs", ".mp4");
 
 
@@ -87,19 +87,19 @@ public class DecryptedFileService extends IntentService {
 			AddFilesWithAESEncryption.repairFile(target, newFileName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			Log.i(TAG, "½âÃÜµÄÊ±ºò²¶×½µ½Òì³£");
+			Log.i(TAG, "è§£å¯†çš„æ—¶å€™æ•æ‰åˆ°å¼‚å¸¸");
 
-			//·¢ËÍToastµÄ·½·¨
+			//å‘é€Toastçš„æ–¹æ³•
 //					handler=new Handler(Looper.getMainLooper());
 //					handler.post(new Runnable(){
 //						public void run(){
-//							Toast.makeText(getApplicationContext(),"´æ´¢¿Õ¼ä²»×ã²»ÄÜ½âÃÜ£¬ÇëÇåÀí³ö"+EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"¿Õ¼äÖ®ºóÔÙ½âÃÜ²é¿´",Toast.LENGTH_LONG).show();
+//							Toast.makeText(getApplicationContext(),"å­˜å‚¨ç©ºé—´ä¸è¶³ä¸èƒ½è§£å¯†ï¼Œè¯·æ¸…ç†å‡º"+EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"ç©ºé—´ä¹‹åå†è§£å¯†æŸ¥çœ‹",Toast.LENGTH_LONG).show();
 //						}
 //					});
 
-			AlertActivity.MESSAGE="´æ´¢¿Õ¼ä²»×ã²»ÄÜ½âÃÜ£¬ÇëÇåÀí³ö"+ EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"¿Õ¼äÖ®ºóÔÙ½âÃÜ²é¿´";
+			AlertActivity.MESSAGE="å­˜å‚¨ç©ºé—´ä¸è¶³ä¸èƒ½è§£å¯†ï¼Œè¯·æ¸…ç†å‡º"+ EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"ç©ºé—´ä¹‹åå†è§£å¯†æŸ¥çœ‹";
 
-			//ÒÔdialogµÄ·½Ê½Õ¹Ê¾Ò»¸öactivity
+			//ä»¥dialogçš„æ–¹å¼å±•ç¤ºä¸€ä¸ªactivity
 			Intent it =new Intent(getApplicationContext(),AlertActivity.class);
 			it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(it);
@@ -111,15 +111,15 @@ public class DecryptedFileService extends IntentService {
 		}
 
 
-		// Ö´ĞĞ½çÑ¹Ëõ ½âÃÜµÄ´úÂë
+		// æ‰§è¡Œç•Œå‹ç¼© è§£å¯†çš„ä»£ç 
 //				AddFilesWithAESEncryption.unZipFilesWithPassword(target,
 //						SettingsActivity.SAVED_VIDEO_PATH, password); // path
 
-		// ÏÂÃæÊÇ·¢ËÍÍ¨ÖªµÄ´úÂëÁË
+		// ä¸‹é¢æ˜¯å‘é€é€šçŸ¥çš„ä»£ç äº†
 		AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-		long triggerAtTime = SystemClock.elapsedRealtime();// Õâ¸öÊ±¼ä¿ÉÒÔÊÇÑ¹ËõÍê³ÉÖ®ºóÔÙ¼Ó1Ãë¾Í·¢ËÍ¹ã²¥£¬È»ºó¸ø¸öÍ¨Öª¾ÍºÃ
-		// ´Ë´¦ÉèÖÃ¿ªÆôAlarmReceiverÕâ¸öService
+		long triggerAtTime = SystemClock.elapsedRealtime();// è¿™ä¸ªæ—¶é—´å¯ä»¥æ˜¯å‹ç¼©å®Œæˆä¹‹åå†åŠ 1ç§’å°±å‘é€å¹¿æ’­ï¼Œç„¶åç»™ä¸ªé€šçŸ¥å°±å¥½
+		// æ­¤å¤„è®¾ç½®å¼€å¯AlarmReceiverè¿™ä¸ªService
 		Intent i2 = new Intent(getApplicationContext(),
 				DecrypAlarmReceiver.class);
 		PendingIntent pi = PendingIntent.getBroadcast(
@@ -129,8 +129,8 @@ public class DecryptedFileService extends IntentService {
 		manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				triggerAtTime, pi);
 
-//		Log.e(TAG, "½âÃÜÖ´ĞĞÍê±Ï");
-//		playMp4File(newFileName);//¶ş´Î²¥·Å
+//		Log.e(TAG, "è§£å¯†æ‰§è¡Œå®Œæ¯•");
+//		playMp4File(newFileName);//äºŒæ¬¡æ’­æ”¾
 		Intent intentDialogDismiss = new Intent("DialogDismiss");
 		sendBroadcast(intentDialogDismiss);
 	}
@@ -145,13 +145,13 @@ public class DecryptedFileService extends IntentService {
 	}
 	/**
 	 * @param f
-	 * @return ·µ»ØµÄÊÇÎÄ¼şºó×ºÃû£¬Ô­À´ºó×ºÃûÒªĞ¡Ğ©£¬´óĞ´¸ù±¾Ã»ÓÃ£¬ËùÒÔ¸ù±¾Ã»±È½Ïµ½£¬ºÇºÇÁË
+	 * @return è¿”å›çš„æ˜¯æ–‡ä»¶åç¼€åï¼ŒåŸæ¥åç¼€åè¦å°äº›ï¼Œå¤§å†™æ ¹æœ¬æ²¡ç”¨ï¼Œæ‰€ä»¥æ ¹æœ¬æ²¡æ¯”è¾ƒåˆ°ï¼Œå‘µå‘µäº†
 	 */
 	private String getMIMEType(File f) {
 		String type = "";
 		String fName = f.getName();
 
-		// ½«À´½âÑ¹ºÃµÄÊÓÆµÎÄ¼şÃû£¬È»ºó±£´æµ½SharedPreferences
+		// å°†æ¥è§£å‹å¥½çš„è§†é¢‘æ–‡ä»¶åï¼Œç„¶åä¿å­˜åˆ°SharedPreferences
 		SharedPreferences tmpFileName = getSharedPreferences("tmpFileName", 0);
 
 		SharedPreferences.Editor editor = tmpFileName.edit();
@@ -189,7 +189,7 @@ public class DecryptedFileService extends IntentService {
 		Log.i(TAG,"DecryptedFileService is Desotrying");
 		super.onDestroy();
 
-		// ÔÚService½áÊøºó¹Ø±ÕAlarmManager
+		// åœ¨Serviceç»“æŸåå…³é—­AlarmManager
 //		AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 //		Intent i = new Intent(this, AlarmReceiver.class);
 //		PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);

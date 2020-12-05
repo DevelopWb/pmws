@@ -9,11 +9,11 @@ import com.leng.hiddencamera.home.CameraRecordService;
 public class MyServiceStart extends IntentService {
 
 
-    //------------------±ØĞëÊµÏÖ-----------------------------
+    //------------------å¿…é¡»å®ç°-----------------------------
 
     public MyServiceStart() {
         super("myIntentService");
-        // ×¢Òâ¹¹Ôìº¯Êı²ÎÊıÎª¿Õ£¬Õâ¸ö×Ö·û´®¾ÍÊÇworker threadµÄÃû×Ö
+        // æ³¨æ„æ„é€ å‡½æ•°å‚æ•°ä¸ºç©ºï¼Œè¿™ä¸ªå­—ç¬¦ä¸²å°±æ˜¯worker threadçš„åå­—
     }
 
     @Override
@@ -26,7 +26,7 @@ public class MyServiceStart extends IntentService {
 
 
 
-        //¸ù¾İIntentµÄ²»Í¬½øĞĞ²»Í¬µÄÊÂÎñ´¦Àí
+        //æ ¹æ®Intentçš„ä¸åŒè¿›è¡Œä¸åŒçš„äº‹åŠ¡å¤„ç†
 //        String  taskName = intent.getExtras().getString("taskName");
 //        switch (taskName) {
 //            case "task1":
@@ -41,7 +41,7 @@ public class MyServiceStart extends IntentService {
         Log.i("myIntentService", "do task2");
     }
 
-    //--------------------ÓÃÓÚ´òÓ¡ÉúÃüÖÜÆÚ--------------------
+    //--------------------ç”¨äºæ‰“å°ç”Ÿå‘½å‘¨æœŸ--------------------
     @Override
     public void onCreate() {
         Log.i("myIntentService", "onCreate");

@@ -72,12 +72,12 @@ public class MyAdapter extends BaseAdapter
     File f=new File(paths.get(position).toString());
     if(items.get(position).toString().equals("rootPath"))
     {
-      holder.text.setText("·µ»Ø¸ùÄ¿Â¼..");
+      holder.text.setText("è¿”å›žæ ¹ç›®å½•..");
       holder.icon.setImageBitmap(mIcon1);
     }
     else if(items.get(position).toString().equals("parentPath"))
     {
-      holder.text.setText("·µ»ØÉÏÒ»²ã..");
+      holder.text.setText("è¿”å›žä¸Šä¸€å±‚..");
       holder.icon.setImageBitmap(mIcon2);
     }
     else

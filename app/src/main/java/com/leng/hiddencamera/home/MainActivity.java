@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         acquireWakeLock();
         String strreg = Hawk.get(HawkProperty.REG_CODE);
         if ("".equals(strreg) || TextUtils.isEmpty(strreg)) {
-            ToastUtils.toast(this, "Äú»¹Ã»ÓĞ×¢²á£¬ÇëÏÈ×¢²á£¡");
+            ToastUtils.toast(this, "æ‚¨è¿˜æ²¡æœ‰æ³¨å†Œï¼Œè¯·å…ˆæ³¨å†Œï¼");
             this.finish();
             return;
         } else {
@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void toDoNext(String input) {
-                    //                    //Æô¶¯±¾µØ·şÎñ
+                    //                    //å¯åŠ¨æœ¬åœ°æœåŠ¡
                     //                    Intent localIntent = new Intent(MainActivity.this, LocalService.class);
-                    //                    //Æô¶¯ÊØ»¤½ø³Ì
+                    //                    //å¯åŠ¨å®ˆæŠ¤è¿›ç¨‹
                     //                    startService(localIntent);
                     if (PmwsSetActivity.sIsRecording) {
                         startCameraService(CameraRecordService.ACTION_RECORDING);
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
     private PowerManager.WakeLock wakeLock;
 
     /**
-     * ·ÀÖ¹CUPĞİÃß
+     * é˜²æ­¢CUPä¼‘çœ 
      */
     private void acquireWakeLock() {
         if (wakeLock == null) {
@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
 
 
     /**
-     * ÊÍ·ÅCPUĞİÃßËø
+     * é‡Šæ”¾CPUä¼‘çœ é”
      */
     private void releaseWakeLock() {
         if (wakeLock != null && wakeLock.isHeld()) {
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Æô¶¯service
+     * å¯åŠ¨service
      *
      * @param actionRecording
      */

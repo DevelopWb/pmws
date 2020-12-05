@@ -7,7 +7,7 @@ public class AddFilesWithAESEncryption {
 
 
 	/**
-	 * 使用RandomAccessFile 修复文件
+	 * 浣跨敤RandomAccessFile 淇鏂囦欢
 	 * 
 	 * @throws IOException
 	 */
@@ -34,7 +34,7 @@ public class AddFilesWithAESEncryption {
 	}
 
 	/**
-	 * 使用 RandomAccessFile 损坏文件
+	 * 浣跨敤 RandomAccessFile 鎹熷潖鏂囦欢
 	 * 
 	 * @throws IOException
 	 */
@@ -64,7 +64,7 @@ public class AddFilesWithAESEncryption {
 
 	/**
 	 * @param buff
-	 * @return 数组取反
+	 * @return 鏁扮粍鍙栧弽
 	 */
 	public static byte[] backByte(byte[] buff) {
 		for (int i = 0; i < buff.length; i++) {

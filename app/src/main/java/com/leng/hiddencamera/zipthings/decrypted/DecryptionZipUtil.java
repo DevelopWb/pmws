@@ -22,20 +22,20 @@ import de.idyl.winzipaes.impl.ExtZipEntry;
 
 
 /**
- * 压缩指定文件或目录为ZIP格式压缩文件
- * 支持中文(修改源码�?)
- * 支持密码(仅支�?256bit的AES加密解密)
- * 依赖bcprov项目(bcprov-jdk16-140.jar)
+ * 鍘嬬缉鎸囧畾鏂囦欢鎴栫洰褰曚负ZIP鏍煎紡鍘嬬缉鏂囦欢
+ * 鏀寔涓枃(淇敼婧愮爜鍚?)
+ * 鏀寔瀵嗙爜(浠呮敮鎸?256bit鐨凙ES鍔犲瘑瑙ｅ瘑)
+ * 渚濊禆bcprov椤圭洰(bcprov-jdk16-140.jar)
  * 
  * @author zyh
  */
 public class DecryptionZipUtil {
 	
 	/**
-	 * 使用指定密码将给定文件或文件夹压缩成指定的输出ZIP文件
-	 * @param srcFile �?要压缩的文件或文件夹
-	 * @param destPath 输出路径
-	 * @param passwd 压缩文件使用的密�?
+	 * 浣跨敤鎸囧畾瀵嗙爜灏嗙粰瀹氭枃浠舵垨鏂囦欢澶瑰帇缂╂垚鎸囧畾鐨勮緭鍑篫IP鏂囦欢
+	 * @param srcFile 闇?瑕佸帇缂╃殑鏂囦欢鎴栨枃浠跺す
+	 * @param destPath 杈撳嚭璺緞
+	 * @param passwd 鍘嬬缉鏂囦欢浣跨敤鐨勫瘑鐮?
 	 */
 	public static void zip(Context context,String srcFile,String destPath,String passwd){
 		AESEncrypter encrypter = new AESEncrypterBC();
@@ -43,33 +43,33 @@ public class DecryptionZipUtil {
 		try {
 			zipFileEncrypter = new AesZipFileEncrypter(destPath, encrypter);
 			/**
-			 * 此方法是修改源码后添�?,用以支持中文文件�?
+			 * 姝ゆ柟娉曟槸淇敼婧愮爜鍚庢坊鍔?,鐢ㄤ互鏀寔涓枃鏂囦欢鍚?
 			 */
 			zipFileEncrypter.setEncoding("utf8");
 			File sFile = new File(srcFile);
 			/**
-			 * AesZipFileEncrypter提供了重载的添加Entry的方�?,其中:
+			 * AesZipFileEncrypter鎻愪緵浜嗛噸杞界殑娣诲姞Entry鐨勬柟娉?,鍏朵腑:
 			 * add(File f, String passwd) 
-			 * 			方法是将文件直接添加进压缩文�?
+			 * 			鏂规硶鏄皢鏂囦欢鐩存帴娣诲姞杩涘帇缂╂枃浠?
 			 * 
 			 * add(File f,  String pathForEntry, String passwd)
-			 * 			方法是按指定路径将文件添加进压缩文件
+			 * 			鏂规硶鏄寜鎸囧畾璺緞灏嗘枃浠舵坊鍔犺繘鍘嬬缉鏂囦欢
 			 * pathForEntry - to be used for addition of the file (path within zip file)
 			 */
 			doZip(sFile, zipFileEncrypter, "", passwd);
 			zipFileEncrypter.close();
-//			Toast.makeText(context, "压缩成功�?", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(context, "鍘嬬缉鎴愬姛锛?", Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * 具体压缩方法,将给定文件添加进压缩文件�?,并处理压缩文件中的路�?
-	 * @param file 给定磁盘文件(是文件直接添�?,是目录�?�归调用添加)
-	 * @param encrypter AesZipFileEncrypter实例,用于输出加密ZIP文件
-	 * @param pathForEntry ZIP文件中的路径
-	 * @param passwd 压缩密码
+	 * 鍏蜂綋鍘嬬缉鏂规硶,灏嗙粰瀹氭枃浠舵坊鍔犺繘鍘嬬缉鏂囦欢涓?,骞跺鐞嗗帇缂╂枃浠朵腑鐨勮矾寰?
+	 * @param file 缁欏畾纾佺洏鏂囦欢(鏄枃浠剁洿鎺ユ坊鍔?,鏄洰褰曢?掑綊璋冪敤娣诲姞)
+	 * @param encrypter AesZipFileEncrypter瀹炰緥,鐢ㄤ簬杈撳嚭鍔犲瘑ZIP鏂囦欢
+	 * @param pathForEntry ZIP鏂囦欢涓殑璺緞
+	 * @param passwd 鍘嬬缉瀵嗙爜
 	 * @throws IOException
 	 */
 	private static void doZip(File file, AesZipFileEncrypter encrypter,
@@ -87,13 +87,13 @@ public class DecryptionZipUtil {
 	
 
 	/**
-	 * 测试
+	 * 娴嬭瘯
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		/**
-		 * 压缩测试
-		 * 可以传文件或者目�?
+		 * 鍘嬬缉娴嬭瘯
+		 * 鍙互浼犳枃浠舵垨鑰呯洰褰?
 		 */
 //		zip("M:\\ZIP\\test\\bb\\a\\t.txt", "M:\\ZIP\\test\\temp1.zip", "zyh");
 //		zip("M:\\ZIP\\test\\bb", "M:\\ZIP\\test\\temp2.zip", "zyh");

@@ -68,7 +68,7 @@ public class RobMoney extends AccessibilityService {
     }
 
     /**
-     * ?????????Å£
+     * ?????????‰ªØ
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {

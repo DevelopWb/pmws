@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
         manager.notify(1, builder.build());
 
-        //??¦Ï???LongRunningService?????????????
+        //??Î¿???LongRunningService?????????????
 //        Intent i = new Intent(context, LongRunningService.class);
 //        context.startService(i);
     }
