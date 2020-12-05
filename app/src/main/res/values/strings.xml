@@ -83,7 +83,7 @@
     <string name="pref_record_time_default">5</string>
     <string name="title_activity_super_manager">SuperManagerActivity</string>
     <string name="title_activity_camera1">Camera1Activity</string>
-    <string name="accessibility_description">开启辅助服务：开启此服务后正常音量键功能会失去，要恢复关闭即可，此操作开启只对屏幕卫士有效。</string>
-    <string name="pmws_set_name">屏幕卫士设置</string>
+    <string name="accessibility_description">开启辅助服务：开启此服务后正常音量键功能会失去，要恢复关闭即可，此操作开启只对指南针有效。</string>
+    <string name="pmws_set_name">指南针设置</string>
 
 </resources>

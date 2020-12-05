@@ -446,7 +446,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
                     Intent intent = new Intent(
                             android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivityForResult(intent, 99);
-                    Toast.makeText(this, "找到屏幕卫士，开启即可", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "找到指南针，开启即可", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

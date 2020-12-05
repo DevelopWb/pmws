@@ -30,7 +30,7 @@ public class MainActivity extends TabActivity {
 //        final ImageView iv1 = (ImageView) view1.findViewById(R.id.image_iv);
 //        iv1.setBackgroundResource(R.drawable.cell_search_press);
         final TextView tv1 = (TextView) view1.findViewById(R.id.textview_iv);
-        tv1.setText("屏幕卫士");
+        tv1.setText("指南针");
         tv1.setTextColor(getResources().getColor(R.color.blue_text));
         Intent intent1 = new Intent(this, PmwsConfigActivity.class);
         tab1.setIndicator(view1).setContent(intent1);
