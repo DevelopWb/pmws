@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.TextUtils;
 
+import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.orhanobut.hawk.Hawk;
@@ -21,14 +22,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        acquireWakeLock();
+//        acquireWakeLock();
+        ActivityManagerTool.getInstance().finishApp();
         String strreg = Hawk.get(HawkProperty.REG_CODE);
         if ("".equals(strreg) || TextUtils.isEmpty(strreg)) {
             ToastUtils.toast(this, "您还没有注册，请先注册！");
             this.finish();
             return;
         } else {
-            RegOperateManager regOperateManager = new RegOperateManager(this);
+            RegOperateManager regOperateManager = new RegOperateManager(getApplicationContext());
             regOperateManager.setCallBack(new RegLatestContact.CancelCallBack() {
                 @Override
                 public void toFinishActivity() {
@@ -57,33 +59,33 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        releaseWakeLock();
+//        releaseWakeLock();
 
     }
 
-    private PowerManager.WakeLock wakeLock;
+//    private PowerManager.WakeLock wakeLock;
 
-    /**
-     * 防止CUP休眠
-     */
-    private void acquireWakeLock() {
-        if (wakeLock == null) {
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());
-            wakeLock.acquire();
-        }
-    }
+//    /**
+//     * 防止CUP休眠
+//     */
+//    private void acquireWakeLock() {
+//        if (wakeLock == null) {
+//            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+//            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());
+//            wakeLock.acquire();
+//        }
+//    }
 
 
-    /**
-     * 释放CPU休眠锁
-     */
-    private void releaseWakeLock() {
-        if (wakeLock != null && wakeLock.isHeld()) {
-            wakeLock.release();
-            wakeLock = null;
-        }
-    }
+//    /**
+//     * 释放CPU休眠锁
+//     */
+//    private void releaseWakeLock() {
+//        if (wakeLock != null && wakeLock.isHeld()) {
+//            wakeLock.release();
+//            wakeLock = null;
+//        }
+//    }
 
     /**
      * 启动service
@@ -93,7 +95,7 @@ public class MainActivity extends Activity {
     private void startCameraService(String actionRecording) {
         Intent startIntent = new Intent(
                 actionRecording);
-        startIntent.setClass(getBaseContext(), CameraRecordService.class);
+        startIntent.setClass(this, CameraRecordService.class);
         if (Build.VERSION.SDK_INT >= 26) {
             startService(startIntent);
         } else {

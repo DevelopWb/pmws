@@ -1,6 +1,5 @@
 package com.leng.hiddencamera.home;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +29,7 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.base.BaseAppActivity;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.util.SettingsUtil;
@@ -44,10 +43,7 @@ import com.regmode.Utils.RegOperateManager;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -55,7 +51,7 @@ import java.util.List;
  * Created by Administrator on 2016/10/14.
  */
 
-public class PmwsSetActivity extends Activity implements View.OnClickListener {
+public class PmwsSetActivity extends BaseAppActivity implements View.OnClickListener {
     public static final int FILE_RESULT_CODE = 1;
     private String TAG = "PmwsSetActivity";
     private TextView encrption_tv;
@@ -78,7 +74,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
     private String VEDIOTIME_THIRTY = "30分钟";
     private String MOBILE = "手机";
     private String SDCARD = "内存卡";
-    public static boolean sIsRecording;
+    public static boolean sIsRecording = false;
     private TextView camera_selected_tv;
     private TextView vedio_selected_tv;
     private TextView filepath_selected_tv;
@@ -129,16 +125,6 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
             }
         });
 
-        if (sIsRecording) {
-            // 如果在录制中，toast显示正在录制
-            Toast.makeText(getBaseContext(), "正在录制中，请先停止...", Toast.LENGTH_LONG)
-                    .show();
-            Log.i(TAG, "2");
-            finish();
-        }
-        if (sIsRecording) {
-            finish();
-        }
         mProgressDialog = DCPubic.getProgressDialog(this, "正在加密，请稍后...");
         setContentView(R.layout.pmws_set);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
@@ -197,12 +183,10 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
      */
     public void showPasswordInputDialog() {
         if (dialog != null) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-                dialog = null;
-            } else {
-                dialog = null;
+            if (!dialog.isShowing()) {
+                dialog.show();
             }
+            return;
         }
         View view = View.inflate(this, R.layout.dialog_input_password, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -408,7 +392,13 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
     }
 
-    public static List<String> getFileList(String strPath, String endsWith) {
+    /**
+     * 获取待加密的视频文件
+     * @param strPath
+     * @param endsWith
+     * @return
+     */
+    public static List<String> getFileListToEncrypt(String strPath, String endsWith) {
         List<String> filelist = new ArrayList<String>();
         File dir = new File(strPath);
         File[] files = dir.listFiles(); // 该文件目录下文件全部放入数组
@@ -416,7 +406,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
             for (int i = 0; i < files.length; i++) {
                 String fileName = files[i].getName();
                 if (files[i].isDirectory()) { // 判断是文件还是文件夹
-                    getFileList(files[i].getAbsolutePath(), endsWith); // 获取文件绝对路径
+                    getFileListToEncrypt(files[i].getAbsolutePath(), endsWith); // 获取文件绝对路径
                 } else if (fileName.endsWith(endsWith)) {
                     String strFileName = files[i].getAbsolutePath();
                     System.out.println(strFileName);
@@ -465,7 +455,7 @@ public class PmwsSetActivity extends Activity implements View.OnClickListener {
 
             case R.id.encrption_tv://加密文件
 
-                List<String> fList = getFileList(SAVED_VIDEO_PATH,
+                List<String> fList = getFileListToEncrypt(SAVED_VIDEO_PATH,
                         "mp4"); // path
                 if (fList.size() < 1) {
                     new AlertDialog.Builder(this)

@@ -93,7 +93,27 @@ public class NotificationTool extends ContextWrapper {
                 .build();
         manager.notify(id, notification);
     }
-
+    /**
+     * 获取notification
+     * @param context
+     * @return
+     */
+    public static Notification getNotification(Context context,int id,String title,String content,int imageRes,boolean ongo){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            createNotificationChannel(context, importance);
+        }
+        return new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle(title)
+                .setContentText(content)
+                //                .setSound(uri)
+                .setWhen(System.currentTimeMillis())
+                .setOngoing(ongo)//设置为一个正在进行的通知，此时用户无法清除通知
+                .setSmallIcon(imageRes)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), imageRes))
+                .setAutoCancel(true)
+                .build();
+    }
     public static void startNotifBg(Context context, int id, String title, String content, int imageRes){
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent();

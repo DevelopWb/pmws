@@ -20,11 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.home.CameraRecordService;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 
 public class DCPubic {
@@ -34,7 +38,7 @@ public class DCPubic {
 		Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 	}
 
-	//ÅĞ¶Ïµ±Ç°ÍøÂçÊÇ·ñ¿ÉÓÃ
+	//åˆ¤æ–­å½“å‰ç½‘ç»œæ˜¯å¦å¯ç”¨
 	public static boolean isNetworkAvailable(Context context) {
 		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(
 				Context.CONNECTIVITY_SERVICE);
@@ -55,7 +59,7 @@ public class DCPubic {
 	 * @param filename
 	 * @param key
 	 * @param defaut
-	 * @return ·µ»ØµÄÊÇ¼ÓÃÜµÄ×¢²áÂë£¿
+	 * @return è¿”å›çš„æ˜¯åŠ å¯†çš„æ³¨å†Œç ï¼Ÿ
 	 */
 	public static String getDataFromSp(Context context, String filename,
 									   String key, String defaut) {
@@ -74,18 +78,18 @@ public class DCPubic {
 	}
 
 	/**
-	 * »ñÈ¡macµØÖ·
+	 * è·å–macåœ°å€
 	 *
 	 * @return
 	 */
 	public static String getMacAddress() {
 		String address = null;
 		try {
-			// °Ñµ±Ç°»úÆ÷ÉÏµÄ·ÃÎÊÍøÂç½Ó¿ÚµÄ´æÈë Enumeration¼¯ºÏÖĞ
+			// æŠŠå½“å‰æœºå™¨ä¸Šçš„è®¿é—®ç½‘ç»œæ¥å£çš„å­˜å…¥ Enumerationé›†åˆä¸­
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
 				NetworkInterface netWork = interfaces.nextElement();
-				// Èç¹û´æÔÚÓ²¼şµØÖ·²¢¿ÉÒÔÊ¹ÓÃ¸ø¶¨µÄµ±Ç°È¨ÏŞ·ÃÎÊ£¬Ôò·µ»Ø¸ÃÓ²¼şµØÖ·£¨Í¨³£ÊÇ MAC£©¡£
+				// å¦‚æœå­˜åœ¨ç¡¬ä»¶åœ°å€å¹¶å¯ä»¥ä½¿ç”¨ç»™å®šçš„å½“å‰æƒé™è®¿é—®ï¼Œåˆ™è¿”å›è¯¥ç¡¬ä»¶åœ°å€ï¼ˆé€šå¸¸æ˜¯ MACï¼‰ã€‚
 				byte[] by = netWork.getHardwareAddress();
 				if (by == null || by.length == 0) {
 					continue;
@@ -98,7 +102,7 @@ public class DCPubic {
 					builder.deleteCharAt(builder.length() - 1);
 				}
 				String mac = builder.toString();
-				// ´ÓÂ·ÓÉÆ÷ÉÏÔÚÏßÉè±¸µÄMACµØÖ·ÁĞ±í£¬¿ÉÒÔÓ¡Ö¤Éè±¸WifiµÄ name ÊÇ wlan0
+				// ä»è·¯ç”±å™¨ä¸Šåœ¨çº¿è®¾å¤‡çš„MACåœ°å€åˆ—è¡¨ï¼Œå¯ä»¥å°è¯è®¾å¤‡Wifiçš„ name æ˜¯ wlan0
 				if (netWork.getName().equals("wlan0")) {
 					address = mac;
 				}
@@ -110,7 +114,7 @@ public class DCPubic {
 	}
 
 	/**
-	 * ÊÇ·ñ¿ªÆôWiFi
+	 * æ˜¯å¦å¼€å¯WiFi
 	 * @param context
 	 * @return
 	 */
@@ -129,9 +133,9 @@ public class DCPubic {
 		Window window = dialog.getWindow();
 		WindowManager.LayoutParams lp = window.getAttributes();
 		window.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-		lp.width = dip2px(context, 300); // ¿í¶È
-		lp.height = dip2px(context, 250); // ¸ß¶È
-		lp.alpha = 0.7f; // Í¸Ã÷¶È
+		lp.width = dip2px(context, 300); // å®½åº¦
+		lp.height = dip2px(context, 250); // é«˜åº¦
+		lp.alpha = 0.7f; // é€æ˜åº¦
 		window.setAttributes(lp);
 		window.setContentView(v);
 		TextView progress_content_tv = (TextView) v.findViewById(R.id.progress_content_tv);
@@ -145,7 +149,7 @@ public class DCPubic {
 	}
 
 	/**
-	 * ³õÊ¼»¯mac
+	 * åˆå§‹åŒ–mac
 	 *
 	 * @return
 	 */
@@ -181,4 +185,45 @@ public class DCPubic {
 		return true;
 
 	}
+
+
+	/**
+	 * Create a File for saving an image or video
+	 */
+	public static File getOutputMediaFile(String fileDir ,int type) {
+		// To be safe, you should check that the SDCard is mounted
+		// using Environment.getExternalStorageState() before doing this.
+
+		File mediaStorageDir = new File(fileDir);
+		// This location works best if you want the created images to be shared
+		// between applications and persist after your app has been uninstalled.
+
+		// Create the storage directory if it does not exist
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				PmwsLog.d("failed to create directory");
+				return null;
+			}
+		}
+
+		// Create a media file name
+
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		File mediaFile;
+		if (type == CameraRecordService.MEDIA_TYPE_IMAGE) {
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator
+					+ "IMG_" + timeStamp + ".jpg");
+		} else if (type == CameraRecordService.MEDIA_TYPE_VIDEO) {
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator
+					+ "VID_" + timeStamp + ".mp4");
+		} else {
+			return null;
+		}
+
+		return mediaFile;
+
+	}
+
+
 }

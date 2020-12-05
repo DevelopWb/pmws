@@ -39,8 +39,7 @@ public class SplashActivity extends RxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (PmwsSetActivity.sIsRecording) {
-            // �����¼���У�toast��ʾ����¼��
-            Toast.makeText(getBaseContext(), "����¼���У�����ֹͣ...", Toast.LENGTH_LONG)
+            Toast.makeText(getBaseContext(), "正在录制中，请先停止...", Toast.LENGTH_LONG)
                     .show();
             finish();
             return;

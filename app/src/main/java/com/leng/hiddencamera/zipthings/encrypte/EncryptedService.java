@@ -102,27 +102,6 @@ public class EncryptedService extends IntentService {
         //关闭dialog
         Intent intentCloseDialog = new Intent("CloseDialog");
         sendBroadcast(intentCloseDialog);
-
-        //新的发送通知的代码
-
-
-        //注释以后不显示加密完成Notification、不注释则正常显示
-        //                NotificationCompat.Builder builder = new NotificationCompat.Builder(
-        //                        getApplicationContext());
-        //
-        //                // 设置通知的基本信息：icon、标题、内容
-        //                builder.setSmallIcon(R.drawable.ic_app);
-        //                builder.setContentTitle("屏幕卫士");
-        //                builder.setContentText("加密完成");
-        //
-        //
-        //                Notification notification = builder.build();
-        //                // 发送通知 id 需要在应用内唯一
-        //                NotificationManager notificationManager = (NotificationManager) getSystemService
-        //                        (Context.NOTIFICATION_SERVICE);
-        //                notificationManager.notify(1, notification);
-
-
         Log.i(TAG, "加密执行完毕");
 
     }
