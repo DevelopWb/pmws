@@ -17,6 +17,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -480,6 +481,7 @@ public class CameraRecordService extends Service {
         // Step 1: Unlock and set camera to MediaRecorder
         if (mCamera != null) {
             mCamera.unlock();
+
         }
         mMediaRecorder.setCamera(mCamera);
 
@@ -541,7 +543,7 @@ public class CameraRecordService extends Service {
         if (mMaxDuration > 0) {
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                    mMaxDuration);
+                    30*1000);
         }
         PmwsSetActivity.sIsRecording = true;
 
@@ -606,7 +608,6 @@ public class CameraRecordService extends Service {
                 .setSmallIcon(R.drawable.ic_notification_start)
                 .setOngoing(true)
                 .setContentTitle("指南针").setContentText("指南针, 点击停止").build();
-        //        n.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; //把通知设置为正在运行
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());
@@ -627,6 +628,9 @@ public class CameraRecordService extends Service {
             mMediaRecorder.reset(); // clear recorder configuration
             mMediaRecorder.release(); // release the recorder object
             mMediaRecorder = null;
+            if (mCamera != null) {
+                mCamera.lock();
+            }
         }
     }
 

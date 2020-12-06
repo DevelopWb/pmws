@@ -109,8 +109,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        regOperateManager = new RegOperateManager(this);
-        regOperateManager.setCallBack(new RegLatestContact.CancelCallBack() {
+        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
             @Override
             public void toFinishActivity() {
                 finish();
@@ -394,6 +393,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
 
     /**
      * 获取待加密的视频文件
+     *
      * @param strPath
      * @param endsWith
      * @return
@@ -669,7 +669,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
 
-
     /**
      * 关于时间选择的rediobutton
      */
@@ -799,8 +798,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
 
-
-
     @Override
     protected void onDestroy() {
         PmwsLog.writeLog("the main activity is destorying");
@@ -824,9 +821,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
             }
         }
     };
-
-
-
 
 
     /**

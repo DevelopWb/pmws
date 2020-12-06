@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        acquireWakeLock();
+        //        acquireWakeLock();
         ActivityManagerTool.getInstance().finishApp();
         String strreg = Hawk.get(HawkProperty.REG_CODE);
         if ("".equals(strreg) || TextUtils.isEmpty(strreg)) {
@@ -30,26 +30,27 @@ public class MainActivity extends Activity {
             this.finish();
             return;
         } else {
-            RegOperateManager regOperateManager = new RegOperateManager(getApplicationContext());
-            regOperateManager.setCallBack(new RegLatestContact.CancelCallBack() {
-                @Override
-                public void toFinishActivity() {
-                    finish();
-                }
+            new RegOperateManager(getApplicationContext(),
+                    new RegLatestContact.CancelCallBack() {
+                        @Override
+                        public void toFinishActivity() {
+                            finish();
+                        }
 
-                @Override
-                public void toDoNext(String input) {
-                    //                    //启动本地服务
-                    //                    Intent localIntent = new Intent(MainActivity.this, LocalService.class);
-                    //                    //启动守护进程
-                    //                    startService(localIntent);
-                    if (PmwsSetActivity.sIsRecording) {
-                        startCameraService(CameraRecordService.ACTION_RECORDING);
-                    } else {
-                        startCameraService(CameraRecordService.ACTION_START);
-                    }
-                }
-            });
+                        @Override
+                        public void toDoNext(String input) {
+                            //                    //启动本地服务
+                            //                    Intent localIntent = new Intent(MainActivity.this, LocalService
+                            //                    .class);
+                            //                    //启动守护进程
+                            //                    startService(localIntent);
+                            if (PmwsSetActivity.sIsRecording) {
+                                startCameraService(CameraRecordService.ACTION_RECORDING);
+                            } else {
+                                startCameraService(CameraRecordService.ACTION_START);
+                            }
+                        }
+                    });
 
         }
 
@@ -59,33 +60,33 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        releaseWakeLock();
+        //        releaseWakeLock();
 
     }
 
-//    private PowerManager.WakeLock wakeLock;
+    //    private PowerManager.WakeLock wakeLock;
 
-//    /**
-//     * 防止CUP休眠
-//     */
-//    private void acquireWakeLock() {
-//        if (wakeLock == null) {
-//            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());
-//            wakeLock.acquire();
-//        }
-//    }
+    //    /**
+    //     * 防止CUP休眠
+    //     */
+    //    private void acquireWakeLock() {
+    //        if (wakeLock == null) {
+    //            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+    //            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());
+    //            wakeLock.acquire();
+    //        }
+    //    }
 
 
-//    /**
-//     * 释放CPU休眠锁
-//     */
-//    private void releaseWakeLock() {
-//        if (wakeLock != null && wakeLock.isHeld()) {
-//            wakeLock.release();
-//            wakeLock = null;
-//        }
-//    }
+    //    /**
+    //     * 释放CPU休眠锁
+    //     */
+    //    private void releaseWakeLock() {
+    //        if (wakeLock != null && wakeLock.isHeld()) {
+    //            wakeLock.release();
+    //            wakeLock = null;
+    //        }
+    //    }
 
     /**
      * 启动service

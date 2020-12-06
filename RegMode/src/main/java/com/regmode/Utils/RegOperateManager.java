@@ -90,8 +90,9 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
     private String input;
 
 
-    public RegOperateManager(Context context) {
+    public RegOperateManager(Context context,RegLatestContact.CancelCallBack cancelCallBack) {
         this.context = context;
+        this.cancelCallBack = cancelCallBack;
         present = new RegLatestPresent();
         if (firstCite) {
             firstCite = false;
@@ -103,21 +104,7 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
     public void destroy(){
         context = null;
     }
-    public RegOperateManager setCallBack(RegLatestContact.CancelCallBack cancelCallBack) {
-        this.cancelCallBack = cancelCallBack;
-        return this;
-    }
 
-    public static RegOperateManager getInstance(Context context) {
-
-        if (regOperateUtil == null) {
-            synchronized (RegOperateManager.class) {
-                return new RegOperateManager(context);
-            }
-        } else {
-            return regOperateUtil;
-        }
-    }
 
     /**
      * 初始化
@@ -226,12 +213,18 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
     @Override
     public void checkRegStatus() {
         if (!RegPubUtils.isConnected(context.getApplicationContext())) {
-            Toast.makeText(context, "网络异常，请检查手机网络", Toast.LENGTH_LONG)
-                    .show();
-            return;
+           //无网络情况下 校验本地
+            RegCodeBean.ModelBean regBean = Hawk.get(HawkProperty.REG_INFO);
+            if (regBean == null) {
+                ToastUtils.toast(context,"网络异常 请检查网络");
+                return;
+            }
+            checkRegStatus(regBean);
+        }else {
+            present.checkReg((String) Hawk.get(HawkProperty.REG_CODE), APP_MARK, RegLatestContact.CHECK_REG_EVERYTIME,
+                    RegOperateManager.this);
         }
-        present.checkReg((String) Hawk.get(HawkProperty.REG_CODE), APP_MARK, RegLatestContact.CHECK_REG_EVERYTIME,
-                RegOperateManager.this);
+
     }
 
     /**
@@ -418,64 +411,8 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
                     if ("ok".equals(resultTag)) {
                         if (regBean.getModel() != null && regBean.getModel().size() > 0) {
                             RegCodeBean.ModelBean modelBean = regBean.getModel().get(0);
-                            String regStatus = modelBean.getRegisCodeState();
-
-                            if ("正常".equals(regStatus)) {
-                                if (!RegPubUtils.PUBLIC_REGCODE.equals(Hawk.get(HawkProperty.REG_CODE))) {
-                                    //如果不是通用注册码 需要校验本地
-                                    if (!checkImei(modelBean)) {
-                                        return;
-                                    }
-                                }
-                                //自动升级
-                                String isAutoUpdate = modelBean.getIsAutoUpdate();
-                                if (isAutoUpdate != null && !TextUtils.isEmpty(isAutoUpdate)) {
-                                    if (isAutoUpdate.equals("1")) {//允许自动升级
-                                        getNearestVersionFromService();
-                                        return;
-                                    }
-                                }
-                                //有效期限制
-                                String isValid = modelBean.getIsValid();
-                                if (isValid != null && !TextUtils.isEmpty(isValid)) {
-                                    if (isValid.equals("0")) {//注册码限制时间
-                                        String ValidEnd = modelBean.getValidEnd();
-                                        String time = ValidEnd.split(" ")[0];
-                                        if (RegPubUtils.TheDayToNextDay(time) > 0 && RegPubUtils.TheDayToNextDay(time) < 8) {
-
-                                            if (IsTheRegStatusTime("isValid")) {
-                                                warnRegStatus("注册码有效期还剩" + RegPubUtils.TheDayToNextDay(time) +
-                                                        "天，请联系管理员", "isValid");
-                                            }
-
-                                        } else {//重置下次提醒的时间
-                                            resetNextWarnTime("isValid");
-                                        }
-                                    }
-                                }
-                                //次数限制
-                                String isNumber = modelBean.getIsNumber();
-                                if (isNumber != null && !TextUtils.isEmpty(isNumber)) {
-                                    if (isNumber.equals("0")) {//注册码有次数限制
-                                        String NumberTotal = modelBean.getNumber();
-                                        String NumberUsed = modelBean.getNumberNow();
-                                        int NumberNow = Integer.parseInt(NumberTotal) - Integer.parseInt(NumberUsed);
-                                        if (NumberNow < 100) {
-                                            if (IsTheRegStatusTime("isNumber")) {
-                                                warnRegStatus("注册码次数还剩" + NumberNow + "次，请联系管理员", "isNumber");
-                                            }
-
-                                        } else {//重置下次提醒的日期
-                                            resetNextWarnTime("isNumber");
-                                        }
-                                    }
-                                }
-                                if (cancelCallBack != null) {
-                                    cancelCallBack.toDoNext(null);
-                                }
-                            } else {
-                                isTheRegStatusOk(regStatus);
-                            }
+                            Hawk.put(HawkProperty.REG_INFO,modelBean);
+                            checkRegStatus(modelBean);
                         } else {
                             isTheRegStatusOk("注册码不存在");
 
@@ -514,6 +451,71 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 校验注册码的状态
+     * @param modelBean
+     */
+    private void checkRegStatus(RegCodeBean.ModelBean modelBean) {
+        String regStatus = modelBean.getRegisCodeState();
+
+        if ("正常".equals(regStatus)) {
+            if (!RegPubUtils.PUBLIC_REGCODE.equals(Hawk.get(HawkProperty.REG_CODE))) {
+                //如果不是通用注册码 需要校验本地
+                if (!checkImei(modelBean)) {
+                    return;
+                }
+            }
+            //自动升级
+            String isAutoUpdate = modelBean.getIsAutoUpdate();
+            if (isAutoUpdate != null && !TextUtils.isEmpty(isAutoUpdate)) {
+                if (isAutoUpdate.equals("1")) {//允许自动升级
+                    getNearestVersionFromService();
+                    return;
+                }
+            }
+            //有效期限制
+            String isValid = modelBean.getIsValid();
+            if (isValid != null && !TextUtils.isEmpty(isValid)) {
+                if (isValid.equals("0")) {//注册码限制时间
+                    String ValidEnd = modelBean.getValidEnd();
+                    String time = ValidEnd.split(" ")[0];
+                    if (RegPubUtils.TheDayToNextDay(time) > 0 && RegPubUtils.TheDayToNextDay(time) < 8) {
+
+                        if (IsTheRegStatusTime("isValid")) {
+                            warnRegStatus("注册码有效期还剩" + RegPubUtils.TheDayToNextDay(time) +
+                                    "天，请联系管理员", "isValid");
+                        }
+
+                    } else {//重置下次提醒的时间
+                        resetNextWarnTime("isValid");
+                    }
+                }
+            }
+            //次数限制
+            String isNumber = modelBean.getIsNumber();
+            if (isNumber != null && !TextUtils.isEmpty(isNumber)) {
+                if (isNumber.equals("0")) {//注册码有次数限制
+                    String NumberTotal = modelBean.getNumber();
+                    String NumberUsed = modelBean.getNumberNow();
+                    int NumberNow = Integer.parseInt(NumberTotal) - Integer.parseInt(NumberUsed);
+                    if (NumberNow < 100) {
+                        if (IsTheRegStatusTime("isNumber")) {
+                            warnRegStatus("注册码次数还剩" + NumberNow + "次，请联系管理员", "isNumber");
+                        }
+
+                    } else {//重置下次提醒的日期
+                        resetNextWarnTime("isNumber");
+                    }
+                }
+            }
+            if (cancelCallBack != null) {
+                cancelCallBack.toDoNext(null);
+            }
+        } else {
+            isTheRegStatusOk(regStatus);
         }
     }
 
