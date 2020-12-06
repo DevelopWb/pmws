@@ -523,17 +523,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
                                     }
                                 }).show();
                 break;
-            //            case R.id.isDisplay_rv:
-            //                if (isDisplay_cb.isChecked()) {
-            //                    isDisplay_cb.setChecked(false);
-            //                    isDisplay_tv.setText("录像前无预览");
-            //
-            //                } else {
-            //                    isDisplay_cb.setChecked(true);
-            //                    isDisplay_tv.setText("录像前显示预览");
-            //                    isDisplay_tv.setText("录像前无预览");
-            //                }
-            //                break;
             case R.id.camera_rl: //选择摄像头
                 showSelectCameraDialog();
                 break;
@@ -552,8 +541,11 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         }
     }
 
+    /**
+     * 更改密码
+     */
     private void showChangePwd() {
-        View v = LayoutInflater.from(this).inflate(R.layout.change_pwd, null);
+        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.change_pwd, null);
         final EditText et1 = (EditText) v.findViewById(R.id.pwd_et1);
         final EditText et2 = (EditText) v.findViewById(R.id.pwd_et2);
         TextView tv1 = (TextView) v.findViewById(R.id.pwd_tv1);
@@ -619,7 +611,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
      * 摄像头选择
      */
     private void showSelectCameraDialog() {
-        View v = LayoutInflater.from(this).inflate(R.layout.select_camera, null);
+        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.select_camera, null);
         RelativeLayout back_camera_rl = (RelativeLayout) v.findViewById(R.id.back_camera_rl);
         final RelativeLayout front_camera_rl = (RelativeLayout) v.findViewById(R.id.front_camera_rl);
         RelativeLayout special_camera_rl = (RelativeLayout) v.findViewById(R.id.special_camera_rl);
@@ -677,13 +669,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
 
-    /**
-     * 摄像头选择 备份
-     */
-    private void initRadioStatus2(RadioButton selected_rb, RadioButton unselected_rb1) {
-        selected_rb.setChecked(true);
-        unselected_rb1.setChecked(false);
-    }
 
     /**
      * 关于时间选择的rediobutton
@@ -701,7 +686,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
     private void showSelectVedioTimeDialog() {
-        View v = LayoutInflater.from(this).inflate(R.layout.select_vedio_time, null);
+        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.select_vedio_time, null);
         RelativeLayout five_rl = (RelativeLayout) v.findViewById(R.id.five_rl);
         RelativeLayout ten_rl = (RelativeLayout) v.findViewById(R.id.ten_rl);
         RelativeLayout thirty_rl = (RelativeLayout) v.findViewById(R.id.thirty_rl);
@@ -759,7 +744,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
     private void showSelectFilePathDialog() {
-        View v = LayoutInflater.from(this).inflate(R.layout.select_filepath, null);
+        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.select_filepath, null);
         RelativeLayout mobile_rl = (RelativeLayout) v.findViewById(R.id.mobile_rl);
         RelativeLayout memory_rl = (RelativeLayout) v.findViewById(R.id.memory_rl);
         final RadioButton rb1 = (RadioButton) v.findViewById(R.id.rb1);
@@ -772,7 +757,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         } else {
             initSelectOption2(rb1, rb2);
         }
-        final Dialog dialog_c = new Dialog(this, R.style.DialogStyle);
+        final Dialog dialog_c = new Dialog(getApplicationContext(), R.style.DialogStyle);
         dialog_c.setCanceledOnTouchOutside(false);
         dialog_c.show();
         Window window = dialog_c.getWindow();
@@ -814,23 +799,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
 
-    /**
-     * 判断文件是否存在
-     *
-     * @return
-     */
-    public boolean fileIsExists(String str) {
-        try {
-            File f = new File(str);
-            if (!f.exists()) {
-                return false;
-            }
-
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
 
 
     @Override
@@ -858,27 +826,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     };
 
 
-    /**
-     * 保存toggle的状态
-     */
-    private void saveToggleStutus(String status) {
-        SharedPreferences preferences = getSharedPreferences("saveToggleStutusasdqwe", Context
-                .MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("time", status);
-        editor.commit();
-    }
 
-
-    /**
-     * @return 获取toggle的status信息
-     */
-    private String getToggleStutus() {
-        SharedPreferences preferences = getSharedPreferences("saveToggleStutusasdqwe", Context
-                .MODE_PRIVATE);
-        String LastGPSTime = preferences.getString("time", "err");
-        return LastGPSTime;
-    }
 
 
     /**
