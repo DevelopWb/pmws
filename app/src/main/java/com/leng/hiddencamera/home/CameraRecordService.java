@@ -543,7 +543,7 @@ public class CameraRecordService extends Service {
         if (mMaxDuration > 0) {
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                    30*1000);
+                    mMaxDuration);
         }
         PmwsSetActivity.sIsRecording = true;
 

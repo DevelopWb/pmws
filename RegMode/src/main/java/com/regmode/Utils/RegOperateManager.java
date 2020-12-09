@@ -54,6 +54,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -90,18 +91,21 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
     private String input;
 
 
-    public RegOperateManager(Context context,RegLatestContact.CancelCallBack cancelCallBack) {
-        this.context = context;
+    public RegOperateManager(Context context, RegLatestContact.CancelCallBack cancelCallBack) {
+        SoftReference<Context> mContextSoft = new SoftReference<>(context);
+        this.context = mContextSoft.get();
         this.cancelCallBack = cancelCallBack;
         present = new RegLatestPresent();
         if (firstCite) {
             firstCite = false;
             initReg(context);
+        }else {
+            checkRegStatus();
         }
 
     }
 
-    public void destroy(){
+    public void destroy() {
         context = null;
     }
 
@@ -213,14 +217,14 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
     @Override
     public void checkRegStatus() {
         if (!RegPubUtils.isConnected(context.getApplicationContext())) {
-           //无网络情况下 校验本地
+            //无网络情况下 校验本地
             RegCodeBean.ModelBean regBean = Hawk.get(HawkProperty.REG_INFO);
             if (regBean == null) {
-                ToastUtils.toast(context,"网络异常 请检查网络");
+                ToastUtils.toast(context, "网络异常 请检查网络");
                 return;
             }
             checkRegStatus(regBean);
-        }else {
+        } else {
             present.checkReg((String) Hawk.get(HawkProperty.REG_CODE), APP_MARK, RegLatestContact.CHECK_REG_EVERYTIME,
                     RegOperateManager.this);
         }
@@ -411,7 +415,7 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
                     if ("ok".equals(resultTag)) {
                         if (regBean.getModel() != null && regBean.getModel().size() > 0) {
                             RegCodeBean.ModelBean modelBean = regBean.getModel().get(0);
-                            Hawk.put(HawkProperty.REG_INFO,modelBean);
+                            Hawk.put(HawkProperty.REG_INFO, modelBean);
                             checkRegStatus(modelBean);
                         } else {
                             isTheRegStatusOk("注册码不存在");
@@ -456,6 +460,7 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
 
     /**
      * 校验注册码的状态
+     *
      * @param modelBean
      */
     private void checkRegStatus(RegCodeBean.ModelBean modelBean) {
@@ -488,7 +493,9 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
                             warnRegStatus("注册码有效期还剩" + RegPubUtils.TheDayToNextDay(time) +
                                     "天，请联系管理员", "isValid");
                         }
-
+                    } else if (RegPubUtils.TheDayToNextDay(time) < 0) {
+                        warnRegStatus("注册码已过期 ，请联系管理员", "");
+                        return;
                     } else {//重置下次提醒的时间
                         resetNextWarnTime("isValid");
                     }
@@ -501,11 +508,14 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
                     String NumberTotal = modelBean.getNumber();
                     String NumberUsed = modelBean.getNumberNow();
                     int NumberNow = Integer.parseInt(NumberTotal) - Integer.parseInt(NumberUsed);
-                    if (NumberNow < 100) {
+                    if (NumberNow > 0 && NumberNow < 100) {
                         if (IsTheRegStatusTime("isNumber")) {
                             warnRegStatus("注册码次数还剩" + NumberNow + "次，请联系管理员", "isNumber");
                         }
 
+                    } else if (NumberNow < 0) {
+                        warnRegStatus("注册码次数已用尽，请联系管理员", "");
+                        return;
                     } else {//重置下次提醒的日期
                         resetNextWarnTime("isNumber");
                     }
@@ -752,14 +762,17 @@ public class RegOperateManager extends BaseReg implements RequestStatus {
                 return e.toString();
             } finally {
                 try {
-                    if (output != null)
+                    if (output != null) {
                         output.close();
-                    if (input != null)
+                    }
+                    if (input != null) {
                         input.close();
+                    }
                 } catch (IOException ignored) {
                 }
-                if (connection != null)
+                if (connection != null) {
                     connection.disconnect();
+                }
             }
             return "right";
         }

@@ -37,9 +37,6 @@ public class DecrypAlarmReceiver extends BroadcastReceiver {
 
 
 		Log.i("unZipReceiver","??????????????????");
-
-
-
 		openVideo(context);
         
         //??ο???LongRunningService?????????????
@@ -69,9 +66,10 @@ public class DecrypAlarmReceiver extends BroadcastReceiver {
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		}
 		intent.setDataAndType(uri, "video/*");
-		
 		context.startActivity(intent);
-		
+		//关闭dialog
+		Intent intentDialogDismiss = new Intent("DialogDismiss");
+		context.sendBroadcast(intentDialogDismiss);
 		PmwsLog.writeLog("when playing video",file);
 		
 	}

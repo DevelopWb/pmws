@@ -67,7 +67,7 @@ public class DecryptedFileService extends IntentService {
 		// 设置通知的基本信息：icon、标题、内容
 		builder.setSmallIcon(R.drawable.app_icon);
 		builder.setContentTitle("指南针");
-		builder.setContentText("正在接解密，请稍后，解密完会自动播放");
+		builder.setContentText("正在解密，请稍后，解密完会自动播放");
 
 		// 设置通知不被清除
 		Notification notification = builder.build();
@@ -131,8 +131,7 @@ public class DecryptedFileService extends IntentService {
 
 //		Log.e(TAG, "解密执行完毕");
 //		playMp4File(newFileName);//二次播放
-		Intent intentDialogDismiss = new Intent("DialogDismiss");
-		sendBroadcast(intentDialogDismiss);
+
 	}
 
 	private void playMp4File(String newFileName) {

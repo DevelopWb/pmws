@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -241,8 +243,16 @@ public class MyVediosActivity extends ListActivity {
             return;
 
         } else {
-            //mp4格式播放
-            intent.setDataAndType(Uri.fromFile(f), type);
+            Uri uri = null;
+            if (Build.VERSION.SDK_INT >= 24) {//7.0 Android N
+                //com.xxx.xxx.fileprovider?????manifest??provider?????????
+                uri = FileProvider.getUriForFile(this, "com.example.pmws.fileProvider",f);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//7.0???????????????uri???????????????????????????????ù?????????????
+            } else {//7.0????
+                uri = Uri.fromFile(f);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            intent.setDataAndType(uri, "video/*");
             startActivity(intent);
         }
 
