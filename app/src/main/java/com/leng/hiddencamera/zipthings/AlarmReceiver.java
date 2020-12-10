@@ -16,7 +16,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         //?????????????onReceive()???????????????
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification.Builder  builder = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.app_icon)
+                .setSmallIcon(R.mipmap.app_icon)
                 .setContentTitle("??????")
                 .setContentText("???????")
                 .setAutoCancel(true);
