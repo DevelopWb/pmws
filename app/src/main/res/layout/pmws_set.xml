@@ -277,12 +277,14 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:visibility="gone"
                 android:background="@color/black"></View>
 
             <TextView
                 android:id="@+id/encrption_tv"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:visibility="gone"
                 android:gravity="center_vertical"
                 android:text="加密视频文件"
                 android:textColor="#000000"
