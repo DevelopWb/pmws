@@ -15,6 +15,7 @@ import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -182,7 +183,9 @@ public class CameraRecordService extends Service {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
         wakeLock.acquire();
-
+        AudioManager localAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
+                4);
         PmwsLog.writeLog("cameraservice  onCreate--------");
         //        动态注册接受来自辅助服务的广播
         valumeTest = new ValumeChangeCarme();
