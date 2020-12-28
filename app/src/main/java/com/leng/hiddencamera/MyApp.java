@@ -1,21 +1,10 @@
 package com.leng.hiddencamera;
 
 import android.app.Activity;
-import android.app.Application;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
-import android.os.PowerManager;
-import android.support.multidex.MultiDex;
-import android.util.Log;
 
 import com.basenetlib.util.NetWorkUtil;
 import com.juntai.wisdom.basecomponent.app.BaseApplication;
-import com.juntai.wisdom.basecomponent.utils.NotificationTool;
-import com.leng.hiddencamera.home.CameraRecordService;
-import com.leng.hiddencamera.home.PmwsSetActivity;
 import com.leng.hiddencamera.util.CrashHandler;
-import com.leng.hiddencamera.util.PmwsLog;
 import com.orhanobut.hawk.Hawk;
 
 public class MyApp extends BaseApplication {

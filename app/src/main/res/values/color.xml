@@ -14,5 +14,6 @@
     <drawable name="other">#fff00f</drawable>
     <color name="cancel_sp">#349CF4</color>
     <color name="white_">#ffffff</color>
+    <color name="set_bg">#283f4d</color>
 
 </resources>

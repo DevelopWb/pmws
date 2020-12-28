@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.home;
+package com.leng.hiddencamera.mine;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.base.BaseAppActivity;
@@ -107,36 +108,10 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     private String strreg;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
-            @Override
-            public void toFinishActivity() {
-                finish();
-            }
-
-            @Override
-            public void toDoNext(String input) {
-                if (input != null) {
-                    onFirst();
-                }
-                showPasswordInputDialog();
-            }
-        });
-
-        mProgressDialog = DCPubic.getProgressDialog(this, "正在加密，请稍后...");
-        setContentView(R.layout.pmws_set);
-        sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
-        registerCloseDialogReceiver();
-        initView();
-        SharedPreferences isFirstTime = getSharedPreferences("isFirstTime", 0);
-        isFirst = isFirstTime.getBoolean("isFirstTime", true);
-        strreg = Hawk.get(HawkProperty.REG_CODE);
-        //        if (TextUtils.isEmpty(strreg)) {
-        //            mReg.show();
-        //        }
-
+    protected BasePresenter createPresenter() {
+        return null;
     }
+
 
     private void registerCloseDialogReceiver() {
         IntentFilter mIntentFilter = new IntentFilter("CloseDialog");
@@ -331,7 +306,34 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         editor.commit();
     }
 
-    private void initView() {
+    @Override
+    public int getLayoutView() {
+        return R.layout.pmws_set;
+    }
+
+    @Override
+    public void initView() {
+        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
+            @Override
+            public void toFinishActivity() {
+                finish();
+            }
+
+            @Override
+            public void toDoNext(String input) {
+                if (input != null) {
+                    onFirst();
+                }
+                showPasswordInputDialog();
+            }
+        });
+
+        mProgressDialog = DCPubic.getProgressDialog(this, "正在加密，请稍后...");
+        sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
+        registerCloseDialogReceiver();
+        SharedPreferences isFirstTime = getSharedPreferences("isFirstTime", 0);
+        isFirst = isFirstTime.getBoolean("isFirstTime", true);
+        strreg = Hawk.get(HawkProperty.REG_CODE);
 
         change_pwd = (TextView) findViewById(R.id.change_pwd);
         mVolume_cge = (TextView) findViewById(R.id.volume_up);
@@ -388,6 +390,11 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
             }
         });
 
+
+    }
+
+    @Override
+    public void initData() {
 
     }
 
@@ -920,5 +927,10 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
                 file.delete();
             }
         }
+    }
+
+    @Override
+    public void onSuccess(String tag, Object o) {
+
     }
 }

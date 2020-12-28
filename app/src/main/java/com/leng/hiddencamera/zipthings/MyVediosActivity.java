@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.home.PmwsSetActivity;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipthings.decrypted.DecryptedFileService;
 

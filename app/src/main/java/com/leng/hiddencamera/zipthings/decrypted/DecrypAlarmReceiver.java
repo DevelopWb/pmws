@@ -8,19 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
-import com.leng.hiddencamera.home.PmwsSetActivity;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.PmwsLog;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class DecrypAlarmReceiver extends BroadcastReceiver {
 

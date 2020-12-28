@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.juntai.wisdom.basecomponent.base.BaseMvpActivity;
+import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
 import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 
 /**
@@ -13,7 +15,7 @@ import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
  * @UpdateUser: 更新者
  * @UpdateDate: 2020/12/5 13:56
  */
-public abstract  class BaseAppActivity extends Activity {
+public abstract  class BaseAppActivity<P extends BasePresenter> extends BaseMvpActivity<P> {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

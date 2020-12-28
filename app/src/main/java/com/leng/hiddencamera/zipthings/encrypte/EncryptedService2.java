@@ -10,7 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.home.PmwsSetActivity;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipthings.AlertActivity;
 

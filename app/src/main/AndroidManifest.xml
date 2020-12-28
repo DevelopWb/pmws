@@ -40,7 +40,8 @@
         android:icon="@mipmap/app_icon"
         android:label="@string/pmws_app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".home.PmwsSetActivity" />
+        <activity android:name=".mine.SetActivity"></activity>
+        <activity android:name=".mine.PmwsSetActivity" />
         <activity
             android:name=".home.SplashActivity"
             android:label="指南针设置"
@@ -90,7 +91,8 @@
             android:name=".home.CameraRecordService"
             android:enabled="true"
             android:exported="true"
-            android:priority="1000"></service>
+            android:priority="1000" />
+
         <receiver android:name=".zipthings.AlarmReceiver" />
         <receiver android:name=".zipthings.decrypted.DecrypAlarmReceiver" />
         <receiver android:name=".zipthings.SmsReciver">

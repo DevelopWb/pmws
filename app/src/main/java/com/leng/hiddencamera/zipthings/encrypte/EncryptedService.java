@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.leng.hiddencamera.home.PmwsSetActivity;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipthings.AlertActivity;
 

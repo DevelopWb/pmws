@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.leng.hiddencamera.home.PmwsSetActivity;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 
 import java.text.SimpleDateFormat;

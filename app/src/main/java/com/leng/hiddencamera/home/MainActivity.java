@@ -2,16 +2,15 @@ package com.leng.hiddencamera.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.text.TextUtils;
 
 import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;

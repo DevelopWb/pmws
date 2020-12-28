@@ -12,13 +12,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
-import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,11 +28,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
@@ -46,15 +43,10 @@ import com.leng.hiddencamera.view.CameraPreview;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService2;
 import com.orhanobut.hawk.Hawk;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static android.content.Intent.ACTION_DELETE;
 
 /**
  * @aouther tobato

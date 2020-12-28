@@ -138,7 +138,15 @@ public class HawkProperty {
     public static final String NEXT_WARN_UPDATE= "NEXT_WARN_UPDATE";
 
 
+    /**
+     * 当前camera
+     */
+    public static String CURRENT_CAMERA = "current_camera";//
 
+    /**
+     * intervaltime
+     */
+    public static String RECORD_INTERVAL_TIME = "intervaltime";//
 
 
 
