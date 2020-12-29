@@ -10,6 +10,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.juntai.wisdom.basecomponent.R;
+
 /**
  * Desc:九宫格分割线   无最右边与最下边线
  * Create by zhangzhenlong
@@ -17,7 +19,6 @@ import android.view.View;
  * email:954101549@qq.com
  */
 public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
-    private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
     private Drawable mDivider;
 
     private Paint mPaint;
@@ -25,9 +26,7 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
     private int mOrientation;//列表的方向：LinearLayoutManager.VERTICAL或LinearLayoutManager.HORIZONTAL
 
     public GridDividerItemDecoration(Context context) {
-        final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
-        a.recycle();
+        mDivider = context.getDrawable(R.drawable.divider_hor_line_sp);
     }
 
     /**
@@ -75,7 +74,7 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
 //            if (mPaint != null) {
-//                canvas.drawRect(left, top, right, bottom, mPaint);
+//                c.drawRect(left, top, right, bottom, mPaint);
 //            }
         }
     }

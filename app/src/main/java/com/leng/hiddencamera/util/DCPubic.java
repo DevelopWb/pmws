@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -225,5 +226,16 @@ public class DCPubic {
 
 	}
 
+	/**
+	 * 获取存储路径
+	 * @return
+	 */
+	public static String getRecordPath() {
+		File file = new File(Environment.getExternalStorageDirectory() +File.separator+"YBZD");
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return file.getAbsolutePath();
+	}
 
 }

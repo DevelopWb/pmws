@@ -4,7 +4,7 @@
     <!-- root-path 手机存储根目录 -->
     <root-path
         name="PMWS"
-        path="MyData" />
+        path="YBZD" />
     <files-path
         name="files"
         path="files" />
@@ -13,16 +13,16 @@
         path="files" />
     <external-path
         name="external"
-        path="MyData" />
+        path="YBZD" />
 <!--   content://org.easydarwin.easyrtmp.fileProvider/YJZB/2020_05_07_21_54_08-0.mp4-->
     <external-path
         name="PMWS"
-        path="MyData" />
+        path="YBZD" />
     <external-files-path
         name="externalfiles"
-        path="MyData" />
+        path="YBZD" />
     <!-- 此标签需要 support 25.0.0以上才可以使用-->
     <external-cache-path
         name="externalcache"
-        path="MyData" />
+        path="YBZD" />
 </paths>

@@ -85,7 +85,7 @@ public class CameraRecordService extends Service {
 
     private SensorManager mSensorManager;
     private SensorEventListener mSensorListener;
-    private String mFileDir;
+//    private String mFileDir;
     private long available_;
     private int time, time1, time2;
     private Timer timer;
@@ -187,18 +187,18 @@ public class CameraRecordService extends Service {
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
         // 文件存储路径选择
         String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "手机");
-        if (mFilepath.equals("手机")) {
-            mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
-            available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
-        } else if (mFilepath.equals("内存卡")) {
-            if (!SettingsUtil.isMounted(this, SettingsUtil.DIR_SDCRAD2)) {
-                mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
-                available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
-            } else {
-                mFileDir = SettingsUtil.DIR_SDCRAD2 + SettingsUtil.DIR_DATA;
-                available_ = SdCard.SdcardAvailable(CameraRecordService.this, mFileDir);
-            }
-        }
+//        if (mFilepath.equals("手机")) {
+//            mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
+//            available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
+//        } else if (mFilepath.equals("内存卡")) {
+//            if (!SettingsUtil.isMounted(this, SettingsUtil.DIR_SDCRAD2)) {
+//                mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
+//                available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
+//            } else {
+//                mFileDir = SettingsUtil.DIR_SDCRAD2 + SettingsUtil.DIR_DATA;
+//                available_ = SdCard.SdcardAvailable(CameraRecordService.this, mFileDir);
+//            }
+//        }
         time = (int) (available_ / 2.03986711);
         if (time < 300) {
             Toast.makeText(getBaseContext(), "存储空间不足请及时处理", Toast.LENGTH_SHORT).show();
@@ -499,7 +499,7 @@ public class CameraRecordService extends Service {
         mMediaRecorder.setVideoFrameRate(rate);
 
         // Step 4: Set output file
-        mMediaRecorder.setOutputFile(DCPubic.getOutputMediaFile(mFileDir, MEDIA_TYPE_VIDEO)
+        mMediaRecorder.setOutputFile(DCPubic.getOutputMediaFile(DCPubic.getRecordPath(), MEDIA_TYPE_VIDEO)
                 .toString());
 
         // Step 5: Set the preview output

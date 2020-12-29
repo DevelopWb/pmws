@@ -163,6 +163,14 @@ public abstract class BaseActivity extends RxAppCompatActivity implements Toolba
         mBackTv.setVisibility(View.VISIBLE);
         return mBackTv;
     }
+    /**
+     * 获取左控件
+     *
+     * @return
+     */
+    public TextView getTitleTv() {
+        return titleName;
+    }
 
     /**
      * 标题
