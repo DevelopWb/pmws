@@ -1,17 +1,11 @@
 package com.leng.hiddencamera.mine;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.view.ViewGroup;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.bean.MenuBean;
-import com.leng.hiddencamera.util.DCPubic;
 import com.orhanobut.hawk.Hawk;
-
-import java.util.List;
 
 /**
  * Describe:
@@ -34,7 +28,8 @@ public class MyMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
         if (MinePresent.NAME_RECORD_SPACE == item.getTagId()) {
             //录像间隔
             helper.setGone(R.id.menu_content_tv, true);
-            helper.setText(R.id.menu_content_tv, Hawk.get(HawkProperty.RECORD_INTERVAL_TIME,"5分钟"));
+            helper.setText(R.id.menu_content_tv,
+                    String.valueOf(SetActivity.intervals[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0)]));
         } else if (MinePresent.NAME_RECORD_PATH == item.getTagId()) {
             helper.setGone(R.id.menu_content_tv, true);
             helper.setText(R.id.menu_content_tv, "手机内部存储/YBZD");

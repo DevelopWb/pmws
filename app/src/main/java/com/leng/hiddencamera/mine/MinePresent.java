@@ -41,7 +41,9 @@ public class MinePresent extends BasePresenter<IModel, IView> {
      */
     protected List<MenuBean> getMineMenus() {
         List<MenuBean> arrays = new ArrayList<>();
-        arrays.add(new MenuBean(NAME_CAMERA, Hawk.get(HawkProperty.CURRENT_CAMERA, "后置"), R.mipmap.set_camera_icon));
+        arrays.add(new MenuBean(NAME_CAMERA,
+                String.valueOf(SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)]),
+                R.mipmap.set_camera_icon));
         arrays.add(new MenuBean(NAME_FLOAT, "悬浮窗显示", R.mipmap.set_float_icon));
         arrays.add(new MenuBean(NAME_PLAY, "视频播放", R.mipmap.set_media_play_icon));
         arrays.add(new MenuBean(NAME_RECORD_SPACE, "录像间隔", R.mipmap.set_interval_icon));

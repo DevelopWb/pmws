@@ -13,10 +13,14 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.juntai.wisdom.basecomponent.mvp.IView;
 import com.juntai.wisdom.basecomponent.utils.GridDividerItemDecoration;
+import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.base.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
-import com.leng.hiddencamera.zipthings.MyVediosActivity;
+import com.orhanobut.hawk.Hawk;
+
+import static com.leng.hiddencamera.mine.PmwsSetActivity.destroyFiles;
 
 /**
  * @aouther tobato
@@ -28,6 +32,9 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private RecyclerView mRecyclerview;
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
+    public static CharSequence[] cameras = new CharSequence[]{"前置", "后置"};
+    public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
+    public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟","30分钟"};
 
     @Override
     protected MinePresent createPresenter() {
@@ -49,7 +56,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 .init();
         initLeftBackTv(false);
         getToolbar().setBackgroundColor(ContextCompat.getColor(mContext, R.color.set_bg));
-        getTitleTv().setText("隐蔽终端");
+        getTitleTv().setText(getString(R.string.app_name));
         getTitleTv().setTextColor(ContextCompat.getColor(mContext, R.color.white));
         mRecyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         mMenuAdapter = new MyMenuAdapter(R.layout.item_my_center_menu);
@@ -64,21 +71,21 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 MenuBean menuBean = (MenuBean) adapter.getData().get(position);
                 switch (menuBean.getTagId()) {
                     case MinePresent.NAME_CAMERA:
-                        showSelectCameraDialog();
+                        choseCamera(menuBean);
                         break;
                     case MinePresent.NAME_FLOAT:
-
+                        showOrHideFloatWindow();
                         break;
                     case MinePresent.NAME_PLAY:
-                        Intent intent = new Intent(getApplicationContext(),
-                                MyVediosActivity.class);
-                        startActivityForResult(intent, FILE_RESULT_CODE);
+                        //                        Intent intent = new Intent(getApplicationContext(),
+                        //                                MyVediosActivity.class);
+                        //                        startActivityForResult(intent, FILE_RESULT_CODE);
                         break;
                     case MinePresent.NAME_RECORD_SPACE:
-                        showSelectVedioTimeDialog();
+                        showIntervals();
                         break;
                     case MinePresent.NAME_MODIFY_PWD:
-                        showChangePwd();
+                        //                        showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
                         break;
@@ -88,24 +95,26 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                             Intent intent = new Intent(
                                     android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                             startActivityForResult(intent, 99);
-                            Toast.makeText(this, "找到指南针，开启即可", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "找到" + getString(R.string.app_name) + "，开启即可",
+                                    Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
-                        ClearCache(SAVED_VIDEO_PATH);
-                        ClearCache(SAVED_VIDEO_PATH2);
-                        Toast.makeText(getApplicationContext(), "清除成功",
-                                Toast.LENGTH_SHORT).show();
+                        //                        ClearCache(SAVED_VIDEO_PATH);
+                        //                        ClearCache(SAVED_VIDEO_PATH2);
+                        //                        Toast.makeText(getApplicationContext(), "清除成功",
+                        //                                Toast.LENGTH_SHORT).show();
                         break;
                     case MinePresent.NAME_DESTROY_FILE:
-                        new AlertDialog.Builder(this)
+                        new AlertDialog.Builder(mContext)
 
                                 .setTitle("确认一键自毁？")
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
+                                    @Override
                                     public void onClick(DialogInterface dialog,
                                                         int which) {
                                         dialog.dismiss();
@@ -137,9 +146,56 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
     }
 
+    /**
+     * chose camera
+     */
+    private void choseCamera(MenuBean menuBean) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX,1),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position) {
+                        Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,position);
+                        menuBean.setName(String.valueOf(cameras[position]));
+                        mMenuAdapter.notifyItemChanged(menuBean.getTagId());
+                        dialog.dismiss();
+                    }
+
+
+                }).show();
+    }
+    /**
+     * showOrHideFloatWindow
+     */
+    private void showOrHideFloatWindow() {
+        new AlertDialog.Builder(this).setSingleChoiceItems(hideShow, 0,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position) {
+                        ToastUtils.toast(mContext, "dfd");
+                        dialog.dismiss();
+                    }
+
+
+                }).show();
+    }
+    /**
+     * showIntervals
+     */
+    private void showIntervals() {
+        new AlertDialog.Builder(this).setSingleChoiceItems(intervals, 0,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position) {
+                        ToastUtils.toast(mContext, "dfd");
+                        dialog.dismiss();
+                    }
+
+
+                }).show();
+    }
+
     @Override
     public void initData() {
-
     }
 
     @Override
@@ -151,9 +207,10 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            default:
-                break;
+
             case R.id.menu_quit_ll:
+                break;
+            default:
                 break;
         }
     }

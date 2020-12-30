@@ -61,67 +61,12 @@ public class HawkProperty {
      * 原生照相机推送屏幕分辨率索引
      */
     public static final String KEY_SCREEN_PUSHING_RES_INDEX = "screen_pushing_res_index";
-    /**
-     * uvc照相机推送屏幕分辨率索引
-     */
-    public static final String KEY_SCREEN_PUSHING_UVC_RES_INDEX = "screen_pushing_uvc_res_index";
-
-    /**
-     * 原生camera宽
-     */
-    public static final String KEY_NATIVE_WIDTH = "screen_pushing_res_native_width";
-
-    /**
-     * 原生camera高
-     */
-    public static final String KEY_NATIVE_HEIGHT = "screen_pushing_res_native_height";
-    /**
-     * uvccamera宽
-     */
-    public static final String KEY_UVC_WIDTH = "screen_pushing_res_uvc_width";
-
-    /**
-     *uvccamera高
-     */
-    public static final String KEY_UVC_HEIGHT = "screen_pushing_res_uvc_height";
-    /**
-     * 使用软编码
-     */
-    public static final String KEY_SW_CODEC = "key-sw-codec";
-
-    /**
-     * 第一个直播平台
-     */
-    public static final String FIRST_LIVE = "first_live";
-    /**
-     * 第一个直播平台
-     */
-    public static final String SECENDLIVE = "secend_live";
-    /**
-     * 第一个直播平台
-     */
-    public static final String THIRD_LIVE = "third_live";
-    /**
-     * 第一个直播平台
-     */
-    public static final String FOURTH_LIVE = "fourth_live";
-
-
-
 
 
     /**
      * 注册码
      */
     public static final String REG_CODE = "reg_code";
-    /**
-     * mac
-     */
-    public static final String MAC_CODE = "mac_code";
-    /**
-     * mac
-     */
-    public static final String APP_KEY = "app_key";
 
     /**
      * savedVersion
@@ -131,24 +76,26 @@ public class HawkProperty {
     /**
      * APP_GUEST_NAME
      */
-    public static final String APP_GUEST_NAME= "APP_GUEST_NAME";
+    public static final String APP_GUEST_NAME = "APP_GUEST_NAME";
     /**
      * 下次提醒升级的key
      */
-    public static final String NEXT_WARN_UPDATE= "NEXT_WARN_UPDATE";
+    public static final String NEXT_WARN_UPDATE = "NEXT_WARN_UPDATE";
 
 
     /**
      * 当前camera
      */
-    public static String CURRENT_CAMERA = "current_camera";//
+    public static String CURRENT_CAMERA_INDEX = "current_camera";
 
     /**
      * intervaltime
      */
-    public static String RECORD_INTERVAL_TIME = "intervaltime";//
-
-
+    public static String RECORD_INTERVAL_TIME_INDEX = "intervaltime";
+    /**
+     * FLOAT_IS_SHOW
+     */
+    public static String FLOAT_IS_SHOW_INDEX = "floatshowable";
 
 
 }
