@@ -1,26 +1,47 @@
 package com.leng.hiddencamera.mine;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.juntai.wisdom.basecomponent.mvp.IView;
+import com.juntai.wisdom.basecomponent.utils.DisplayUtil;
 import com.juntai.wisdom.basecomponent.utils.GridDividerItemDecoration;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.base.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
+import com.leng.hiddencamera.util.DCPubic;
+import com.leng.hiddencamera.zipthings.MyVediosActivity;
+import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
+import com.regmode.RegLatestContact;
+import com.regmode.Utils.RegOperateManager;
 
-import static com.leng.hiddencamera.mine.PmwsSetActivity.destroyFiles;
+import java.io.File;
+import java.util.List;
+
 
 /**
  * @aouther tobato
@@ -34,7 +55,11 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private LinearLayout mMenuQuitLl;
     public static CharSequence[] cameras = new CharSequence[]{"前置", "后置"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
-    public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟","30分钟"};
+    public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
+    private RegOperateManager regOperateManager;
+    private AlertDialog dialog;
+    private String DEFAULT_PWD = "8888888";
+    private final String destroyCode = "pmws1234";
 
     @Override
     protected MinePresent createPresenter() {
@@ -48,7 +73,45 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     }
 
     @Override
+    protected void onResume() {
+        System.out.println("main activity onResume");
+
+        if ( DCPubic.RECORD_DIALOG == 0) {
+            if (Hawk.contains(HawkProperty.REG_CODE)) {
+                //验证通过
+                showPasswordInputDialog();
+            }
+        } else {
+            if (dialog != null) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                    dialog = null;
+                }
+
+            }
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DCPubic.RECORD_DIALOG = 0;
+    }
+
+    @Override
     public void initView() {
+        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
+            @Override
+            public void toFinishActivity() {
+                finish();
+            }
+
+            @Override
+            public void toDoNext(String input) {
+                showPasswordInputDialog();
+            }
+        });
         mMenuQuitLl = (LinearLayout) findViewById(R.id.menu_quit_ll);
         mMenuQuitLl.setOnClickListener(this);
         mImmersionBar.reset().statusBarColor(R.color.set_bg)
@@ -74,18 +137,17 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         choseCamera(menuBean);
                         break;
                     case MinePresent.NAME_FLOAT:
-                        showOrHideFloatWindow();
+                        showOrHideFloatWindow(menuBean);
                         break;
                     case MinePresent.NAME_PLAY:
-                        //                        Intent intent = new Intent(getApplicationContext(),
-                        //                                MyVediosActivity.class);
-                        //                        startActivityForResult(intent, FILE_RESULT_CODE);
+                        startActivity(new Intent(getApplicationContext(),
+                                MyVediosActivity.class));
                         break;
                     case MinePresent.NAME_RECORD_SPACE:
-                        showIntervals();
+                        showIntervals(menuBean);
                         break;
                     case MinePresent.NAME_MODIFY_PWD:
-                        //                        showChangePwd();
+                        showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
                         break;
@@ -103,10 +165,9 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
-                        //                        ClearCache(SAVED_VIDEO_PATH);
-                        //                        ClearCache(SAVED_VIDEO_PATH2);
-                        //                        Toast.makeText(getApplicationContext(), "清除成功",
-                        //                                Toast.LENGTH_SHORT).show();
+                        clearCache(DCPubic.getRecordPath());
+                        Toast.makeText(getApplicationContext(), "清除成功",
+                                Toast.LENGTH_SHORT).show();
                         break;
                     case MinePresent.NAME_DESTROY_FILE:
                         new AlertDialog.Builder(mContext)
@@ -127,7 +188,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                                                     DialogInterface dialog,
                                                     int which) {
 
-                                                destroyFiles();
+                                                mPresenter.destroyFiles();
 
                                                 Toast.makeText(
                                                         getApplicationContext(),
@@ -147,14 +208,151 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     }
 
     /**
+     * 输入密码的弹窗
+     */
+    public void showPasswordInputDialog() {
+        if (dialog != null) {
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
+            return;
+        }
+        View view = View.inflate(this, R.layout.dialog_input_password, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        dialog = builder.create();
+        dialog.setView(view, 0, 0, 0, 0);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                        dialog = null;
+                    }
+                    finish();
+                }
+                return false;
+            }
+        });
+        final EditText etPassword = (EditText) view
+                .findViewById(R.id.et_password);
+        ImageButton btnOk = (ImageButton) view.findViewById(R.id.btn_ok);
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                String inputPwd = etPassword.getText().toString().trim();
+                String password = Hawk.get(HawkProperty.PWD, DEFAULT_PWD);
+
+                if (TextUtils.isEmpty(inputPwd)) {
+                    ToastUtils.toast(mContext, "输入内容不能为空");
+                    return;
+                }
+
+                if (destroyCode.equals(inputPwd)) {
+                    Log.d(getApplicationContext().toString(), "输入密码等于摧毁密码");
+                    // 执行自毁
+                    mPresenter.destroyFiles();
+                    dialog.dismiss();
+                    return;
+                }
+                if (inputPwd.equals(password)) {
+                    Toast.makeText(mContext, "验证通过",
+                            Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    etPassword.setText("");
+                } else {
+                    Toast.makeText(mContext, "密码错误",
+                            Toast.LENGTH_SHORT).show();
+                    etPassword.setText("");
+
+                }
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * 清除解密文件
+     *
+     * @param path
+     */
+    private void clearCache(String path) {
+        List<String> fList_ = EncryptedService.getFileList(
+                path, "mp4"); // path
+
+        for (int i = 0; i < fList_.size(); i++) {
+            File file = new File(fList_.get(i));
+            file.delete();
+
+        }
+    }
+
+    /**
+     * 更改密码
+     */
+    private void showChangePwd() {
+        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.change_pwd, null);
+        final EditText et1 = (EditText) v.findViewById(R.id.pwd_et1);
+        final EditText et2 = (EditText) v.findViewById(R.id.pwd_et2);
+        TextView tv1 = (TextView) v.findViewById(R.id.pwd_tv1);
+        TextView tv2 = (TextView) v.findViewById(R.id.pwd_tv2);
+        final Dialog dialog_c = new Dialog(this, R.style.DialogStyle);
+        dialog_c.setCanceledOnTouchOutside(false);
+        dialog_c.show();
+        Window window = dialog_c.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        window.setGravity(Gravity.CENTER);
+        lp.width = DisplayUtil.dp2px(this, 300); // 宽度
+        lp.height = DisplayUtil.dp2px(this, 260); // 高度
+        //lp.dimAmount = 0f;//去掉对话框自带背景色
+        window.setAttributes(lp);
+        window.setContentView(v);
+        tv1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pwd1 = et1.getText().toString().trim();
+                String pwd2 = et2.getText().toString().trim();
+                if (TextUtils.isEmpty(pwd1)) {
+                    Toast.makeText(mContext, "请输入密码", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(pwd2)) {
+                    Toast.makeText(mContext, "请再输入一次密码", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!pwd1.equals(pwd2)) {
+                    Toast.makeText(mContext, "两次输入的密码不一致，请重新输入", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (pwd1.equals(pwd2)) {
+                    Hawk.put(HawkProperty.PWD, pwd1);
+                    Toast.makeText(mContext, "密码修改成功", Toast.LENGTH_SHORT).show();
+                    dialog_c.dismiss();
+                }
+
+
+            }
+        });
+        tv2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog_c.dismiss();
+            }
+        });
+    }
+
+    /**
      * chose camera
      */
     private void choseCamera(MenuBean menuBean) {
-        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX,1),
+        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
-                        Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,position);
+                        Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
                         dialog.dismiss();
@@ -163,30 +361,36 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
                 }).show();
     }
+
     /**
      * showOrHideFloatWindow
      */
-    private void showOrHideFloatWindow() {
-        new AlertDialog.Builder(this).setSingleChoiceItems(hideShow, 0,
+    private void showOrHideFloatWindow(MenuBean menuBean) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(hideShow, Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
-                        ToastUtils.toast(mContext, "dfd");
+                        Hawk.put(HawkProperty.FLOAT_IS_SHOW_INDEX, position);
+                        menuBean.setName(String.valueOf(hideShow[position]));
+                        mMenuAdapter.notifyItemChanged(menuBean.getTagId());
                         dialog.dismiss();
                     }
 
 
                 }).show();
     }
+
     /**
      * showIntervals
      */
-    private void showIntervals() {
-        new AlertDialog.Builder(this).setSingleChoiceItems(intervals, 0,
+    private void showIntervals(MenuBean menuBean) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(intervals,
+                Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
-                        ToastUtils.toast(mContext, "dfd");
+                        Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX, position);
+                        mMenuAdapter.notifyItemChanged(menuBean.getTagId());
                         dialog.dismiss();
                     }
 
@@ -212,6 +416,19 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        regOperateManager.setCancelCallBack(null);
+        regOperateManager.destroy();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 99) {
+            DCPubic.RECORD_DIALOG = 1;
         }
     }
 }

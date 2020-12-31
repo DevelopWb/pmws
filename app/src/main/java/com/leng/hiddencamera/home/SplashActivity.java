@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.leng.hiddencamera.BuildConfig;
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.mine.SetActivity;
+import com.leng.hiddencamera.util.DCPubic;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -40,7 +40,7 @@ public class SplashActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (PmwsSetActivity.sIsRecording) {
+        if (DCPubic.sIsRecording) {
             Toast.makeText(getBaseContext(), "正在录制中，请先停止...", Toast.LENGTH_LONG)
                     .show();
             finish();
@@ -66,7 +66,6 @@ public class SplashActivity extends RxAppCompatActivity {
                                 startActivity(new Intent(SplashActivity.this, SetActivity.class));
                                 finish();
                             }else {
-                                // ��Android 6.0��Android��Ҫ��̬��ȡȨ�ޣ���û��Ȩ�ޣ���ʾ��ȡ.
                                 final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
                                 startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION);
                             }

@@ -10,7 +10,6 @@ import android.text.TextUtils;
 
 public class SettingsUtil {
 	public static final String PREF_KEY_PASSWORD = "pref_key_password";
-	public static final String PREF_KEY_PREVIEW = "pref_key_preview";
 	public static final String PREF_KEY_CAMERAID = "pref_key_cameraid";
 	public static final String PREF_KEY_MAX_DURATION = "pref_key_max_duration";
 	public static final String PREF_KEY_SHAKE_VALUE = "pref_key_shake_value";

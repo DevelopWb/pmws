@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.leng.hiddencamera.mine.PmwsSetActivity;
+import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipthings.AlertActivity;
 
@@ -43,7 +43,7 @@ public class EncryptedService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        List<String> fList = getFileList(PmwsSetActivity.SAVED_VIDEO_PATH, "mp4");  //path
+        List<String> fList = getFileList(DCPubic.getRecordPath(), "mp4");  //path
 
 
         if (fList.size() == 0) {
@@ -64,7 +64,7 @@ public class EncryptedService extends IntentService {
                 Log.i(TAG, "加密的时候捕捉到异常");
 
                 //要是空间不足的时候还在录制
-                if (PmwsSetActivity.sIsRecording) {
+                if (DCPubic.sIsRecording) {
                     Intent intent_ = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
                     sendBroadcast(intent_);
                 }

@@ -31,8 +31,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
-import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
@@ -154,7 +154,7 @@ public class CameraRecordService extends Service {
                         mHandler.removeMessages(MSG_START_RECORDING);
                         removeSurfaceView();
                         mNotificationManager.cancel(NOTIFICATION_FLAG);
-                        PmwsSetActivity.sIsRecording = false;
+                        DCPubic.sIsRecording = false;
                         stopSelf();
                     }
 
@@ -172,6 +172,7 @@ public class CameraRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        addSurfaceView();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
         wakeLock.acquire();
@@ -185,20 +186,6 @@ public class CameraRecordService extends Service {
         intentFilter2.addAction("asasqwe");
         registerReceiver(valumeTest, intentFilter2);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
-        // 文件存储路径选择
-        String mFilepath = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "手机");
-//        if (mFilepath.equals("手机")) {
-//            mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
-//            available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
-//        } else if (mFilepath.equals("内存卡")) {
-//            if (!SettingsUtil.isMounted(this, SettingsUtil.DIR_SDCRAD2)) {
-//                mFileDir = SettingsUtil.DIR_SDCRAD1 + SettingsUtil.DIR_DATA;
-//                available_ = SdCard.getAvailableInternalMemorySize(CameraRecordService.this);
-//            } else {
-//                mFileDir = SettingsUtil.DIR_SDCRAD2 + SettingsUtil.DIR_DATA;
-//                available_ = SdCard.SdcardAvailable(CameraRecordService.this, mFileDir);
-//            }
-//        }
         time = (int) (available_ / 2.03986711);
         if (time < 300) {
             Toast.makeText(getBaseContext(), "存储空间不足请及时处理", Toast.LENGTH_SHORT).show();
@@ -209,7 +196,7 @@ public class CameraRecordService extends Service {
         if (available_ < 500) {
             Toast.makeText(getBaseContext(), "存储空间不足请及时处理", Toast.LENGTH_SHORT).show();
 
-            PmwsSetActivity.sIsRecording = false;
+            DCPubic.sIsRecording = false;
             //二次设置为
             stopSelf();
             return;
@@ -218,9 +205,6 @@ public class CameraRecordService extends Service {
         }
         //        mWindowManager = ((WindowManager) getApplicationContext()
         //                .getSystemService("window"));
-        mWindowManager = ((WindowManager) getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE));
-
         loadSettings();
 
         /*
@@ -228,7 +212,7 @@ public class CameraRecordService extends Service {
          * new Message(); msg.what = 10; mHandler.sendMessage(msg); } };
          */
 
-        addSurfaceView();
+
         //动态注册广播接收器
         stopReCordingReceiver = new StopRecordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -243,7 +227,7 @@ public class CameraRecordService extends Service {
 
             @Override
             public void run() {
-                if (PmwsSetActivity.sIsRecording) {
+                if (DCPubic.sIsRecording) {
                     time--;
                     Message msg = new Message();
                     msg.what = 10;
@@ -261,11 +245,11 @@ public class CameraRecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
         PmwsLog.d("OnStartCommand receive intent: " + intent.toString());
-        Log.i(TAG, "设置完 PmwsSetActivity.sIsRecording的状态=" + PmwsSetActivity.sIsRecording);
+        Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
         String action = intent.getAction();
         PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
-            if (PmwsSetActivity.sIsRecording) {
+            if (DCPubic.sIsRecording) {
                 // 如果正在录制，这个action就是要停止录制
                 PmwsLog.d("The service has been started before, stop the recording");
                 mHandler.removeMessages(MSG_RESTART_RECORDING);
@@ -329,7 +313,7 @@ public class CameraRecordService extends Service {
         }
         stopRecording();
         releaseCamera(); // release the camera immediately on pause event
-        PmwsSetActivity.sIsRecording = false;
+        DCPubic.sIsRecording = false;
     }
 
     /**
@@ -338,7 +322,7 @@ public class CameraRecordService extends Service {
     private void loadSettings() {
 
         // 是否展示预览
-        mPreviewEnabled = Hawk.get(SettingsUtil.PREF_KEY_PREVIEW, false);
+        mPreviewEnabled = 0==Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0)?true:false;
         String cameraIdStr = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
 
         if (cameraIdStr != null) {
@@ -381,6 +365,10 @@ public class CameraRecordService extends Service {
      * 动态添加surfaceview
      */
     private void addSurfaceView() {
+        if (mWindowManager == null) {
+            mWindowManager = ((WindowManager) getApplicationContext()
+                    .getSystemService(Context.WINDOW_SERVICE));
+        }
         mWindowLayoutParams = new WindowManager.LayoutParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//6.0
             mWindowLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -411,7 +399,7 @@ public class CameraRecordService extends Service {
             public void onClick(View v) {
                 PmwsLog.d("Preview clicked, hide the preview first");
                 showPreview(false);
-                if (PmwsSetActivity.sIsRecording) {
+                if (DCPubic.sIsRecording) {
                     //录制过程中预览关闭
                     return;
                 }
@@ -437,7 +425,7 @@ public class CameraRecordService extends Service {
                     mHandler.removeMessages(MSG_RESTART_RECORDING);
                     mHandler.removeMessages(MSG_START_RECORDING);
 
-                    if (PmwsSetActivity.sIsRecording) {
+                    if (DCPubic.sIsRecording) {
                         stopRecording();
                     }
 
@@ -540,7 +528,7 @@ public class CameraRecordService extends Service {
                     mHandler.obtainMessage(MSG_RESTART_RECORDING),
                     mMaxDuration);
         }
-        PmwsSetActivity.sIsRecording = true;
+        DCPubic.sIsRecording = true;
 
     }
 
@@ -566,7 +554,7 @@ public class CameraRecordService extends Service {
         Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
         startService(intent);
         Log.i("QWEQWE", "ONE AGAIN");
-        PmwsSetActivity.sIsRecording = false;
+        DCPubic.sIsRecording = false;
 
     }
 
@@ -775,7 +763,7 @@ public class CameraRecordService extends Service {
      * @VolumeCarmeChange 改变系统配置的摄像头
      */
     private void TestsBroadStop() {
-        if (PmwsSetActivity.sIsRecording == false) {
+        if (DCPubic.sIsRecording == false) {
             Log.i(TAG, "重新初始化");
             VolumeCarmeChange();
             VolumeEmbellish = 2;
@@ -799,7 +787,7 @@ public class CameraRecordService extends Service {
             //            mWindowManager.removeView(mRootView);
             mNotificationManager.cancel(NOTIFICATION_FLAG);
 
-            PmwsSetActivity.sIsRecording = false;
+            DCPubic.sIsRecording = false;
             stopSelf();
             VolumeEmbellish = 1;
         }

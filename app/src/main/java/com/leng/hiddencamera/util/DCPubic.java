@@ -33,8 +33,8 @@ import java.util.Date;
 import java.util.Enumeration;
 
 public class DCPubic {
-
-
+	public static int RECORD_DIALOG = 0;//0代表可以展示密码框
+	public static boolean sIsRecording = false;
 	public static void ShowToast(Context context, String text) {
 		Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 	}

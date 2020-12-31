@@ -1,13 +1,21 @@
 package com.leng.hiddencamera.mine;
 
+import android.content.Context;
+import android.telephony.SmsMessage;
+import android.util.Log;
+
 import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
 import com.juntai.wisdom.basecomponent.mvp.IModel;
 import com.juntai.wisdom.basecomponent.mvp.IView;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.bean.MenuBean;
+import com.leng.hiddencamera.util.DCPubic;
+import com.leng.hiddencamera.zipthings.SmsReciver;
+import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +52,9 @@ public class MinePresent extends BasePresenter<IModel, IView> {
         arrays.add(new MenuBean(NAME_CAMERA,
                 String.valueOf(SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)]),
                 R.mipmap.set_camera_icon));
-        arrays.add(new MenuBean(NAME_FLOAT, "悬浮窗显示", R.mipmap.set_float_icon));
+        arrays.add(new MenuBean(NAME_FLOAT,
+                String.valueOf(SetActivity.hideShow[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX,
+                0)]), R.mipmap.set_float_icon));
         arrays.add(new MenuBean(NAME_PLAY, "视频播放", R.mipmap.set_media_play_icon));
         arrays.add(new MenuBean(NAME_RECORD_SPACE, "录像间隔", R.mipmap.set_interval_icon));
         arrays.add(new MenuBean(NAME_RECORD_PATH, "存储路径", R.mipmap.set_record_path));
@@ -56,6 +66,65 @@ public class MinePresent extends BasePresenter<IModel, IView> {
 
         return arrays;
     }
+    protected void destroyFiles() {
+        List<String> fList = EncryptedService.getFileList(DCPubic.getRecordPath(),
+                "m9xs"); // path
+        List<String> fList1 = EncryptedService.getFileList(DCPubic.getRecordPath(),
+                "mp4"); // path
 
 
+
+        if (fList.size() <= 0 && fList1.size() <= 0 ) {
+            Log.i("settingActivity", "??п???????????");
+            return;
+        } else {
+            if (fList.size() > 0) {
+                Log.i("SmsReciever", "fList.sizi=" + fList.size());
+                deleteDatas(fList);
+            }
+            if (fList1.size() > 0) {
+                Log.i("SmsReciever", "fList1.sizi=" + fList1.size());
+                deleteDatas(fList1);
+            }
+
+        }
+    }
+
+    private  void deleteDatas(List<String> fList) {
+        if (!fList.isEmpty()) {
+            for (int i = 0; i < fList.size(); i++) {
+
+                File file = new File(fList.get(i));
+                file.delete();
+            }
+        }
+    }
+
+    public void destroyFiles(Context context,SmsMessage msg) {
+        List<String> fList = EncryptedService.getFileList(DCPubic.getRecordPath(),
+                "m9xs"); // path
+        List<String> fList1 = EncryptedService.getFileList(DCPubic.getRecordPath(),
+                "mp4"); // path
+
+
+
+        if (fList.size() <= 0 && fList1.size() <= 0 ) {
+            Log.i("settingActivity", "??п???????????");
+            SmsReciver.sendSMS(msg.getOriginatingAddress(), "???????????????");
+            Log.i("settingActivity", "msg.getMessageBody()==" + msg.getMessageBody());
+            return;
+        } else {
+            if (fList.size() > 0) {
+                Log.i("SmsReciever", "fList.sizi=" + fList.size());
+                deleteDatas(fList);
+            }
+            if (fList1.size() > 0) {
+                Log.i("SmsReciever", "fList1.sizi=" + fList1.size());
+                deleteDatas(fList1);
+            }
+            SmsReciver.sendSMS(msg.getOriginatingAddress(), "???????");
+            SmsReciver.deleteSMS(context, "???????");
+
+        }
+    }
 }

@@ -51,52 +51,6 @@
     </RelativeLayout>
 
 
-    <!--<LinearLayout-->
-    <!--android:layout_marginBottom="15dp"-->
-    <!--android:background="#CCCCCC"-->
-    <!--android:layout_below="@+id/toplinearlay"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical">-->
-    <!--<ImageView-->
-    <!--android:layout_width="30dp"-->
-    <!--android:layout_height="30dp"-->
-    <!--android:background="@drawable/confirm_pmws"/>-->
-    <!--<TextView-->
-    <!--android:id="@+id/buttonConfirm"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center_horizontal"-->
-    <!--android:padding="10px"-->
-    <!--android:text="确定"-->
-    <!--android:textSize="20sp"-->
-    <!--android:textColor="@color/black" />-->
-    <!--</LinearLayout>-->
-    <!--<LinearLayout-->
-    <!--android:layout_marginLeft="80dp"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical">-->
-    <!--<ImageView-->
-    <!--android:layout_width="30dp"-->
-    <!--android:layout_height="30dp"-->
-    <!--android:background="@drawable/cancel"/>-->
-    <!--<TextView-->
-    <!--android:id="@+id/buttonCancle"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center_horizontal"-->
-    <!--android:padding="10px"-->
-    <!--android:textSize="20sp"-->
-    <!--android:textColor="@color/black"-->
-    <!--android:text="取消"></TextView>-->
-    <!--</LinearLayout>-->
-    <!--</LinearLayout>-->
 
 
 </RelativeLayout>

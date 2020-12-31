@@ -41,7 +41,6 @@
         android:label="@string/pmws_app_name"
         android:theme="@style/AppTheme">
         <activity android:name=".mine.SetActivity"></activity>
-        <activity android:name=".mine.PmwsSetActivity" />
         <activity
             android:name=".home.SplashActivity"
             android:label="指南针设置"

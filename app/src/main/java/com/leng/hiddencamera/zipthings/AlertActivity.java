@@ -7,8 +7,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.util.DCPubic;
 
 /**
  * Created by DuoNuo on 2017/1/17.
@@ -39,7 +39,7 @@ public class AlertActivity extends Activity {
                 finish();
             }
         });
-        PmwsSetActivity.RECORD_DIALOG=1;
+        DCPubic.RECORD_DIALOG=1;
     }
 
 

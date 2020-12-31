@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipthings.decrypted.DecryptedFileService;
 
@@ -72,22 +71,14 @@ public class MyVediosActivity extends ListActivity {
     public NotificationManager mNotificationManager;
     private TextView textView;
     private Dialog mDialog;
-    SharedPreferences sp;
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setContentView(R.layout.fileselect);
         mDialog = DCPubic.getProgressDialog(this, "正在解密，请稍后...");
         mPath = (TextView) findViewById(R.id.mPath);
         textView = (TextView) findViewById(R.id.cancel_tv_);
-        //		findViewById(R.id.buttonConfirm).setOnClickListener(this);
-        //		findViewById(R.id.buttonCancle).setOnClickListener(this);
-        sp = getSharedPreferences("videoPath", MODE_PRIVATE);
-        String path = sp.getString("videoPath", "/mnt/sdcard/MyData");
-        getFileDir(path); // curPath
         registerDialogDismissReceiver();
 
         textView.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +91,7 @@ public class MyVediosActivity extends ListActivity {
 
     @Override
     public void onBackPressed() {
-        PmwsSetActivity.RECORD_DIALOG = 1;
+        DCPubic.RECORD_DIALOG = 1;
         finish();
 
     }
@@ -109,10 +100,6 @@ public class MyVediosActivity extends ListActivity {
         IntentFilter intentFilter = new IntentFilter("DialogDismiss");
         registerReceiver(mBroadcastReceiver, intentFilter);
     }
-
-    //	public void finish_MyFile(View v) {
-    //		finish();
-    //	}
 
     /**
      * 获取指定目录下的所有文件(夹)
@@ -332,9 +319,7 @@ public class MyVediosActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sp = getSharedPreferences("videoPath", MODE_PRIVATE);
-        String path = sp.getString("videoPath", "/mnt/sdcard/MyData");
-        getFileDir(path); // curPath
+        getFileDir(DCPubic.getRecordPath()); // curPath
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

@@ -11,8 +11,8 @@ import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
-import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public class DecrypAlarmReceiver extends BroadcastReceiver {
     private void openVideo(Context context) {
     	
     	SharedPreferences tmpFileName = context.getSharedPreferences("tmpFileName", 0);
-    	String pathString=tmpFileName.getString("tmpFileName", PmwsSetActivity.SAVED_VIDEO_PATH);  //"mnt/sdcard/MyData"
+    	String pathString=tmpFileName.getString("tmpFileName", DCPubic.getRecordPath());  //"mnt/sdcard/MyData"
     	
     	
     	

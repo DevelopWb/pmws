@@ -96,6 +96,10 @@ public class HawkProperty {
      * FLOAT_IS_SHOW
      */
     public static String FLOAT_IS_SHOW_INDEX = "floatshowable";
+    /**
+     * password
+     */
+    public static String PWD = "password";
 
 
 }

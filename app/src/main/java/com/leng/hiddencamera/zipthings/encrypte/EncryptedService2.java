@@ -10,7 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.mine.PmwsSetActivity;
+import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipthings.AlertActivity;
 
@@ -57,7 +57,7 @@ public class EncryptedService2 extends Service {
     }
 
     private void xxxxx() {
-        List<String> fList = getFileList(PmwsSetActivity.SAVED_VIDEO_PATH, "mp4");  //path
+        List<String> fList = getFileList(DCPubic.getRecordPath(), "mp4");  //path
 
         if (fList.size() == 0) {
             Log.i(TAG, "视频文件的个数为0，不执行加密操作");
@@ -78,7 +78,7 @@ public class EncryptedService2 extends Service {
                 Log.i("QWEQWE", "加密的时候捕捉到异常2");
 
                 //要是空间不足的时候还在录制
-                if (PmwsSetActivity.sIsRecording) {
+                if (DCPubic.sIsRecording) {
                     Intent intent = new Intent("com.leng.hiddencamera.CameraService.RECEIVER");
                     sendBroadcast(intent);
                 }

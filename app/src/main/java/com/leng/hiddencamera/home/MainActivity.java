@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
-import com.leng.hiddencamera.mine.PmwsSetActivity;
+import com.leng.hiddencamera.util.DCPubic;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
@@ -23,31 +23,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         //        acquireWakeLock();
         ActivityManagerTool.getInstance().finishApp();
-        String strreg = Hawk.get(HawkProperty.REG_CODE);
-        if ("".equals(strreg) || TextUtils.isEmpty(strreg)) {
+        if (!Hawk.contains(HawkProperty.REG_CODE)) {
             ToastUtils.toast(this, "您还没有注册，请先注册！");
             this.finish();
             return;
-        } else {
-            new RegOperateManager(this,
-                    new RegLatestContact.CancelCallBack() {
-                        @Override
-                        public void toFinishActivity() {
-                            finish();
-                        }
-
-                        @Override
-                        public void toDoNext(String input) {
-                            if (PmwsSetActivity.sIsRecording) {
-                                startCameraService(CameraRecordService.ACTION_RECORDING);
-                            } else {
-                                startCameraService(CameraRecordService.ACTION_START);
-                            }
-                        }
-                    });
-
         }
-
+        if (DCPubic.sIsRecording) {
+            startCameraService(CameraRecordService.ACTION_RECORDING);
+        } else {
+            startCameraService(CameraRecordService.ACTION_START);
+        }
 
     }
 
