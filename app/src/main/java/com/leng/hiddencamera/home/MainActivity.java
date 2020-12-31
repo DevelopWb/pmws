@@ -28,11 +28,23 @@ public class MainActivity extends Activity {
             this.finish();
             return;
         }
-        if (DCPubic.sIsRecording) {
-            startCameraService(CameraRecordService.ACTION_RECORDING);
-        } else {
-            startCameraService(CameraRecordService.ACTION_START);
-        }
+        new RegOperateManager(this,
+                new RegLatestContact.CancelCallBack() {
+                    @Override
+                    public void toFinishActivity() {
+                        finish();
+                    }
+
+                    @Override
+                    public void toDoNext(String input) {
+                        if (DCPubic.sIsRecording) {
+                            startCameraService(CameraRecordService.ACTION_RECORDING);
+                        } else {
+                            startCameraService(CameraRecordService.ACTION_START);
+                        }
+                    }
+                });
+
 
     }
 
@@ -43,29 +55,6 @@ public class MainActivity extends Activity {
 
     }
 
-    //    private PowerManager.WakeLock wakeLock;
-
-    //    /**
-    //     * 防止CUP休眠
-    //     */
-    //    private void acquireWakeLock() {
-    //        if (wakeLock == null) {
-    //            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-    //            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getCanonicalName());
-    //            wakeLock.acquire();
-    //        }
-    //    }
-
-
-    //    /**
-    //     * 释放CPU休眠锁
-    //     */
-    //    private void releaseWakeLock() {
-    //        if (wakeLock != null && wakeLock.isHeld()) {
-    //            wakeLock.release();
-    //            wakeLock = null;
-    //        }
-    //    }
 
     /**
      * 启动service

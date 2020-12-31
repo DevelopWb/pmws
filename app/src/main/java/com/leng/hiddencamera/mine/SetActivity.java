@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.juntai.wisdom.basecomponent.mvp.IView;
+import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 import com.juntai.wisdom.basecomponent.utils.DisplayUtil;
 import com.juntai.wisdom.basecomponent.utils.GridDividerItemDecoration;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
@@ -101,7 +102,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
     @Override
     public void initView() {
-        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
+        regOperateManager = new RegOperateManager(mContext, new RegLatestContact.CancelCallBack() {
             @Override
             public void toFinishActivity() {
                 finish();
@@ -217,7 +218,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
             }
             return;
         }
-        View view = View.inflate(this, R.layout.dialog_input_password, null);
+        View view = View.inflate(getApplicationContext(), R.layout.dialog_input_password, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         dialog = builder.create();
         dialog.setView(view, 0, 0, 0, 0);
@@ -413,6 +414,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
         switch (v.getId()) {
 
             case R.id.menu_quit_ll:
+                ActivityManagerTool.getInstance().finishApp();
                 break;
             default:
                 break;

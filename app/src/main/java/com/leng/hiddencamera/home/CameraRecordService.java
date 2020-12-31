@@ -81,15 +81,10 @@ public class CameraRecordService extends Service {
     private MediaRecorder mMediaRecorder;
     private CameraPreview mPreview;
     private int mMaxDuration = -1;
-    private boolean mSDReady = false;
 
     private SensorManager mSensorManager;
     private SensorEventListener mSensorListener;
 //    private String mFileDir;
-    private long available_;
-    private int time, time1, time2;
-    private Timer timer;
-    private TimerTask task;
 
 
     // 预览屏幕的大小
@@ -142,21 +137,21 @@ public class CameraRecordService extends Service {
                     showNotification();
                     break;
                 case MSG_SEND_MESSAGE:
-                    if (time < 300) {
-                        Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
-
-                        stopRecording();
-                        // MediaRecorder,
-                        // release it first
-                        releaseCamera(); // release the camera immediately on
-                        // pause event
-                        mHandler.removeMessages(MSG_RESTART_RECORDING);
-                        mHandler.removeMessages(MSG_START_RECORDING);
-                        removeSurfaceView();
-                        mNotificationManager.cancel(NOTIFICATION_FLAG);
-                        DCPubic.sIsRecording = false;
-                        stopSelf();
-                    }
+//                    if (time < 300) {
+//                        Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
+//
+//                        stopRecording();
+//                        // MediaRecorder,
+//                        // release it first
+//                        releaseCamera(); // release the camera immediately on
+//                        // pause event
+//                        mHandler.removeMessages(MSG_RESTART_RECORDING);
+//                        mHandler.removeMessages(MSG_START_RECORDING);
+//                        removeSurfaceView();
+//                        mNotificationManager.cancel(NOTIFICATION_FLAG);
+//                        DCPubic.sIsRecording = false;
+//                        stopSelf();
+//                    }
 
                     break;
             }
@@ -172,7 +167,6 @@ public class CameraRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        addSurfaceView();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
         wakeLock.acquire();
@@ -186,58 +180,16 @@ public class CameraRecordService extends Service {
         intentFilter2.addAction("asasqwe");
         registerReceiver(valumeTest, intentFilter2);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
-        time = (int) (available_ / 2.03986711);
-        if (time < 300) {
-            Toast.makeText(getBaseContext(), "存储空间不足请及时处理", Toast.LENGTH_SHORT).show();
-            stopSelf();
-            return;
-        }
-
-        if (available_ < 500) {
-            Toast.makeText(getBaseContext(), "存储空间不足请及时处理", Toast.LENGTH_SHORT).show();
-
-            DCPubic.sIsRecording = false;
-            //二次设置为
-            stopSelf();
-            return;
-        } else {
-            mSDReady = true;
-        }
-        //        mWindowManager = ((WindowManager) getApplicationContext()
-        //                .getSystemService("window"));
         loadSettings();
-
-        /*
-         * TimerTask task = new TimerTask() { public void run() { Message msg =
-         * new Message(); msg.what = 10; mHandler.sendMessage(msg); } };
-         */
-
-
         //动态注册广播接收器
         stopReCordingReceiver = new StopRecordingReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
         registerReceiver(stopReCordingReceiver, intentFilter);
+        addSurfaceView();
         Log.i(TAG, "onCreate");
     }
 
-    private void setTimerTask() {
-
-        task = new TimerTask() {
-
-            @Override
-            public void run() {
-                if (DCPubic.sIsRecording) {
-                    time--;
-                    Message msg = new Message();
-                    msg.what = 10;
-                    mHandler.sendMessage(msg);
-                }
-
-            }
-        };
-        timer.schedule(task, 1000, 1000);/* 表示1000毫秒之後，每隔1000毫秒執行一次 */
-    }
 
 
     @SuppressLint("WrongConstant")
@@ -451,10 +403,6 @@ public class CameraRecordService extends Service {
         //        acquireWakeLock();
         PmwsLog.writeLog("Start recording...");
         PmwsLog.d("Start recording...");
-        if (timer == null) {
-            timer = new Timer();
-            setTimerTask();
-        }
         int rate = 10;
         List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
         if (rates != null) {
@@ -537,12 +485,6 @@ public class CameraRecordService extends Service {
      */
     private void stopRecording() {
         PmwsLog.writeLog("stopRecording...");
-        if (timer != null) {
-
-            timer.cancel();
-
-            timer = null;
-        }
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
@@ -670,12 +612,6 @@ public class CameraRecordService extends Service {
         if (mSensorListener != null)
             mSensorManager.unregisterListener(mSensorListener);
 
-        if (timer != null) {
-
-            timer.cancel();
-
-            timer = null;
-        }
         unregisterReceiver(stopReCordingReceiver);
         //
         unregisterReceiver(valumeTest);
