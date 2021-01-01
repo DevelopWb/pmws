@@ -196,7 +196,8 @@ public class CameraRecordService extends Service {
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        backGroundNotificate();
+        startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
+//        backGroundNotificate();
         PmwsLog.d("OnStartCommand receive intent: " + intent.toString());
         Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
         String action = intent.getAction();
