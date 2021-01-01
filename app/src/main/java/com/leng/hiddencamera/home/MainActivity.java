@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
                 actionRecording);
         startIntent.setClass(this, CameraRecordService.class);
         if (Build.VERSION.SDK_INT >= 26) {
-            startService(startIntent);
+            startForegroundService(startIntent);
         } else {
             // Pre-O behavior.
             startService(startIntent);

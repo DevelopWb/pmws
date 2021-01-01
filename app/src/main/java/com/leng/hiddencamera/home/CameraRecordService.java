@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.leng.hiddencamera.MyApp;
 import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
@@ -54,7 +55,7 @@ import java.util.TimerTask;
  * @date 2020/11/15 17:00
  */
 public class CameraRecordService extends Service {
-    public static final int NOTIFICATION_FLAG = 13691;
+    public static final int NOTIFICATION_FLAG = 1;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
@@ -195,7 +196,7 @@ public class CameraRecordService extends Service {
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
+        backGroundNotificate();
         PmwsLog.d("OnStartCommand receive intent: " + intent.toString());
         Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
         String action = intent.getAction();
@@ -246,7 +247,13 @@ public class CameraRecordService extends Service {
         //        }
         return START_NOT_STICKY;
     }
+    private void backGroundNotificate() {
+        Notification notification = new NotificationCompat.Builder(this, MyApp.CHANNEL_NAME)
+                .setContentTitle(getString(R.string.app_name))
+                .build();
 
+        startForeground(NOTIFICATION_FLAG, notification);
+    }
     /**
      * 释放资源
      */
