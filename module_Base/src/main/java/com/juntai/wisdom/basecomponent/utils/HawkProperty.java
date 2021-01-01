@@ -93,6 +93,10 @@ public class HawkProperty {
      */
     public static String RECORD_INTERVAL_TIME_INDEX = "intervaltime";
     /**
+     * pretendnames
+     */
+    public static String PRETEND_NAMES_INDEX = "pretendnames";
+    /**
      * FLOAT_IS_SHOW
      */
     public static String FLOAT_IS_SHOW_INDEX = "floatshowable";

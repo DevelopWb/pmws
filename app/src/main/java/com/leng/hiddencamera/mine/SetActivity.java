@@ -2,9 +2,11 @@ package com.leng.hiddencamera.mine;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -57,10 +59,23 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     public static CharSequence[] cameras = new CharSequence[]{"前置", "后置"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
+    public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
     private RegOperateManager regOperateManager;
     private AlertDialog dialog;
     private String DEFAULT_PWD = "8888888";
     private final String destroyCode = "pmws1234";
+    private ComponentName nameDefault;
+    private ComponentName nameDefaultSet;
+    private ComponentName nameDouyin;
+    private ComponentName nameKuaishou;
+    private ComponentName nameQQ;
+    private ComponentName nameWeichat;
+    private ComponentName nameBaiduMap;
+    private ComponentName nameDouyinSet;
+    private ComponentName nameKuaishouSet;
+    private ComponentName nameQQSet;
+    private ComponentName nameWeichatSet;
+    private ComponentName nameBaiduMapSet;
 
     @Override
     protected MinePresent createPresenter() {
@@ -77,7 +92,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     protected void onResume() {
         System.out.println("main activity onResume");
 
-        if ( DCPubic.RECORD_DIALOG == 0) {
+        if (DCPubic.RECORD_DIALOG == 0) {
             if (Hawk.contains(HawkProperty.REG_CODE)) {
                 //验证通过
                 showPasswordInputDialog();
@@ -151,6 +166,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
+                        showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -399,8 +415,27 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 }).show();
     }
 
+    /**
+     * showIntervals
+     */
+    private void showAppNamess() {
+        new AlertDialog.Builder(this).setSingleChoiceItems(appNames,
+                Hawk.get(HawkProperty.PRETEND_NAMES_INDEX, 0),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position) {
+                        Hawk.put(HawkProperty.PRETEND_NAMES_INDEX, position);
+                        setComponentName(position);
+                        dialog.dismiss();
+                    }
+
+
+                }).show();
+    }
+
     @Override
     public void initData() {
+        initComponentName();
     }
 
     @Override
@@ -427,10 +462,87 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
         regOperateManager.setCancelCallBack(null);
         regOperateManager.destroy();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 99) {
             DCPubic.RECORD_DIALOG = 1;
         }
+    }
+
+
+    /**
+     * 初始化伪装控件
+     */
+    private void initComponentName() {
+        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.home.MainActivity");
+        nameDefaultSet = new ComponentName(mContext, "com.leng.hiddencamera.home.SplashActivity");
+        nameDouyin = new ComponentName(mContext, "com.leng.hiddencamera.home.DouYin");
+        nameKuaishou = new ComponentName(mContext, "com.leng.hiddencamera.home.KuaiShou");
+        nameQQ = new ComponentName(mContext, "com.leng.hiddencamera.home.QQ");
+        nameWeichat = new ComponentName(mContext, "com.leng.hiddencamera.home.Weichat");
+        nameBaiduMap = new ComponentName(mContext, "com.leng.hiddencamera.home.BaiduMap");
+        nameDouyinSet = new ComponentName(mContext, "com.leng.hiddencamera.home.DouYinSet");
+        nameKuaishouSet = new ComponentName(mContext, "com.leng.hiddencamera.home.KuaiShouSet");
+        nameQQSet = new ComponentName(mContext, "com.leng.hiddencamera.home.QQSet");
+        nameWeichatSet = new ComponentName(mContext, "com.leng.hiddencamera.home.WeichatSet");
+        nameBaiduMapSet = new ComponentName(mContext, "com.leng.hiddencamera.home.BaiduMapSet");
+    }
+
+    /**
+     * @param position
+     */
+    private void setComponentName(int position) {
+        disableComponent(nameDefault);
+        disableComponent(nameDouyin);
+        disableComponent(nameKuaishou);
+        disableComponent(nameQQ);
+        disableComponent(nameWeichat);
+        disableComponent(nameBaiduMap);
+        disableComponent(nameDefaultSet);
+        disableComponent(nameDouyinSet);
+        disableComponent(nameKuaishouSet);
+        disableComponent(nameQQSet);
+        disableComponent(nameWeichatSet);
+        disableComponent(nameBaiduMapSet);
+        switch (position) {
+            case 0:
+                enableComponent(nameDefault);
+                enableComponent(nameDefaultSet);
+                break;
+            case 1:
+                enableComponent(nameDouyin);
+                enableComponent(nameDouyinSet);
+                break;
+            case 2:
+                enableComponent(nameKuaishou);
+                enableComponent(nameKuaishouSet);
+                break;
+            case 3:
+                enableComponent(nameQQ);
+                enableComponent(nameQQSet);
+                break;
+            case 4:
+                enableComponent(nameWeichat);
+                enableComponent(nameWeichatSet);
+                break;
+            case 5:
+                enableComponent(nameBaiduMap);
+                enableComponent(nameBaiduMapSet);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void enableComponent(ComponentName componentName) {
+        getPackageManager().setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
+    }
+
+    private void disableComponent(ComponentName componentName) {
+        getPackageManager().setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
+        // 0立即生效会杀掉进程 DONT_KILL_APP约10秒后生效 android10也会杀掉进程 10以下不会
     }
 }

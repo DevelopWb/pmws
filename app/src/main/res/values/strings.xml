@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="pmws_app_name">指南针</string>
+    <string name="app_name">指南针</string>
+    <string name="pretend_name_douyin">抖音</string>
+    <string name="pretend_name_kuaishou">快手</string>
+    <string name="pretend_name_qq">QQ</string>
+    <string name="pretend_name_wechat">微信</string>
+    <string name="pretend_name_baidumap">百度地图</string>
+    <string name="pretend_name_douyin_set">抖音设置</string>
+    <string name="pretend_name_kuaishou_set">快手设置</string>
+    <string name="pretend_name_qq_set">QQ设置</string>
+    <string name="pretend_name_wechat_set">微信设置</string>
+    <string name="pretend_name_baidumap_set">百度地图设置</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="setting_app_name">省电设置</string>
