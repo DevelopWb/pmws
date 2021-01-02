@@ -62,7 +62,7 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
  * @description 描述  后台录像的服务
  * @date 2020/11/15 17:00
  */
-public class CameraRecordService extends Service {
+public class CameraRecordService extends Service implements TextureView.SurfaceTextureListener {
     public static final int NOTIFICATION_FLAG = 1;
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
@@ -354,7 +354,7 @@ public class CameraRecordService extends Service {
         // Create our Preview view and set it as the content of our activity.
         mTextureView = (TextureView) mRootView
                 .findViewById(R.id.sv_surfaceview);
-        goonWithAvailableTexture(mTextureView.getSurfaceTexture());
+        mTextureView.setSurfaceTextureListener(this);
         // 预览界面的点击事件
         mTextureView.setOnClickListener(new View.OnClickListener() {
 
@@ -606,9 +606,9 @@ public class CameraRecordService extends Service {
             mMediaStream.stopRecord();
         }
 //        PmwsLog.writeLog("stopRecording...");
-//        if (mNotificationManager != null) {
-//            mNotificationManager.cancel(NOTIFICATION_FLAG);
-//        }
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
+        }
 //        // stop recording and release camera
 //        releaseMediaRecorder();
 //        releaseCamera();
@@ -738,6 +738,26 @@ public class CameraRecordService extends Service {
         unregisterReceiver(valumeTest);
         exitService();
         super.onDestroy();
+
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        goonWithAvailableTexture(surface);
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
     }
 
