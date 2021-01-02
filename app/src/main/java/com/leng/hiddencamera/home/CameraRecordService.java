@@ -10,7 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
@@ -26,6 +29,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -44,10 +49,13 @@ import com.leng.hiddencamera.view.CameraPreview;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService2;
 import com.orhanobut.hawk.Hawk;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
 /**
  * @aouther tobato
@@ -59,10 +67,6 @@ public class CameraRecordService extends Service {
     public static final String EXTRA_ACTION = "extra_action";
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
-    public static final String ACTION_RESTART = "action_restart";
-    public static final String ACTION_TAKE_RECORD = "action_take_record";
-    public static final String ACTION_SWITCH_STATE = "action_switch_state";
-    public static final String STOP_RECORDING = "stop_recording";
     public static final String ACTION_RECORDING = "action_recording";
     private Intent intent;
     private static final int MSG_START_RECORDING = 1;
@@ -77,12 +81,11 @@ public class CameraRecordService extends Service {
     private WindowManager.LayoutParams mWindowLayoutParams = null;
     private View mRootView;
     private NotificationManager mNotificationManager;
-    private Camera mCamera;
+//    private Camera mCamera;
     private int mCameraId;
     private MediaRecorder mMediaRecorder;
-    private CameraPreview mPreview;
     private int mMaxDuration = -1;
-
+    public MediaStream mMediaStream;
     private SensorManager mSensorManager;
     private SensorEventListener mSensorListener;
 //    private String mFileDir;
@@ -159,6 +162,7 @@ public class CameraRecordService extends Service {
 
         }
     };
+    private TextureView mTextureView;
 
     private void removeSurfaceView() {
         mWindowManager.removeView(mRootView);
@@ -346,14 +350,13 @@ public class CameraRecordService extends Service {
         mRootView = LayoutInflater.from(this).inflate(R.layout.activity_camera,
                 null);
         // Create an instance of Camera
-        mCamera = getCameraInstance();
+//        mCamera = getCameraInstance();
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) mRootView
-                .findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+        mTextureView = (TextureView) mRootView
+                .findViewById(R.id.sv_surfaceview);
+        goonWithAvailableTexture(mTextureView.getSurfaceTexture());
         // 预览界面的点击事件
-        mPreview.setOnClickListener(new View.OnClickListener() {
+        mTextureView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -366,7 +369,7 @@ public class CameraRecordService extends Service {
                 // stopSelf();
                 PmwsLog.d("Preview clicked, recording not started, start recording");
                 // 预览界面点击后，隐藏，然后开始录制
-                mPreview.postDelayed(new Runnable() {
+                mTextureView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         startRecording();
@@ -403,87 +406,194 @@ public class CameraRecordService extends Service {
         });
         mWindowManager.addView(mRootView, mWindowLayoutParams);
     }
+    /*
+     * 初始化MediaStream
+     * */
 
+
+    private void goonWithAvailableTexture(SurfaceTexture surface) {
+//        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
+//        int ori = mConfiguration.orientation; //获取屏幕方向
+//        if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
+//            //横屏
+//            IS_VERTICAL_SCREEN = false;
+//        } else if (ori == mConfiguration.ORIENTATION_PORTRAIT) {
+//            //竖屏
+//            IS_VERTICAL_SCREEN = true;
+//        }
+
+
+        final File easyPusher = new File(DCPubic.getRecordPath());
+        easyPusher.mkdir();
+        if (mMediaStream == null) {
+            mMediaStream = new MediaStream(getApplicationContext(), surface);
+            mMediaStream.setRecordPath(easyPusher.getPath());
+            mMediaStream.createCamera(0);
+            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
+            mMediaStream.startPreview();
+//            mService.setMediaStream(ms);
+//            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
+//                int orientation = getRequestedOrientation();
+//
+//                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                } else {
+//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//                }
+//            }
+        }
+//        MediaStream ms = mService.getMediaStream();
+//
+//        if (ms != null) { // switch from background to front
+//            ms.stopPreview();
+//            mService.inActivePreview();
+//            ms.setSurfaceTexture(surface);
+//            ms.startPreview();
+//            mMediaStream = ms;
+//
+//            if (isStreaming()) {
+//                String url = Config.getServerURL();
+//                //                txtStreamAddress.setText(url);
+//
+//                //                sendMessage(getPushStatusMsg());
+//
+//                mVedioPushBottomTagIv.setImageResource(R.drawable.start_push_pressed);
+//            }
+//
+//            //            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
+//            //                int orientation = getRequestedOrientation();
+//            //
+//            //                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+//            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//            //                } else {
+//            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//            //                }
+//            //            }
+//        } else {
+//
+//            boolean enableVideo = SPUtil.getEnableVideo(this);
+//
+//            ms = new MediaStream(getApplicationContext(), surface, enableVideo);
+//            ms.setRecordPath(easyPusher.getPath());
+//            mMediaStream = ms;
+//            startCamera();
+//            mService.setMediaStream(ms);
+//            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
+//                int orientation = getRequestedOrientation();
+//
+//                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                } else {
+//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//                }
+//            }
+//        }
+    }
+    // 屏幕的角度
+    private int getDisplayRotationDegree() {
+        int rotation = mWindowManager.getDefaultDisplay().getRotation();
+        int degrees = 0;
+
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break; // Natural orientation
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break; // Landscape left
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;// Upside down
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;// Landscape right
+        }
+
+        return degrees;
+    }
     /**
      * 开始录像
      */
     private void startRecording() {
-        //        acquireWakeLock();
-        PmwsLog.writeLog("Start recording...");
-        PmwsLog.d("Start recording...");
-        int rate = 10;
-        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
-        if (rates != null) {
-            rate = rates.get(rates.size() - 1);
+        if (mMediaStream != null) {
+            mMediaStream.startRecord();
         }
-        mMediaRecorder = new MediaRecorder();
-        // Step 1: Unlock and set camera to MediaRecorder
-        if (mCamera != null) {
-            mCamera.unlock();
-
-        }
-        mMediaRecorder.setCamera(mCamera);
-
-        // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        // 设置录制的视频编码h263 h264
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);// 音频格式
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
-        //设置编码比特率,不设置会使视频图像模糊
-        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
-        //                mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
-        //         设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
-        mMediaRecorder.setVideoSize(1280, 720);
-        //         设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
-        //                帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
-        mMediaRecorder.setVideoFrameRate(rate);
-
-        // Step 4: Set output file
-        mMediaRecorder.setOutputFile(DCPubic.getOutputMediaFile(DCPubic.getRecordPath(), MEDIA_TYPE_VIDEO)
-                .toString());
-
-        // Step 5: Set the preview output
-        //        mPreview.surfaceCreated(mPreview.getHolder());
-        //        mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
-
-        mMediaRecorder.setOrientationHint(CameraRecordServiceHelper.getRecorderPlayOrientation(
-                mCameraId));
-        try {
-
-            mMediaRecorder.prepare();
-
-        } catch (IllegalStateException e) {
-            PmwsLog.writeLog("IllegalStateException preparing MediaRecorder: "
-                    + e.getMessage());
-            stopRecording();
-            stopSelf();
-            //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-            //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
-            //            startService(startIntent);
-        } catch (IOException e) {
-            PmwsLog.writeLog("IOException preparing MediaRecorder: " + e.getMessage());
-            stopRecording();
-            stopSelf();
-            //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
-            //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
-            //            startService(startIntent);
-        }
-        mMediaRecorder.start();
-        // inform the user that recording has started
-        // mCaptureButton.setText("Stop");
-        // setCaptureButtonText("Stop");
+//        //        acquireWakeLock();
+//        PmwsLog.writeLog("Start recording...");
+//        PmwsLog.d("Start recording...");
+//        int rate = 10;
+//        List<Integer> rates = mCamera.getParameters().getSupportedPreviewFrameRates();
+//        if (rates != null) {
+//            rate = rates.get(rates.size() - 1);
+//        }
+//        mMediaRecorder = new MediaRecorder();
+//        // Step 1: Unlock and set camera to MediaRecorder
+//        if (mCamera != null) {
+//            mCamera.unlock();
+//
+//        }
+//        mMediaRecorder.setCamera(mCamera);
+//
+//        // Step 2: Set sources
+//        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+//
+//        // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
+//        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//        // 设置录制的视频编码h263 h264
+//        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);// 音频格式
+//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+//        //设置编码比特率,不设置会使视频图像模糊
+//        mMediaRecorder.setVideoEncodingBitRate(5 * 1080 * 1920);  //清晰
+//        //                mediarecorder.setVideoEncodingBitRate(900*1024); //较为清晰，且文件大小为3.26M(30秒)
+//        //         设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
+//        mMediaRecorder.setVideoSize(1280, 720);
+//        //         设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
+//        //                帧率不可以随便定义，如果系统不支持就会报错。应该先通过camera获取支持的帧率，然后再设置
+//        mMediaRecorder.setVideoFrameRate(rate);
+//
+//        // Step 4: Set output file
+//        mMediaRecorder.setOutputFile(DCPubic.getOutputMediaFile(DCPubic.getRecordPath(), MEDIA_TYPE_VIDEO)
+//                .toString());
+//
+//        // Step 5: Set the preview output
+//        //        mPreview.surfaceCreated(mPreview.getHolder());
+//        //        mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
+//
+//        mMediaRecorder.setOrientationHint(CameraRecordServiceHelper.getRecorderPlayOrientation(
+//                mCameraId));
+//        try {
+//
+//            mMediaRecorder.prepare();
+//
+//        } catch (IllegalStateException e) {
+//            PmwsLog.writeLog("IllegalStateException preparing MediaRecorder: "
+//                    + e.getMessage());
+//            stopRecording();
+//            stopSelf();
+//            //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+//            //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+//            //            startService(startIntent);
+//        } catch (IOException e) {
+//            PmwsLog.writeLog("IOException preparing MediaRecorder: " + e.getMessage());
+//            stopRecording();
+//            stopSelf();
+//            //            Intent startIntent = new Intent(CameraRecordService.ACTION_START);
+//            //            startIntent.setClass(getBaseContext(), CameraRecordService.class);
+//            //            startService(startIntent);
+//        }
+//        mMediaRecorder.start();
+//        // inform the user that recording has started
+//        // mCaptureButton.setText("Stop");
+//        // setCaptureButtonText("Stop");
         showNotification();
-        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
-
-        if (mMaxDuration > 0) {
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                    mMaxDuration);
-        }
+//        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
+//
+//        if (mMaxDuration > 0) {
+//            mHandler.sendMessageDelayed(
+//                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
+//                    mMaxDuration);
+//        }
         DCPubic.sIsRecording = true;
 
     }
@@ -492,18 +602,21 @@ public class CameraRecordService extends Service {
      * 停止录像
      */
     private void stopRecording() {
-        PmwsLog.writeLog("stopRecording...");
-        if (mNotificationManager != null) {
-            mNotificationManager.cancel(NOTIFICATION_FLAG);
+        if (mMediaStream != null) {
+            mMediaStream.stopRecord();
         }
-        // stop recording and release camera
-        releaseMediaRecorder();
-        releaseCamera();
-        removeSurfaceView();
-        //停止录像的时候就执行加密的操作
-        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
-        startService(intent);
-        Log.i("QWEQWE", "ONE AGAIN");
+//        PmwsLog.writeLog("stopRecording...");
+//        if (mNotificationManager != null) {
+//            mNotificationManager.cancel(NOTIFICATION_FLAG);
+//        }
+//        // stop recording and release camera
+//        releaseMediaRecorder();
+//        releaseCamera();
+//        removeSurfaceView();
+//        //停止录像的时候就执行加密的操作
+//        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
+//        startService(intent);
+//        Log.i("QWEQWE", "ONE AGAIN");
         DCPubic.sIsRecording = false;
 
     }
@@ -517,11 +630,11 @@ public class CameraRecordService extends Service {
     private void showPreview(boolean showFlag) {
         PmwsLog.d("Switch priview status: " + showFlag);
 
-        if (showFlag && mWindowLayoutParams.width <= 1) {
+        if (showFlag ) {
             mWindowLayoutParams.width = mPreviewWidth;
             mWindowLayoutParams.height = mPreviewHeight;
             mWindowManager.updateViewLayout(mRootView, mWindowLayoutParams);
-        } else if (!showFlag && mWindowLayoutParams.width != 1) {
+        } else if (!showFlag) {
             mWindowLayoutParams.width = 1;
             mWindowLayoutParams.height = 1;
             mWindowManager.updateViewLayout(mRootView, mWindowLayoutParams);
@@ -561,9 +674,9 @@ public class CameraRecordService extends Service {
             mMediaRecorder.reset(); // clear recorder configuration
             mMediaRecorder.release(); // release the recorder object
             mMediaRecorder = null;
-            if (mCamera != null) {
-                mCamera.lock();
-            }
+//            if (mCamera != null) {
+//                mCamera.lock();
+//            }
         }
     }
 
@@ -571,11 +684,11 @@ public class CameraRecordService extends Service {
      * 释放camera
      */
     private void releaseCamera() {
-        if (mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.release(); // release the camera for other applications
-            mCamera = null;
-        }
+//        if (mCamera != null) {
+//            mCamera.stopPreview();
+//            mCamera.release(); // release the camera for other applications
+//            mCamera = null;
+//        }
     }
 
     /**
@@ -584,19 +697,19 @@ public class CameraRecordService extends Service {
      * @return
      */
     private Camera getCameraInstance() {
-        if (mCamera != null) {
-            return mCamera;
-        }
+//        if (mCamera != null) {
+//            return mCamera;
+//        }
         Camera c = null;
-        try {
-            int cameraId = mCameraId;
-            c = Camera.open(cameraId); // attempt to get a Camera instance
-            c.setDisplayOrientation(CameraRecordServiceHelper.getCameraDisplayOrientation(mCameraId));
-
-        } catch (Exception e) {
-            // Camera is not available (in use or does not exist)
-            e.printStackTrace();
-        }
+//        try {
+//            int cameraId = mCameraId;
+//            c = Camera.open(cameraId); // attempt to get a Camera instance
+//            c.setDisplayOrientation(CameraRecordServiceHelper.getCameraDisplayOrientation(mCameraId));
+//
+//        } catch (Exception e) {
+//            // Camera is not available (in use or does not exist)
+//            e.printStackTrace();
+//        }
         return c; // returns null if camera is unavailable
     }
 

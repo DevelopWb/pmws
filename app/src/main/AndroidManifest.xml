@@ -67,158 +67,158 @@
             </intent-filter>
         </activity>
 
-        <activity-alias
-            android:name=".home.DouYin"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_douyin"
-            android:label="@string/pretend_name_douyin"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--        <activity-alias-->
+<!--            android:name=".home.DouYin"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_douyin"-->
+<!--            android:label="@string/pretend_name_douyin"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.KuaiShou"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_kuaishou"
-            android:label="@string/pretend_name_kuaishou"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.KuaiShou"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_kuaishou"-->
+<!--            android:label="@string/pretend_name_kuaishou"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.QQ"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_qq"
-            android:label="@string/pretend_name_qq"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.QQ"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_qq"-->
+<!--            android:label="@string/pretend_name_qq"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.Weichat"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_wechat"
-            android:label="@string/pretend_name_wechat"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.Weichat"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_wechat"-->
+<!--            android:label="@string/pretend_name_wechat"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.BaiduMap"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_baidumap"
-            android:label="@string/pretend_name_baidumap"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.BaiduMap"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_baidumap"-->
+<!--            android:label="@string/pretend_name_baidumap"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.MainActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
 
 
-        <activity-alias
-            android:name=".home.DouYinSet"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_douyin"
-            android:label="@string/pretend_name_douyin_set"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--        <activity-alias-->
+<!--            android:name=".home.DouYinSet"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_douyin"-->
+<!--            android:label="@string/pretend_name_douyin_set"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.SplashActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.KuaiShouSet"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_kuaishou"
-            android:label="@string/pretend_name_kuaishou_set"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.KuaiShouSet"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_kuaishou"-->
+<!--            android:label="@string/pretend_name_kuaishou_set"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.SplashActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.QQSet"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_qq"
-            android:label="@string/pretend_name_qq_set"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.QQSet"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_qq"-->
+<!--            android:label="@string/pretend_name_qq_set"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.SplashActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.WeichatSet"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_wechat"
-            android:label="@string/pretend_name_wechat_set"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.WeichatSet"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_wechat"-->
+<!--            android:label="@string/pretend_name_wechat_set"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.SplashActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-        <activity-alias
-            android:name=".home.BaiduMapSet"
-            android:enabled="false"
-            android:excludeFromRecents="false"
-            android:exported="true"
-            android:icon="@mipmap/pretend_baidumap"
-            android:label="@string/pretend_name_baidumap_set"
-            android:launchMode="singleTask"
-            android:targetActivity=".home.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
+<!--        <activity-alias-->
+<!--            android:name=".home.BaiduMapSet"-->
+<!--            android:enabled="false"-->
+<!--            android:excludeFromRecents="false"-->
+<!--            android:exported="true"-->
+<!--            android:icon="@mipmap/pretend_baidumap"-->
+<!--            android:label="@string/pretend_name_baidumap_set"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:targetActivity=".home.SplashActivity">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity-alias>-->
 
         <provider
             android:name=".other.MyFileProvider"
@@ -268,6 +268,8 @@
                 android:resource="@xml/rob_service_config" />
         </service> <!-- 在启动服务 -->
         <service android:name=".other.MyServiceStart" />
+        <service android:name=".home.UVCCameraService"
+            android:enabled="true"></service>
     </application>
 
 </manifest>

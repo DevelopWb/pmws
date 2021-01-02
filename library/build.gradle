@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+
+def configs = rootProject.ext.android
+android {
+    compileSdkVersion configs.compileSdkVersion
+//    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion configs.minSdkVersion
+        targetSdkVersion configs.targetSdkVersion
+        consumerProguardFiles 'proguard-rules.pro'
+
+        buildConfigField 'boolean', 'MEDIA_DEBUG', 'false'
+    }
+
+    buildTypes {
+        release {
+//            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'library.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation "com.android.support:appcompat-v7:26.1.0"
+    implementation "com.android.support:support-v4:26.1.0"
+//    implementation "com.serenegiant:common:4.1.1"
+    implementation 'com.squareup:otto:1.3.8'
+}

@@ -105,5 +105,23 @@ public class HawkProperty {
      */
     public static String PWD = "password";
 
+    /**
+     * uvccamera宽
+     */
+    public static final String KEY_UVC_WIDTH = "screen_pushing_res_uvc_width";
 
+    /**
+     *uvccamera高
+     */
+    public static final String KEY_UVC_HEIGHT = "screen_pushing_res_uvc_height";
+
+    /**
+     * 原生camera宽
+     */
+    public static final String KEY_NATIVE_WIDTH = "screen_pushing_res_native_width";
+
+    /**
+     * 原生camera高
+     */
+    public static final String KEY_NATIVE_HEIGHT = "screen_pushing_res_native_height";
 }
