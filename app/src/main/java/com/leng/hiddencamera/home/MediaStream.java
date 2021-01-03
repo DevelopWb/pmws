@@ -532,7 +532,7 @@ public class MediaStream {
         if (data == null)
             return;
 
-        int oritation = 0;
+        int oritation = 90;
 //        if (!StreamActivity.IS_VERTICAL_SCREEN) {
 //            oritation = 0;
 //        } else {

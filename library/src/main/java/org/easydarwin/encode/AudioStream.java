@@ -133,10 +133,11 @@ public class AudioStream {
      * 设置音频录像器
      * */
     public synchronized void setMuxer(EasyMuxer muxer) {
-        if (muxer != null) {
-            if (newFormat != null)
-                muxer.addTrack(newFormat, false);
-        }
+        startRecord();
+//        if (muxer != null) {
+//            if (newFormat != null)
+//                muxer.addTrack(newFormat, false);
+//        }
 
         this.muxer = muxer;
     }
