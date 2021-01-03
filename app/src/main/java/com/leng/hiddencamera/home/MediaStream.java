@@ -63,10 +63,6 @@ public class MediaStream {
     private boolean mHevc;    // mSWCodec是否软编码, mHevc是否H265
 
     private String recordPath;          // 录像地址
-    protected boolean isFirstPushStream = false;       // 是否要推送bili数据
-    protected boolean isSecendPushStream = false;       // 是否要推送huya数据
-    protected boolean isThirdPushStream = false;       // 是否要推送huya数据
-    protected boolean isFourthPushStream = false;       // 是否要推送huya数据
     private int displayRotationDegree;  // 旋转角度
 
     private Context context;
