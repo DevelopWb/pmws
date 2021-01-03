@@ -100,14 +100,16 @@ public class AudioStream {
         boolean shouldStart = false;
 
         synchronized (this) {
-            if (sets.isEmpty())
+            if (sets.isEmpty()) {
                 shouldStart = true;
+            }
 
             sets.add(pusher);
         }
 
-        if (shouldStart)
+        if (shouldStart) {
             startRecord();
+        }
     }
 
     /*
