@@ -376,10 +376,14 @@ public class MediaStream {
             mCamera.stopPreview();
             mCamera.setPreviewCallbackWithBuffer(null);
         }
-
+        // 关闭音视频合成器
+        if (mMuxer != null) {
+            mMuxer.release();
+            mMuxer = null;
+        }
         // 关闭音频采集和音频编码器
         if (audioStream != null) {
-            audioStream.setMuxer(null);
+            audioStream.setMuxer(mMuxer);
         }
 
         // 关闭录像的编码器
@@ -387,11 +391,7 @@ public class MediaStream {
             mRecordVC.onVideoStop();
         }
 
-        // 关闭音视频合成器
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
+
     }
 
 
@@ -441,19 +441,21 @@ public class MediaStream {
             mCameraHandler.post(() -> stopRecord());
             return;
         }
-
+        if (mMuxer != null) {
+            mMuxer.release();
+            mMuxer = null;
+        }
         if (mRecordVC == null || audioStream == null) {
             //            nothing
         } else {
-            audioStream.setMuxer(null);
+            audioStream.setMuxer(mMuxer);
             mRecordVC.onVideoStop();
             mRecordVC = null;
         }
 
-        if (mMuxer != null)
-            mMuxer.release();
 
-        mMuxer = null;
+
+
     }
 
     /// 更新分辨率
@@ -529,15 +531,15 @@ public class MediaStream {
             return;
 
         int oritation = 90;
-//        if (!StreamActivity.IS_VERTICAL_SCREEN) {
-//            oritation = 0;
-//        } else {
-//            if (mCameraId == CAMERA_FACING_FRONT) {
-//                oritation = 270;
-//            } else {
-//                oritation = 90;
-//            }
-//        }
+        //        if (!StreamActivity.IS_VERTICAL_SCREEN) {
+        //            oritation = 0;
+        //        } else {
+        //            if (mCameraId == CAMERA_FACING_FRONT) {
+        //                oritation = 270;
+        //            } else {
+        //                oritation = 90;
+        //            }
+        //        }
         if (i420_buffer == null || i420_buffer.length != data.length) {
             i420_buffer = new byte[data.length];
         }

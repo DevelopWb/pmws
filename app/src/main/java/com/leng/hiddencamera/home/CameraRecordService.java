@@ -138,7 +138,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
-                    showNotification();
                     break;
                 case MSG_SEND_MESSAGE:
 //                    if (time < 300) {
