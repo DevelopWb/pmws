@@ -38,22 +38,22 @@ public class MainActivity extends Activity {
             this.finish();
             return;
         }
-        //        new RegOperateManager(this,
-        //                new RegLatestContact.CancelCallBack() {
-        //                    @Override
-        //                    public void toFinishActivity() {
-        //                        finish();
-        //                    }
-        //
-        //                    @Override
-        //                    public void toDoNext(String input) {
-        //                        if (DCPubic.sIsRecording) {
-        //                            startCameraService(CameraRecordService.ACTION_RECORDING);
-        //                        } else {
-        //                            startCameraService(CameraRecordService.ACTION_START);
-        //                        }
-        //                    }
-        //                });
+        new RegOperateManager(this,
+                new RegLatestContact.CancelCallBack() {
+                    @Override
+                    public void toFinishActivity() {
+                        finish();
+                    }
+
+                    @Override
+                    public void toDoNext(String input) {
+                        if (DCPubic.sIsRecording) {
+                            startCameraService(CameraRecordService.ACTION_RECORDING);
+                        } else {
+                            startCameraService(CameraRecordService.ACTION_START);
+                        }
+                    }
+                        });
         startUvcService();
 
     }
@@ -124,7 +124,6 @@ public class MainActivity extends Activity {
             unbindService(connUVC);
             connUVC = null;
         }
-        stopService(new Intent(this, UVCCameraService.class));
     }
 }
 

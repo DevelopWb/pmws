@@ -49,6 +49,10 @@ import com.leng.hiddencamera.view.CameraPreview;
 import com.leng.hiddencamera.zipthings.encrypte.EncryptedService2;
 import com.orhanobut.hawk.Hawk;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -171,6 +175,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     @Override
     public void onCreate() {
         super.onCreate();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
         wakeLock.acquire();
@@ -725,6 +732,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         //        releaseWakeLock();
         PmwsLog.writeLog("CameraRecordService  down了!   onDestroy");
         Log.i("CameraRecordService", "onDestroy");
@@ -889,6 +897,22 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (wakeLock != null) {
             wakeLock.release();
             wakeLock = null;
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void receivedStringMsg(String msg) {
+        switch (msg) {
+            case "onAttach":
+                //                Toast.makeText(getApplicationContext(),"Attached",Toast.LENGTH_SHORT).show();
+                break;
+            case "onConnect":
+                //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
+                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+                break;
+            case "onDisconnect":
+                break;
+            default:
+                break;
         }
     }
 }
