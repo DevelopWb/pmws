@@ -34,6 +34,7 @@
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
+    <uses-feature android:name="android.hardware.usb.host"/>
 
     <application
         android:name=".MyApp"
