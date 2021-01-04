@@ -62,7 +62,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
     private RegOperateManager regOperateManager;
     private AlertDialog dialog;
-    private String DEFAULT_PWD = "8888888";
+    private String DEFAULT_PWD = "1";
     private final String destroyCode = "pmws1234";
     private ComponentName nameDefault;
     private ComponentName nameDefaultSet;
