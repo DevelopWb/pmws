@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings;
+package com.leng.hiddencamera.zipFiles;
 
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipthings.decrypted.DecryptedFileService;
+import com.leng.hiddencamera.zipFiles.decrypted.DecryptedFileService;
 
 import java.io.File;
 import java.io.FileWriter;

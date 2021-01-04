@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings;
+package com.leng.hiddencamera.zipFiles;
 
 import android.app.Notification;
 import android.app.NotificationManager;

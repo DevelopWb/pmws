@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings;
+package com.leng.hiddencamera.zipFiles;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.leng.hiddencamera.mine.MinePresent;
-import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

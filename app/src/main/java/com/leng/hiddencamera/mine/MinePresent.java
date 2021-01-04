@@ -11,8 +11,8 @@ import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.bean.MenuBean;
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipthings.SmsReciver;
-import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.SmsReciver;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;

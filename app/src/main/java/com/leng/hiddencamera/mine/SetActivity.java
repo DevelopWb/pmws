@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,11 +31,11 @@ import com.juntai.wisdom.basecomponent.utils.GridDividerItemDecoration;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.base.BaseAppActivity;
+import com.leng.hiddencamera.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipthings.MyVediosActivity;
-import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.MyVediosActivity;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
@@ -166,8 +164,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
-                        ToastUtils.toast(mContext,"暂未开放");
-//                        showAppNamess();
+                        ToastUtils.toast(mContext, "暂未开放");
+                        //                        showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -205,15 +203,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                                             public void onClick(
                                                     DialogInterface dialog,
                                                     int which) {
-
                                                 mPresenter.destroyFiles();
-
-                                                Toast.makeText(
-                                                        getApplicationContext(),
-                                                        "清除成功",
-                                                        Toast.LENGTH_SHORT)
-                                                        .show();
-
+                                                ToastUtils.toast(mContext, "清除成功");
                                             }
                                         }).show();
                         break;
@@ -476,7 +467,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
      * 初始化伪装控件
      */
     private void initComponentName() {
-        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.home.MainActivity");
+        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.MainActivity");
         nameDefaultSet = new ComponentName(mContext, "com.leng.hiddencamera.home.SplashActivity");
         nameDouyin = new ComponentName(mContext, "com.leng.hiddencamera.home.DouYin");
         nameKuaishou = new ComponentName(mContext, "com.leng.hiddencamera.home.KuaiShou");

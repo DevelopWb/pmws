@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.base;
+package com.leng.hiddencamera;
 
 import android.app.Activity;
 import android.os.Bundle;

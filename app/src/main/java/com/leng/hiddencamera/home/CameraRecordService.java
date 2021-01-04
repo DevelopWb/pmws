@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
@@ -31,8 +30,8 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.MyApp;
-import com.leng.hiddencamera.other.MyServiceStart;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
@@ -54,6 +53,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
     public static final String ACTION_RECORDING = "action_recording";
+    public static final String KEYCODE_VOLUME_DOWN = "KEYCODE_VOLUME_DOWN";//音量下键 按下了
     private static final int MSG_START_RECORDING = 1;
     private static final int MSG_STOP_RECORDING = 2;
     private static final int MSG_SHOW_PREVIEW = 3;
@@ -70,15 +70,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     // 预览屏幕的大小
     private final int mPreviewWidth = 400;
     private final int mPreviewHeight = 500;
-
     private String TAG = "CameraRecordService";
-
-    private StopRecordingReceiver stopReCordingReceiver;
-    private ValumeChangeCarme valumeTest;
-    private int VolumeEmbellish = 1;
     private boolean mPreviewEnabled;
     private PowerManager.WakeLock wakeLock = null;
-
+    private TextureView mTextureView;
 
     private Handler mHandler = new Handler() {
 
@@ -109,34 +104,34 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     showPreview(true);
                     break;
                 case MSG_SEND_MESSAGE:
-//                    if (time < 300) {
-//                        Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT).show();
-//
-//                        stopRecording();
-//                        // MediaRecorder,
-//                        // release it first
-//                        releaseCamera(); // release the camera immediately on
-//                        // pause event
-//                        mHandler.removeMessages(MSG_RESTART_RECORDING);
-//                        mHandler.removeMessages(MSG_START_RECORDING);
-//                        removeSurfaceView();
-//                        mNotificationManager.cancel(NOTIFICATION_FLAG);
-//                        DCPubic.sIsRecording = false;
-//                        stopSelf();
-//                    }
+                    //                    if (time < 300) {
+                    //                        Toast.makeText(CameraRecordService.this, "存储空间不足", Toast.LENGTH_SHORT)
+                    //                        .show();
+                    //
+                    //                        stopRecording();
+                    //                        // MediaRecorder,
+                    //                        // release it first
+                    //                        releaseCamera(); // release the camera immediately on
+                    //                        // pause event
+                    //                        mHandler.removeMessages(MSG_RESTART_RECORDING);
+                    //                        mHandler.removeMessages(MSG_START_RECORDING);
+                    //                        removeSurfaceView();
+                    //                        mNotificationManager.cancel(NOTIFICATION_FLAG);
+                    //                        DCPubic.sIsRecording = false;
+                    //                        stopSelf();
+                    //                    }
 
                     break;
             }
 
         }
     };
-    private TextureView mTextureView;
+
 
     private void removeSurfaceView() {
         mWindowManager.removeView(mRootView);
     }
 
-    //    private    MyConn mConn;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -150,57 +145,22 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
                 4);
         PmwsLog.writeLog("cameraservice  onCreate--------");
-        //        动态注册接受来自辅助服务的广播
-        valumeTest = new ValumeChangeCarme();
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("asasqwe");
-        registerReceiver(valumeTest, intentFilter2);
         loadSettings();
-        //动态注册广播接收器
-        stopReCordingReceiver = new StopRecordingReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.leng.hiddencamera.home.CameraRecordService.RECEIVER");
-        registerReceiver(stopReCordingReceiver, intentFilter);
         addSurfaceView();
         Log.i(TAG, "onCreate");
     }
-
 
 
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
-//        backGroundNotificate();
-        PmwsLog.d("OnStartCommand receive intent: " + intent.toString());
+        //        backGroundNotificate();
         Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
         String action = intent.getAction();
         PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
-            if (DCPubic.sIsRecording) {
-                // 如果正在录制，这个action就是要停止录制
-                PmwsLog.d("The service has been started before, stop the recording");
-                mHandler.removeMessages(MSG_RESTART_RECORDING);
-                mHandler.removeMessages(MSG_START_RECORDING);
-                stopRecording();
-                // 如果录制过程中，点击程序，显示预览
-                if (mPreviewEnabled) {
-                    mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
-                }
-            } else {
-                // 如果没有录制，程序被点击，显示预览
-                if (mPreviewEnabled) {
-                    PmwsLog.d("The service not started and preview enabled start the preview");
-                    showPreview(true);
-                } else {
-                    // 如果没有被点击，不显示预览，开始录制
-                    PmwsLog.d("The service not started but preview disabled start the recording");
-                    showPreview(false);
-                    mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
-                }
-            }
+            actionStartLogic();
         } else if (ACTION_STOP.equals(action)) {
             releaseRes();
             stopSelf();
@@ -212,6 +172,37 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
         return START_NOT_STICKY;
     }
+
+    /**
+     * 服务开始的逻辑
+     */
+    private void actionStartLogic() {
+        if (DCPubic.sIsRecording) {
+            // 如果正在录制，这个action就是要停止录制
+            PmwsLog.d("The service has been started before, stop the recording");
+            mHandler.removeMessages(MSG_RESTART_RECORDING);
+            mHandler.removeMessages(MSG_START_RECORDING);
+            stopRecording();
+            // 如果录制过程中，点击程序，显示预览
+            if (mPreviewEnabled) {
+                mHandler.sendMessageDelayed(
+                        mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+            }
+        } else {
+            // 如果没有录制，程序被点击，显示预览
+            if (mPreviewEnabled) {
+                PmwsLog.d("The service not started and preview enabled start the preview");
+                showPreview(true);
+            } else {
+                // 如果没有被点击，不显示预览，开始录制
+                PmwsLog.d("The service not started but preview disabled start the recording");
+                showPreview(false);
+                mHandler.sendMessageDelayed(
+                        mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+            }
+        }
+    }
+
     private void backGroundNotificate() {
         Notification notification = new NotificationCompat.Builder(this, MyApp.CHANNEL_NAME)
                 .setContentTitle(getString(R.string.app_name))
@@ -219,6 +210,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
         startForeground(NOTIFICATION_FLAG, notification);
     }
+
     /**
      * 释放资源
      */
@@ -245,25 +237,25 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private void loadSettings() {
 
         // 是否展示预览
-        mPreviewEnabled = 0==Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0)?true:false;
+        mPreviewEnabled = 0 == Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0) ? true : false;
         //        // 录像时间选择  录像时间
-      int  intervalIndex =   Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0);
-      switch (intervalIndex) {
-          case 0:
-              //5分钟
-              mMaxDuration = 5*60*1000;
-              break;
-          case 1:
-              //10分钟
-              mMaxDuration = 10*60*1000;
-              break;
-          case 2:
-              //30分钟
-              mMaxDuration = 30*60*1000;
-              break;
-          default:
-              break;
-      }
+        int intervalIndex = Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0);
+        switch (intervalIndex) {
+            case 0:
+                //5分钟
+                mMaxDuration = 5 * 60 * 1000;
+                break;
+            case 1:
+                //10分钟
+                mMaxDuration = 10 * 60 * 1000;
+                break;
+            case 2:
+                //30分钟
+                mMaxDuration = 30 * 60 * 1000;
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -346,15 +338,15 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
 
     private void goonWithAvailableTexture(SurfaceTexture surface) {
-//        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
-//        int ori = mConfiguration.orientation; //获取屏幕方向
-//        if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
-//            //横屏
-//            IS_VERTICAL_SCREEN = false;
-//        } else if (ori == mConfiguration.ORIENTATION_PORTRAIT) {
-//            //竖屏
-//            IS_VERTICAL_SCREEN = true;
-//        }
+        //        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
+        //        int ori = mConfiguration.orientation; //获取屏幕方向
+        //        if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
+        //            //横屏
+        //            IS_VERTICAL_SCREEN = false;
+        //        } else if (ori == mConfiguration.ORIENTATION_PORTRAIT) {
+        //            //竖屏
+        //            IS_VERTICAL_SCREEN = true;
+        //        }
 
 
         final File easyPusher = new File(DCPubic.getRecordPath());
@@ -365,64 +357,68 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mMediaStream.createCamera(0);
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
-//            mService.setMediaStream(ms);
-//            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
-//                int orientation = getRequestedOrientation();
-//
-//                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//                } else {
-//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//                }
-//            }
+            //            mService.setMediaStream(ms);
+            //            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
+            //                int orientation = getRequestedOrientation();
+            //
+            //                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo
+            //                .SCREEN_ORIENTATION_PORTRAIT) {
+            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            //                } else {
+            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            //                }
+            //            }
         }
-//        MediaStream ms = mService.getMediaStream();
-//
-//        if (ms != null) { // switch from background to front
-//            ms.stopPreview();
-//            mService.inActivePreview();
-//            ms.setSurfaceTexture(surface);
-//            ms.startPreview();
-//            mMediaStream = ms;
-//
-//            if (isStreaming()) {
-//                String url = Config.getServerURL();
-//                //                txtStreamAddress.setText(url);
-//
-//                //                sendMessage(getPushStatusMsg());
-//
-//                mVedioPushBottomTagIv.setImageResource(R.drawable.start_push_pressed);
-//            }
-//
-//            //            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
-//            //                int orientation = getRequestedOrientation();
-//            //
-//            //                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-//            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//            //                } else {
-//            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//            //                }
-//            //            }
-//        } else {
-//
-//            boolean enableVideo = SPUtil.getEnableVideo(this);
-//
-//            ms = new MediaStream(getApplicationContext(), surface, enableVideo);
-//            ms.setRecordPath(easyPusher.getPath());
-//            mMediaStream = ms;
-//            startCamera();
-//            mService.setMediaStream(ms);
-//            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
-//                int orientation = getRequestedOrientation();
-//
-//                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//                } else {
-//                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//                }
-//            }
-//        }
+        //        MediaStream ms = mService.getMediaStream();
+        //
+        //        if (ms != null) { // switch from background to front
+        //            ms.stopPreview();
+        //            mService.inActivePreview();
+        //            ms.setSurfaceTexture(surface);
+        //            ms.startPreview();
+        //            mMediaStream = ms;
+        //
+        //            if (isStreaming()) {
+        //                String url = Config.getServerURL();
+        //                //                txtStreamAddress.setText(url);
+        //
+        //                //                sendMessage(getPushStatusMsg());
+        //
+        //                mVedioPushBottomTagIv.setImageResource(R.drawable.start_push_pressed);
+        //            }
+        //
+        //            //            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
+        //            //                int orientation = getRequestedOrientation();
+        //            //
+        //            //                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation ==
+        //            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+        //            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        //            //                } else {
+        //            //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //            //                }
+        //            //            }
+        //        } else {
+        //
+        //            boolean enableVideo = SPUtil.getEnableVideo(this);
+        //
+        //            ms = new MediaStream(getApplicationContext(), surface, enableVideo);
+        //            ms.setRecordPath(easyPusher.getPath());
+        //            mMediaStream = ms;
+        //            startCamera();
+        //            mService.setMediaStream(ms);
+        //            if (ms.getDisplayRotationDegree() != getDisplayRotationDegree()) {
+        //                int orientation = getRequestedOrientation();
+        //
+        //                if (orientation == SCREEN_ORIENTATION_UNSPECIFIED || orientation == ActivityInfo
+        //                .SCREEN_ORIENTATION_PORTRAIT) {
+        //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        //                } else {
+        //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //                }
+        //            }
+        //        }
     }
+
     // 屏幕的角度
     private int getDisplayRotationDegree() {
         int rotation = mWindowManager.getDefaultDisplay().getRotation();
@@ -445,6 +441,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
         return degrees;
     }
+
     /**
      * 开始录像
      */
@@ -476,10 +473,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-//        //停止录像的时候就执行加密的操作
-//        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
-//        startService(intent);
-//        Log.i("QWEQWE", "ONE AGAIN");
+        //        //停止录像的时候就执行加密的操作
+        //        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
+        //        startService(intent);
+        //        Log.i("QWEQWE", "ONE AGAIN");
         DCPubic.sIsRecording = false;
 
     }
@@ -493,7 +490,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private void showPreview(boolean showFlag) {
         PmwsLog.d("Switch priview status: " + showFlag);
 
-        if (showFlag ) {
+        if (showFlag) {
             mWindowLayoutParams.width = mPreviewWidth;
             mWindowLayoutParams.height = mPreviewHeight;
             mWindowManager.updateViewLayout(mRootView, mWindowLayoutParams);
@@ -528,8 +525,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     }
 
 
-
-
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
@@ -542,13 +537,13 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
-        //        releaseWakeLock();
         PmwsLog.writeLog("CameraRecordService  down了!   onDestroy");
         Log.i("CameraRecordService", "onDestroy");
-        //        manager.unregisterOnePixelReceiver(this);//Activity退出时解注册
-        unregisterReceiver(stopReCordingReceiver);
-        unregisterReceiver(valumeTest);
-        exitService();
+        stopForeground(true);
+        if (wakeLock != null) {
+            wakeLock.release();
+            wakeLock = null;
+        }
         super.onDestroy();
 
     }
@@ -574,111 +569,24 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     }
 
 
-    /**
-     * 动态广播接收器
-     */
-    public class StopRecordingReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "接收到了广播");
-            stopRecording();
-            stopSelf();
-        }
-
-    }
-
-    /**
-     * 音量+-键切换surface预览窗口
-     */
-
-    public class ValumeChangeCarme extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String qubie = intent.getStringExtra("ABC");
-            if (qubie != null && qubie.equals("KEYCODE_VOLUME_DOWN")) {
-                TestsBroadStop();//点击音量键停止视频录制
-                //等于1是则是没有开始录制
-                if (VolumeEmbellish == 1) {
-                    Log.i("qweqwe", "KEYCODE_VOLUME_DOWN=1");
-                }
-                //启动另外服务开启，点击音量键
-                Intent i = new Intent(getBaseContext(), MyServiceStart.class);
-                startService(i);
-            }
-            if (qubie != null && qubie.equals("KEYCODE_VOLUME_UP")) {
-                Log.i("qweqwe", "KEYCODE_VOLUME_UP=1");
-                TestsBroadStop();//点击音量键停止正在录制
-                //等于1是则是没有开始录制
-                if (VolumeEmbellish == 1) {
-                    Log.i("qweqwe", "KEYCODE_VOLUME_DOWN=1");
-                }
-                //启动另外服务开启，点击音量键
-                Intent i = new Intent(getBaseContext(), MyServiceStart.class);
-                startService(i);
-            }
-        }
-    }
-
-
-    /**
-     * 如果在录制停止，如果没有录制则切换摄像头
-     *
-     * @VolumeEmbellish 判断摄像头的选择
-     * @VolumeCarmeChange 改变系统配置的摄像头
-     */
-    private void TestsBroadStop() {
-        if (DCPubic.sIsRecording == false) {
-            Log.i(TAG, "重新初始化");
-            VolumeEmbellish = 2;
-            Log.i("VolumeEmbellish", "VolumeEmbellish=2");
-            mWindowManager.removeViewImmediate(mRootView);
-            //            mWindowManager.removeView(mRootView);
-            stopSelf();
-        } else {
-            // Toast.makeText(this, "录制已经停止", Toast.LENGTH_SHORT).show();
-            // Toast.makeText(this, "录制已经停止", Toast.LENGTH_SHORT).show();
-            mHandler.removeMessages(MSG_RESTART_RECORDING);
-            mHandler.removeMessages(MSG_START_RECORDING);
-
-            stopRecording();
-            // release it first
-
-            mWindowManager.removeViewImmediate(mRootView);
-            //            mWindowManager.removeView(mRootView);
-            mNotificationManager.cancel(NOTIFICATION_FLAG);
-
-            DCPubic.sIsRecording = false;
-            stopSelf();
-            VolumeEmbellish = 1;
-        }
-    }
-
-
-    public void exitService() {
-        stopForeground(true);
-        //        if (mMediaPlayer != null) {
-        //            mMediaPlayer.stop();
-        //        }
-        if (wakeLock != null) {
-            wakeLock.release();
-            wakeLock = null;
-        }
-    }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void receivedStringMsg(String msg) {
         switch (msg) {
-            case "onAttach":
+            case UVCCameraService.UVC_ONATTACH:
                 //                Toast.makeText(getApplicationContext(),"Attached",Toast.LENGTH_SHORT).show();
                 break;
-            case "onConnect":
+            case UVCCameraService.UVC_ONCONNECT:
                 //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
                 mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
                 break;
-            case "onDisconnect":
+            case UVCCameraService.UVC_ONDISSCONNECT:
                 if (DCPubic.sIsRecording) {
                     mMediaStream.stopRecord();
                 }
+                break;
+            case KEYCODE_VOLUME_DOWN:
+                //音量- 键
+
                 break;
             default:
                 break;

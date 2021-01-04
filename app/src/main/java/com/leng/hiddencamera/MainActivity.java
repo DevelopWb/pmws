@@ -1,6 +1,5 @@
-package com.leng.hiddencamera.home;
+package com.leng.hiddencamera;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -9,13 +8,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.view.WindowManager;
 
-import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
 import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
-import com.leng.hiddencamera.base.BaseAppActivity;
+import com.leng.hiddencamera.home.CameraRecordService;
+import com.leng.hiddencamera.home.UVCCameraService;
 import com.leng.hiddencamera.util.DCPubic;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
@@ -32,6 +31,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         ActivityManagerTool.getInstance().finishApp();
         if (!Hawk.contains(HawkProperty.REG_CODE)) {
             ToastUtils.toast(this, "您还没有注册，请先注册！");
@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
                             startCameraService(CameraRecordService.ACTION_START);
                         }
                     }
-                        });
+                });
         startUvcService();
 
     }

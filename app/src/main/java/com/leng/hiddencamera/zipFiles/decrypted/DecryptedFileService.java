@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings.decrypted;
+package com.leng.hiddencamera.zipFiles.decrypted;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -16,9 +16,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
-import com.leng.hiddencamera.zipthings.AlertActivity;
-import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.AddFilesWithAESEncryption;
+import com.leng.hiddencamera.zipFiles.AlertActivity;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 
 import java.io.File;
 import java.io.IOException;

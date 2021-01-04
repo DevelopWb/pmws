@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipthings.encrypte;
+package com.leng.hiddencamera.zipFiles.encrypte;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -7,8 +7,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipthings.AddFilesWithAESEncryption;
-import com.leng.hiddencamera.zipthings.AlertActivity;
+import com.leng.hiddencamera.zipFiles.AddFilesWithAESEncryption;
+import com.leng.hiddencamera.zipFiles.AlertActivity;
 
 import java.io.File;
 import java.io.FileInputStream;

