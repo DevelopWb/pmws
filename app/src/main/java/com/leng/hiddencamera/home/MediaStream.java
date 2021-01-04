@@ -60,7 +60,7 @@ public class MediaStream {
     private static final String TAG = MediaStream.class.getSimpleName();
     private static final int SWITCH_CAMERA = 11;
 
-    private boolean mHevc;    // mSWCodec是否软编码, mHevc是否H265
+    private boolean mHevc = false;    // mSWCodec是否软编码, mHevc是否H265
 
     private String recordPath;          // 录像地址
     private int displayRotationDegree;  // 旋转角度
@@ -419,7 +419,7 @@ public class MediaStream {
 
         // 默认录像时间300000毫秒
         mMuxer =
-                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 1800*1000);
+                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30*60*1000);
 
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC :
                 MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, false,
@@ -445,17 +445,13 @@ public class MediaStream {
             mMuxer.release();
             mMuxer = null;
         }
-        if (mRecordVC == null || audioStream == null) {
-            //            nothing
-        } else {
+        if (audioStream != null) {
             audioStream.setMuxer(mMuxer);
+        }
+        if (mRecordVC != null) {
             mRecordVC.onVideoStop();
             mRecordVC = null;
         }
-
-
-
-
     }
 
     /// 更新分辨率

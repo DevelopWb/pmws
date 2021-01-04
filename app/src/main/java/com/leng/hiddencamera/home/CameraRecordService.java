@@ -27,6 +27,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
@@ -69,7 +70,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     // 预览屏幕的大小
     private final int mPreviewWidth = 400;
     private final int mPreviewHeight = 500;
-    private SharedPreferences sp;
 
     private String TAG = "CameraRecordService";
 
@@ -155,7 +155,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         IntentFilter intentFilter2 = new IntentFilter();
         intentFilter2.addAction("asasqwe");
         registerReceiver(valumeTest, intentFilter2);
-        sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
         loadSettings();
         //动态注册广播接收器
         stopReCordingReceiver = new StopRecordingReceiver();
@@ -454,13 +453,14 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mMediaStream.startRecord();
         }
         showNotification();
-//        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
-//
-//        if (mMaxDuration > 0) {
-//            mHandler.sendMessageDelayed(
-//                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
-//                    mMaxDuration);
-//        }
+        PmwsLog.writeLog("startRecording...");
+        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
+
+        if (mMaxDuration > 0) {
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
+                    mMaxDuration);
+        }
         DCPubic.sIsRecording = true;
 
     }
@@ -472,12 +472,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream != null) {
             mMediaStream.stopRecord();
         }
-//        PmwsLog.writeLog("stopRecording...");
+        PmwsLog.writeLog("stopRecording...");
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-//        // stop recording and release camera
-        removeSurfaceView();
 //        //停止录像的时候就执行加密的操作
 //        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
 //        startService(intent);

@@ -254,20 +254,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver> <!-- 无障碍服务配置 -->
-        <service
-            android:name=".other.RobMoney"
-            android:enabled="true"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/rob_service_config" />
-        </service> <!-- 在启动服务 -->
+         <!-- 在启动服务 -->
         <service android:name=".other.MyServiceStart" />
         <service android:name=".home.UVCCameraService"
             android:enabled="true"></service>
