@@ -55,7 +55,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private RecyclerView mRecyclerview;
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
-    public static CharSequence[] cameras = new CharSequence[]{"前置", "后置","otg摄像头"};
+    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","otg摄像头"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
@@ -358,7 +358,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
      * chose camera
      */
     private void choseCamera(MenuBean menuBean) {
-        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0),
+        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {

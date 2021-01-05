@@ -79,9 +79,9 @@ public class MediaStream {
      *   Camera.CameraInfo.CAMERA_FACING_BACK
      *   Camera.CameraInfo.CAMERA_FACING_FRONT
      *   CAMERA_FACING_BACK_UVC
-     * */ int mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    public static final int CAMERA_FACING_FRONT = 0;
-    public static final int CAMERA_FACING_BACK = 1;//
+     * */ int mCameraId = 1;
+    public static final int CAMERA_FACING_FRONT = 1;//系统默认1是前置 0是后置
+    public static final int CAMERA_FACING_BACK = 0;//
     public static final int CAMERA_FACING_BACK_UVC = 2;
     public static final int CAMERA_FACING_BACK_LOOP = -1;
     public static int nativeWidth = 1920, nativeHeight = 1080;//原生camera的宽高
@@ -214,7 +214,7 @@ public class MediaStream {
         }
 
         if (uvcCamera == null) {
-            mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+            mCameraId = CAMERA_FACING_FRONT;
             createNativeCamera();
         }
     }
@@ -452,6 +452,7 @@ public class MediaStream {
             mRecordVC.onVideoStop();
             mRecordVC = null;
         }
+        destroyCamera();
     }
 
     /// 更新分辨率
@@ -527,6 +528,9 @@ public class MediaStream {
             return;
 
         int oritation = 90;
+        if (mCameraId == CAMERA_FACING_FRONT) {
+            oritation = 270;
+                        }
         //        if (!StreamActivity.IS_VERTICAL_SCREEN) {
         //            oritation = 0;
         //        } else {

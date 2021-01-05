@@ -28,9 +28,6 @@ import java.util.concurrent.Executors;
 
 public class EncryptedService2 extends Service {
 
-    public static String path = "mnt/sdcard/MyData";
-    private static String password = "fls94#@AB";
-    Handler handler;
     private String TAG = "ZipFileService";
     ExecutorService service = Executors.newSingleThreadExecutor();
 
@@ -113,28 +110,6 @@ public class EncryptedService2 extends Service {
 
 
         }
-
-
-        //新的发送通知的代码
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                getApplicationContext())
-
-                // 设置通知的基本信息：icon、标题、内容
-                .setSmallIcon(R.mipmap.app_icon)
-                .setContentTitle("指南针")
-                .setContentText("加密完成")
-                .setAutoCancel(true);
-
-
-        // 发送通知 id 需要在应用内唯一
-        NotificationManager notificationManager = (NotificationManager) getSystemService
-                (Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, builder.build());
-
-
-        Log.i(TAG, "加密执行完毕");
-
         stopSelf(); //结束的时候销毁service
     }
 
@@ -175,11 +150,6 @@ public class EncryptedService2 extends Service {
         Log.i(TAG, "ZipFileService is Desotrying");
         super.onDestroy();
 
-        //        // 在Service结束后关闭AlarmManager
-        //        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        //        Intent i = new Intent(this, AlarmReceiver.class);
-        //        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-        //        manager.cancel(pi);
 
     }
 

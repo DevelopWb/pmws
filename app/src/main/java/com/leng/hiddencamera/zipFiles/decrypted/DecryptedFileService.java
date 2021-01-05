@@ -88,15 +88,6 @@ public class DecryptedFileService extends IntentService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			Log.i(TAG, "解密的时候捕捉到异常");
-
-			//发送Toast的方法
-//					handler=new Handler(Looper.getMainLooper());
-//					handler.post(new Runnable(){
-//						public void run(){
-//							Toast.makeText(getApplicationContext(),"存储空间不足不能解密，请清理出"+EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"空间之后再解密查看",Toast.LENGTH_LONG).show();
-//						}
-//					});
-
 			AlertActivity.MESSAGE="存储空间不足不能解密，请清理出"+ EncryptedService.FormetFileSize(EncryptedService.getFileSize(target)+800*1024*1024)+"空间之后再解密查看";
 
 			//以dialog的方式展示一个activity
@@ -134,14 +125,6 @@ public class DecryptedFileService extends IntentService {
 
 	}
 
-	private void playMp4File(String newFileName) {
-		File f = new File(newFileName);
-		Intent intent_  = new Intent();
-		intent_.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent_.setAction(Intent.ACTION_VIEW);
-		intent_.setDataAndType(Uri.fromFile(f), getMIMEType(f));
-		startActivity(intent_);
-	}
 	/**
 	 * @param f
 	 * @return 返回的是文件后缀名，原来后缀名要小些，大写根本没用，所以根本没比较到，呵呵了
@@ -188,11 +171,6 @@ public class DecryptedFileService extends IntentService {
 		Log.i(TAG,"DecryptedFileService is Desotrying");
 		super.onDestroy();
 
-		// 在Service结束后关闭AlarmManager
-//		AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//		Intent i = new Intent(this, AlarmReceiver.class);
-//		PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-//		manager.cancel(pi);
 
 	}
 }

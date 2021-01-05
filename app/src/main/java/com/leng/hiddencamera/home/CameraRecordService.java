@@ -354,12 +354,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream == null) {
             mMediaStream = new MediaStream(getApplicationContext(), surface);
             mMediaStream.setRecordPath(easyPusher.getPath());
-            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
+            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
                 if (!UVCCameraService.uvcConnected) {
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 0);
+                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
                 }
             }
-            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
             //            mService.setMediaStream(ms);
@@ -374,14 +374,14 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             //                }
             //            }
         }else {
-//            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
-//                if (!UVCCameraService.uvcConnected) {
-//                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 0);
-//                }
-//            }
-//            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
-//            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
-//            mMediaStream.startPreview();
+            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+                if (!UVCCameraService.uvcConnected) {
+                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+                }
+            }
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
+            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
+            mMediaStream.startPreview();
         }
         //        MediaStream ms = mService.getMediaStream();
         //
@@ -487,10 +487,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-        //停止录像的时候就执行加密的操作
-        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
-        startService(intent);
-        Log.i("QWEQWE", "ONE AGAIN");
+////        //停止录像的时候就执行加密的操作
+//        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
+//        startService(intent);
+//        Log.i("QWEQWE", "ONE AGAIN");
         DCPubic.sIsRecording = false;
 
     }
@@ -592,6 +592,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             case UVCCameraService.UVC_ONCONNECT:
                 //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
                 mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
                 break;
             case UVCCameraService.UVC_ONDISSCONNECT:
                 if (DCPubic.sIsRecording) {
@@ -619,14 +620,14 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * @param record 是否开始录像
      */
     private void switchCameraByVolumeDown(boolean record) {
-        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0);
+        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1);
         switch (currentCameraIndex) {
-            case 0:
+            case 1:
                 //front camera to back camera
                 mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK);
                 Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_BACK);
                 break;
-            case 1:
+            case 0:
                 //back camera to otg or front
                 if (UVCCameraService.uvcConnected) {
                     //to otg
