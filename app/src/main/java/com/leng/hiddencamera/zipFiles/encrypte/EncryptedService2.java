@@ -83,16 +83,6 @@ public class EncryptedService2 extends Service {
                     sendBroadcast(intent);
                 }
 
-
-                //发送Toast的方法
-                //                         handler=new Handler(Looper.getMainLooper());
-                //                        handler.post(new Runnable(){
-                //                            public void run(){
-                //                                Toast.makeText(getApplicationContext(),"存储空间不足不能加密，请清理出"+FormetFileSize(getFileSize(temFileName)+800*1024*1024)+"空间之后手动加密",Toast.LENGTH_LONG).show();
-                //                            }
-                //                        });
-
-                //
                 AlertActivity.MESSAGE = "存储空间不足不能加密，请清理出" + FormetFileSize(getFileSize(temFileName) + 800 * 1024 * 1024) + "空间之后手动加密";
                 //以dialog的方式展示一个activity
                 Intent it = new Intent(getApplicationContext(), AlertActivity.class);

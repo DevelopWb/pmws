@@ -80,12 +80,12 @@ public class MediaStream {
      *   Camera.CameraInfo.CAMERA_FACING_FRONT
      *   CAMERA_FACING_BACK_UVC
      * */ int mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    public static final int CAMERA_FACING_BACK = 0;//后置
-    public static final int CAMERA_FACING_FRONT = 1;
+    public static final int CAMERA_FACING_FRONT = 0;
+    public static final int CAMERA_FACING_BACK = 1;//
     public static final int CAMERA_FACING_BACK_UVC = 2;
     public static final int CAMERA_FACING_BACK_LOOP = -1;
     public static int nativeWidth = 1920, nativeHeight = 1080;//原生camera的宽高
-    public static int uvcWidth = 1280, uvcHeight = 720;//uvcCamera的宽高
+    public static int uvcWidth = 1920, uvcHeight = 1080;//uvcCamera的宽高
     private int mTargetCameraId;
     private int frameWidth;
     private int frameHeight;
@@ -419,7 +419,7 @@ public class MediaStream {
 
         // 默认录像时间300000毫秒
         mMuxer =
-                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30*60*1000);
+                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30 * 60 * 1000);
 
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC :
                 MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, false,

@@ -77,7 +77,7 @@
 <!--            android:icon="@mipmap/pretend_douyin"-->
 <!--            android:label="@string/pretend_name_douyin"-->
 <!--            android:launchMode="singleTask"-->
-<!--            android:targetActivity=".home.MainActivity">-->
+<!--            android:targetActivity=".MainActivity">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -92,7 +92,7 @@
 <!--            android:icon="@mipmap/pretend_kuaishou"-->
 <!--            android:label="@string/pretend_name_kuaishou"-->
 <!--            android:launchMode="singleTask"-->
-<!--            android:targetActivity=".home.MainActivity">-->
+<!--            android:targetActivity=".MainActivity">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -107,7 +107,7 @@
 <!--            android:icon="@mipmap/pretend_qq"-->
 <!--            android:label="@string/pretend_name_qq"-->
 <!--            android:launchMode="singleTask"-->
-<!--            android:targetActivity=".home.MainActivity">-->
+<!--            android:targetActivity=".MainActivity">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -122,7 +122,7 @@
 <!--            android:icon="@mipmap/pretend_wechat"-->
 <!--            android:label="@string/pretend_name_wechat"-->
 <!--            android:launchMode="singleTask"-->
-<!--            android:targetActivity=".home.MainActivity">-->
+<!--            android:targetActivity=".MainActivity">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -137,7 +137,7 @@
 <!--            android:icon="@mipmap/pretend_baidumap"-->
 <!--            android:label="@string/pretend_name_baidumap"-->
 <!--            android:launchMode="singleTask"-->
-<!--            android:targetActivity=".home.MainActivity">-->
+<!--            android:targetActivity=".MainActivity">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 

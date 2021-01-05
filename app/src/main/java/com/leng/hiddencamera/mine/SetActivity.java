@@ -33,6 +33,7 @@ import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
+import com.leng.hiddencamera.home.UVCCameraService;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipFiles.MyVediosActivity;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
@@ -54,7 +55,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private RecyclerView mRecyclerview;
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
-    public static CharSequence[] cameras = new CharSequence[]{"前置", "后置"};
+    public static CharSequence[] cameras = new CharSequence[]{"前置", "后置","otg摄像头"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
@@ -165,7 +166,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
                         ToastUtils.toast(mContext, "暂未开放");
-                        //                        showAppNamess();
+//                                                showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -357,10 +358,16 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
      * chose camera
      */
     private void choseCamera(MenuBean menuBean) {
-        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1),
+        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
+                        if (2==position) {
+                            if (!UVCCameraService.uvcConnected) {
+                                ToastUtils.toast(mContext,"请插入otg设备");
+                                return;
+                            }
+                        }
                         Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
@@ -427,7 +434,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
     @Override
     public void initData() {
-        initComponentName();
+//        initComponentName();
     }
 
     @Override
@@ -503,6 +510,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 enableComponent(nameDefaultSet);
                 break;
             case 1:
+
                 enableComponent(nameDouyin);
                 enableComponent(nameDouyinSet);
                 break;
@@ -529,12 +537,12 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
     private void enableComponent(ComponentName componentName) {
         getPackageManager().setComponentEnabledSetting(componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
     private void disableComponent(ComponentName componentName) {
         getPackageManager().setComponentEnabledSetting(componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         // 0立即生效会杀掉进程 DONT_KILL_APP约10秒后生效 android10也会杀掉进程 10以下不会
     }
 }

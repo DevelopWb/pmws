@@ -35,6 +35,7 @@ import com.leng.hiddencamera.MyApp;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService2;
 import com.orhanobut.hawk.Hawk;
 
 import org.greenrobot.eventbus.EventBus;
@@ -323,7 +324,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     // event
                     removeSurfaceView();
                     mNotificationManager.cancel(NOTIFICATION_FLAG);
-
                     stopSelf();
 
                 }
@@ -354,7 +354,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream == null) {
             mMediaStream = new MediaStream(getApplicationContext(), surface);
             mMediaStream.setRecordPath(easyPusher.getPath());
-            mMediaStream.createCamera(0);
+            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
+                if (!UVCCameraService.uvcConnected) {
+                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 0);
+                }
+            }
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
             //            mService.setMediaStream(ms);
@@ -368,6 +373,15 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             //                }
             //            }
+        }else {
+//            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
+//                if (!UVCCameraService.uvcConnected) {
+//                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 0);
+//                }
+//            }
+//            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
+//            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
+//            mMediaStream.startPreview();
         }
         //        MediaStream ms = mService.getMediaStream();
         //
@@ -473,10 +487,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-        //        //停止录像的时候就执行加密的操作
-        //        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
-        //        startService(intent);
-        //        Log.i("QWEQWE", "ONE AGAIN");
+        //停止录像的时候就执行加密的操作
+        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
+        startService(intent);
+        Log.i("QWEQWE", "ONE AGAIN");
         DCPubic.sIsRecording = false;
 
     }
@@ -585,11 +599,58 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 }
                 break;
             case KEYCODE_VOLUME_DOWN:
-                //音量- 键
-
+                //音量- 键  切换摄像头 如果在录制 停止录制 切换摄像头重新录制  如果没有录制 只单纯切换摄像头
+                //切换顺序 前 后 otg
+                if (DCPubic.sIsRecording) {
+                    stopRecording();
+                    switchCameraByVolumeDown(true);
+                } else {
+                    switchCameraByVolumeDown(false);
+                }
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * 切换摄像头
+     *
+     * @param record 是否开始录像
+     */
+    private void switchCameraByVolumeDown(boolean record) {
+        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0);
+        switch (currentCameraIndex) {
+            case 0:
+                //front camera to back camera
+                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK);
+                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_BACK);
+                break;
+            case 1:
+                //back camera to otg or front
+                if (UVCCameraService.uvcConnected) {
+                    //to otg
+                    mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_BACK_UVC);
+                } else {
+                    //to front
+                    mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
+                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_FRONT);
+                }
+
+                break;
+            case 2:
+                //to front
+                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
+                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_FRONT);
+                break;
+            default:
+                break;
+        }
+        if (record) {
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+        }
+
     }
 }
