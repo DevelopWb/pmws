@@ -1,2 +1,2 @@
-include ':app', ':pmws_set', ':RegMode', ':base_net_lib', ':module_Base'
+include ':app',  ':RegMode', ':base_net_lib', ':module_Base', ':library'
 rootProject.name='pmws'

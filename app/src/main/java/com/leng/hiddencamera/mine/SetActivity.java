@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,11 +31,12 @@ import com.juntai.wisdom.basecomponent.utils.GridDividerItemDecoration;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.base.BaseAppActivity;
+import com.leng.hiddencamera.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
+import com.leng.hiddencamera.home.UVCCameraService;
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipthings.MyVediosActivity;
-import com.leng.hiddencamera.zipthings.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.MyVediosActivity;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.Utils.RegOperateManager;
@@ -56,13 +55,13 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private RecyclerView mRecyclerview;
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
-    public static CharSequence[] cameras = new CharSequence[]{"前置", "后置"};
+    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","otg摄像头"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
     private RegOperateManager regOperateManager;
     private AlertDialog dialog;
-    private String DEFAULT_PWD = "8888888";
+    private String DEFAULT_PWD = "1";
     private final String destroyCode = "pmws1234";
     private ComponentName nameDefault;
     private ComponentName nameDefaultSet;
@@ -166,8 +165,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
-                        ToastUtils.toast(mContext,"暂未开放");
-//                        showAppNamess();
+//                        ToastUtils.toast(mContext, "暂未开放");
+                                                showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -205,15 +204,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                                             public void onClick(
                                                     DialogInterface dialog,
                                                     int which) {
-
                                                 mPresenter.destroyFiles();
-
-                                                Toast.makeText(
-                                                        getApplicationContext(),
-                                                        "清除成功",
-                                                        Toast.LENGTH_SHORT)
-                                                        .show();
-
+                                                ToastUtils.toast(mContext, "清除成功");
                                             }
                                         }).show();
                         break;
@@ -370,6 +362,12 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
+                        if (2==position) {
+                            if (!UVCCameraService.uvcConnected) {
+                                ToastUtils.toast(mContext,"请插入otg设备");
+                                return;
+                            }
+                        }
                         Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
@@ -476,7 +474,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
      * 初始化伪装控件
      */
     private void initComponentName() {
-        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.home.MainActivity");
+        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.MainActivity");
         nameDefaultSet = new ComponentName(mContext, "com.leng.hiddencamera.home.SplashActivity");
         nameDouyin = new ComponentName(mContext, "com.leng.hiddencamera.home.DouYin");
         nameKuaishou = new ComponentName(mContext, "com.leng.hiddencamera.home.KuaiShou");
@@ -538,12 +536,12 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
     private void enableComponent(ComponentName componentName) {
         getPackageManager().setComponentEnabledSetting(componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 
     private void disableComponent(ComponentName componentName) {
         getPackageManager().setComponentEnabledSetting(componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         // 0立即生效会杀掉进程 DONT_KILL_APP约10秒后生效 android10也会杀掉进程 10以下不会
     }
 }
