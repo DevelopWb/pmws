@@ -59,6 +59,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private static final int MSG_STOP_RECORDING = 2;
     private static final int MSG_SHOW_PREVIEW = 3;
     private static final int MSG_RESTART_RECORDING = 5;
+    private static final int MSG_ENCRYPT_FILE = 11;
     private static final int MSG_SEND_MESSAGE = 10;
     private static final int MSG_OPEN_CAMERA = 6;
 
@@ -103,6 +104,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
+                    break;
+                case MSG_ENCRYPT_FILE:
+                    //        //停止录像的时候就执行加密的操作
+                    Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
+                    startService(intent);
+                    Log.i("QWEQWE", "ONE AGAIN");
                     break;
                 case MSG_SEND_MESSAGE:
                     //                    if (time < 300) {
@@ -220,13 +227,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mHandler.removeMessages(MSG_RESTART_RECORDING);
             mHandler.removeMessages(MSG_START_RECORDING);
         }
-
         // release it first
         if (mWindowManager != null && mRootView != null) {
             removeSurfaceView();
-        }
-        if (mNotificationManager != null) {
-            mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
         stopRecording();
         DCPubic.sIsRecording = false;
@@ -487,10 +490,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-////        //停止录像的时候就执行加密的操作
-//        Intent intent = new Intent(getApplicationContext(), EncryptedService2.class);
-//        startService(intent);
-//        Log.i("QWEQWE", "ONE AGAIN");
+        mHandler.sendMessageDelayed(
+                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
+                1000);
+
         DCPubic.sIsRecording = false;
 
     }

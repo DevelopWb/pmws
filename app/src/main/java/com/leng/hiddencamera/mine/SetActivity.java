@@ -165,8 +165,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
-                        ToastUtils.toast(mContext, "暂未开放");
-//                                                showAppNamess();
+//                        ToastUtils.toast(mContext, "暂未开放");
+                                                showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -434,7 +434,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
     @Override
     public void initData() {
-//        initComponentName();
+        initComponentName();
     }
 
     @Override
@@ -510,7 +510,6 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 enableComponent(nameDefaultSet);
                 break;
             case 1:
-
                 enableComponent(nameDouyin);
                 enableComponent(nameDouyinSet);
                 break;

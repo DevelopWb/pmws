@@ -23,7 +23,7 @@ import io.reactivex.functions.Consumer;
 
 /**
  * @aouther tobato
- * @description ���� ����ҳ
+ * @description
  * @date 2020/10/5 21:20
  */
 public class SplashActivity extends RxAppCompatActivity {
