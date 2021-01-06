@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipFiles.decrypted.DecryptedFileService;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService2;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -210,7 +211,7 @@ public class MyVediosActivity extends ListActivity {
         intent.setAction(Intent.ACTION_VIEW);
 
         String type = getMIMEType(f);
-        if (type.equals("m9xs/*")) {
+        if (type.equals(EncryptedService2.SUFFIX_NAME+"/*")) {
             if (checkFileIsDecryped(f)) {
                 return;
             }
@@ -260,7 +261,7 @@ public class MyVediosActivity extends ListActivity {
         SharedPreferences tmpFileName = getSharedPreferences("tmpFileName", 0);
 
         SharedPreferences.Editor editor = tmpFileName.edit();
-        String newNameString = f.getAbsolutePath().replace("m9xs", "mp4");
+        String newNameString = f.getAbsolutePath().replace(EncryptedService2.SUFFIX_NAME, "mp4");
 
         editor.putString("tmpFileName", newNameString);
 
@@ -278,9 +279,9 @@ public class MyVediosActivity extends ListActivity {
         } else if (end.equals("jpg") || end.equals("gif") || end.equals("png")
                 || end.equals("jpeg") || end.equals("bmp")) {
             type = "image";
-        } else if (end.equals("m9xs")) {
+        } else if (end.equals(EncryptedService2.SUFFIX_NAME)) {
 
-            type = "m9xs";
+            type = EncryptedService2.SUFFIX_NAME;
 
         } else {
             type = "*";

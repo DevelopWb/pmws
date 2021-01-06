@@ -30,6 +30,8 @@ public class EncryptedService2 extends Service {
 
     private String TAG = "ZipFileService";
     ExecutorService service = Executors.newSingleThreadExecutor();
+    public static String POINT_SUFFIX_NAME = ".21ybzd";//后缀名
+    public static String SUFFIX_NAME = "21ybzd";//后缀名
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -68,7 +70,7 @@ public class EncryptedService2 extends Service {
 
             //7.25 更改的新的加密方法
             try {
-                AddFilesWithAESEncryption.damageFile(newFileName + ".m9xs", fList.get(i));
+                AddFilesWithAESEncryption.damageFile(newFileName + EncryptedService2.POINT_SUFFIX_NAME, fList.get(i));
                 Log.i("QWEQWE", "加密的时候捕捉到异常1");
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -88,8 +90,8 @@ public class EncryptedService2 extends Service {
 
 
                 //加密失败之后想删除没有成功的文件，不知道为什么没有成功，以后再试
-                File failedfile = new File(newFileName + ".m9xs");
-                Log.i(TAG, "如果加密完成之后的文件名" + newFileName + ".m9xs");
+                File failedfile = new File(newFileName + EncryptedService2.POINT_SUFFIX_NAME);
+                Log.i(TAG, "如果加密完成之后的文件名" + newFileName + EncryptedService2.POINT_SUFFIX_NAME);
                 if (failedfile.exists()) {
                     failedfile.delete();
                 }

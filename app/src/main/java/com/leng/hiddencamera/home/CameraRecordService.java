@@ -5,10 +5,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
@@ -30,9 +28,9 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
-import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.MyApp;
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.mine.SetActivity;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService2;
@@ -51,6 +49,7 @@ import java.io.File;
  */
 public class CameraRecordService extends Service implements TextureView.SurfaceTextureListener {
     public static final int NOTIFICATION_FLAG = 1;
+    public static final int NOTIFICATION_START_FLAG = 2;
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
     public static final String ACTION_RECORDING = "action_recording";
@@ -162,7 +161,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
+        startForeground(CameraRecordService.NOTIFICATION_START_FLAG, NotificationTool.getNotification(this));
         //        backGroundNotificate();
         Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
         String action = intent.getAction();
@@ -190,7 +189,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             PmwsLog.d("The service has been started before, stop the recording");
             mHandler.removeMessages(MSG_RESTART_RECORDING);
             mHandler.removeMessages(MSG_START_RECORDING);
-            stopRecording();
             // 如果录制过程中，点击程序，显示预览
             if (mPreviewEnabled) {
                 mHandler.sendMessageDelayed(
@@ -468,7 +466,8 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
         showNotification();
         PmwsLog.writeLog("startRecording...");
-        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
+        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+        Toast.makeText(this, currentCameraName+"录像开启成功", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
             mHandler.sendMessageDelayed(
@@ -528,9 +527,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         }
         Notification notification = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification_start)
+                .setSmallIcon(R.drawable.notification_start_record)
                 .setOngoing(true)
-                .setContentTitle("指南针").setContentText("指南针, 点击停止").build();
+                .setContentTitle(getString(R.string.app_name)).setContentText(getString(R.string.app_name)+", 点击停止").build();
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());

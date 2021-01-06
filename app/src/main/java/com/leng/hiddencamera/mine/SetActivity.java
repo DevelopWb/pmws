@@ -55,13 +55,13 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private RecyclerView mRecyclerview;
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
-    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","otg摄像头"};
+    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","外置"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
     private RegOperateManager regOperateManager;
     private AlertDialog dialog;
-    private String DEFAULT_PWD = "1";
+    private String DEFAULT_PWD = "666666";
     private final String destroyCode = "pmws1234";
     private ComponentName nameDefault;
     private ComponentName nameDefaultSet;
@@ -183,13 +183,13 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
                         clearCache(DCPubic.getRecordPath());
-                        Toast.makeText(getApplicationContext(), "清除成功",
+                        Toast.makeText(getApplicationContext(), "已解密的视频文件清除完成",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case MinePresent.NAME_DESTROY_FILE:
                         new AlertDialog.Builder(mContext)
 
-                                .setTitle("确认一键自毁？")
+                                .setTitle("确认需要自毁所有文件吗？")
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -364,7 +364,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                     public void onClick(DialogInterface dialog, int position) {
                         if (2==position) {
                             if (!UVCCameraService.uvcConnected) {
-                                ToastUtils.toast(mContext,"请插入otg设备");
+                                ToastUtils.toast(mContext,"请插入外置摄像头");
                                 return;
                             }
                         }
