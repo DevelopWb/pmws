@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
+import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.MyApp;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.mine.SetActivity;
@@ -172,9 +173,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             releaseRes();
             stopSelf();
         } else if (ACTION_RECORDING.equals(action)) {
-            // 注册完成后，点击屏幕，显示preView
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+            if (mPreviewEnabled) {
+                // 注册完成后，点击屏幕，显示preView
+                mHandler.sendMessageDelayed(
+                        mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+            }
+
 
         }
         return START_NOT_STICKY;
@@ -184,6 +188,13 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 服务开始的逻辑
      */
     private void actionStartLogic() {
+        if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+            if (!UVCCameraService.uvcConnected) {
+                                    ToastUtils.toast(this,"请插入外置摄像头");
+                return;
+                //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+            }
+        }
         if (DCPubic.sIsRecording) {
             // 如果正在录制，这个action就是要停止录制
             PmwsLog.d("The service has been started before, stop the recording");
@@ -287,6 +298,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         mTextureView = (TextureView) mRootView
                 .findViewById(R.id.sv_surfaceview);
         mTextureView.setSurfaceTextureListener(this);
+
         // 预览界面的点击事件
         mTextureView.setOnClickListener(new View.OnClickListener() {
 
@@ -357,7 +369,8 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mMediaStream.setRecordPath(easyPusher.getPath());
             if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
                 if (!UVCCameraService.uvcConnected) {
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+                    return;
+//                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
                 }
             }
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
@@ -377,7 +390,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }else {
             if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
                 if (!UVCCameraService.uvcConnected) {
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+//                    ToastUtils.toast(this,"请插入外置摄像头");
+                    return;
+//                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
                 }
             }
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
@@ -529,7 +544,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         Notification notification = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_start_record)
                 .setOngoing(true)
-                .setContentTitle(getString(R.string.app_name)).setContentText(getString(R.string.app_name)+", 点击停止").build();
+                .setContentTitle(getString(R.string.app_name)).setContentText("正在录像, 点击停止").build();
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());
@@ -593,13 +608,16 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 break;
             case UVCCameraService.UVC_ONCONNECT:
                 //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
-                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
-                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
+//                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+//                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
+                if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+                   goonWithAvailableTexture(mTextureView.getSurfaceTexture());
+                }
                 break;
             case UVCCameraService.UVC_ONDISSCONNECT:
-                if (DCPubic.sIsRecording) {
-                    mMediaStream.stopRecord();
-                }
+//                if (DCPubic.sIsRecording) {
+//                    mMediaStream.stopRecord();
+//                }
                 break;
             case KEYCODE_VOLUME_DOWN:
                 //音量- 键  切换摄像头 如果在录制 停止录制 切换摄像头重新录制  如果没有录制 只单纯切换摄像头

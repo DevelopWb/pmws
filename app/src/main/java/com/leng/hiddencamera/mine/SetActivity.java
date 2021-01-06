@@ -33,9 +33,7 @@ import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
-import com.leng.hiddencamera.home.UVCCameraService;
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipFiles.MyVediosActivity;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
@@ -362,12 +360,6 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
-                        if (2==position) {
-                            if (!UVCCameraService.uvcConnected) {
-                                ToastUtils.toast(mContext,"请插入外置摄像头");
-                                return;
-                            }
-                        }
                         Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
