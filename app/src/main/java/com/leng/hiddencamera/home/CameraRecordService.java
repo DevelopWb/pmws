@@ -193,6 +193,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             if (mPreviewEnabled) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+            }else {
+                String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+                Toast.makeText(this, currentCameraName+"正在录制中", Toast.LENGTH_SHORT).show();
             }
         } else {
             // 如果没有录制，程序被点击，显示预览
