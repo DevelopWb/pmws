@@ -110,7 +110,15 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     protected void onStop() {
         super.onStop();
         DCPubic.RECORD_DIALOG = 0;
+
     }
+
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        ActivityManagerTool.getInstance().finishApp();
+//    }
 
     @Override
     public void initView() {
@@ -536,4 +544,6 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         // 0立即生效会杀掉进程 DONT_KILL_APP约10秒后生效 android10也会杀掉进程 10以下不会
     }
+
+
 }

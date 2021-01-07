@@ -153,7 +153,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
                 4);
         PmwsLog.writeLog("cameraservice  onCreate--------");
-        loadSettings();
         addSurfaceView();
         Log.i(TAG, "onCreate");
     }
@@ -162,6 +161,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     @SuppressLint("WrongConstant")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        loadSettings();
         startForeground(CameraRecordService.NOTIFICATION_START_FLAG, NotificationTool.getNotification(this));
         //        backGroundNotificate();
         Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
@@ -170,15 +170,20 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (ACTION_START.equals(action)) {
             actionStartLogic();
         } else if (ACTION_STOP.equals(action)) {
-            releaseRes();
-            stopSelf();
+//            releaseRes();
+//            stopSelf();
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_STOP_RECORDING), 500);
         } else if (ACTION_RECORDING.equals(action)) {
+            // 如果录制过程中，点击程序，显示预览
             if (mPreviewEnabled) {
-                // 注册完成后，点击屏幕，显示preView
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+            } else {
+                String currentCameraName =
+                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+                Toast.makeText(this, currentCameraName + "正在录制中", Toast.LENGTH_SHORT).show();
             }
-
 
         }
         return START_NOT_STICKY;
@@ -195,32 +200,24 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
             }
         }
-        if (DCPubic.sIsRecording) {
-            // 如果正在录制，这个action就是要停止录制
-            PmwsLog.d("The service has been started before, stop the recording");
-            mHandler.removeMessages(MSG_RESTART_RECORDING);
-            mHandler.removeMessages(MSG_START_RECORDING);
-            // 如果录制过程中，点击程序，显示预览
-            if (mPreviewEnabled) {
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
-            } else {
-                String currentCameraName =
-                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
-                Toast.makeText(this, currentCameraName + "正在录制中", Toast.LENGTH_SHORT).show();
-            }
+        if (mMediaStream != null) {
+            mMediaStream.stopPreview();
+            mMediaStream.destroyCamera();
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
+            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
+            mMediaStream.startPreview();
+
+        }
+        // 如果没有录制，程序被点击，显示预览
+        if (mPreviewEnabled) {
+            PmwsLog.d("The service not started and preview enabled start the preview");
+            showPreview(true);
         } else {
-            // 如果没有录制，程序被点击，显示预览
-            if (mPreviewEnabled) {
-                PmwsLog.d("The service not started and preview enabled start the preview");
-                showPreview(true);
-            } else {
-                // 如果没有被点击，不显示预览，开始录制
-                PmwsLog.d("The service not started but preview disabled start the recording");
-                showPreview(false);
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_START_RECORDING), 1000);
-            }
+            // 如果没有被点击，不显示预览，开始录制
+            PmwsLog.d("The service not started but preview disabled start the recording");
+            showPreview(false);
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
         }
     }
 
@@ -260,7 +257,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         switch (intervalIndex) {
             case 0:
                 //5分钟
-                mMaxDuration = 5 * 60 * 1000;
+                mMaxDuration = 1 * 60 * 1000;
                 break;
             case 1:
                 //10分钟
