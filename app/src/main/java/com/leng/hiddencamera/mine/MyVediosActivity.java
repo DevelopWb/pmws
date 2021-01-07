@@ -1,4 +1,4 @@
-package com.leng.hiddencamera.zipFiles;
+package com.leng.hiddencamera.mine;
 
 import android.app.Dialog;
 import android.app.ListActivity;

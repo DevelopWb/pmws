@@ -234,7 +234,7 @@
                 tools:replace="name,resource" />
         </provider> <!-- 全面屏 -->
         <activity
-            android:name=".zipFiles.MyVediosActivity"
+            android:name=".mine.MyVediosActivity"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".zipFiles.AlertActivity"
