@@ -90,17 +90,17 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     stopRecording();
                     break;
                 case MSG_OPEN_CAMERA:
-                    addSurfaceView();
-                    showPreview(false);
+//                    addSurfaceView();
+//                    showPreview(false);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
                 case MSG_RESTART_RECORDING:
                     PmwsLog.d("Max duration reached, restart the recording");
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_STOP_RECORDING), 500);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_OPEN_CAMERA), 1000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
@@ -188,9 +188,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 服务开始的逻辑
      */
     private void actionStartLogic() {
-        if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+        if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
             if (!UVCCameraService.uvcConnected) {
-                                    ToastUtils.toast(this,"请插入外置摄像头");
+                ToastUtils.toast(this, "请插入外置摄像头");
                 return;
                 //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
             }
@@ -204,9 +204,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             if (mPreviewEnabled) {
                 mHandler.sendMessageDelayed(
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
-            }else {
-                String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
-                Toast.makeText(this, currentCameraName+"正在录制中", Toast.LENGTH_SHORT).show();
+            } else {
+                String currentCameraName =
+                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+                Toast.makeText(this, currentCameraName + "正在录制中", Toast.LENGTH_SHORT).show();
             }
         } else {
             // 如果没有录制，程序被点击，显示预览
@@ -370,10 +371,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream == null) {
             mMediaStream = new MediaStream(getApplicationContext(), surface);
             mMediaStream.setRecordPath(easyPusher.getPath());
-            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+            if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
                 if (!UVCCameraService.uvcConnected) {
                     return;
-//                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+                    //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
                 }
             }
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
@@ -390,17 +391,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             //                }
             //            }
-        }else {
-            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
-                if (!UVCCameraService.uvcConnected) {
-//                    ToastUtils.toast(this,"请插入外置摄像头");
-                    return;
-//                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
-                }
-            }
-            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
-            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
-            mMediaStream.startPreview();
         }
         //        MediaStream ms = mService.getMediaStream();
         //
@@ -485,7 +475,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         showNotification();
         PmwsLog.writeLog("startRecording...");
         String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
-        Toast.makeText(this, currentCameraName+"录像开启成功", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
             mHandler.sendMessageDelayed(
@@ -512,7 +502,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 1000);
 
         DCPubic.sIsRecording = false;
-
     }
 
 
@@ -611,16 +600,16 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 break;
             case UVCCameraService.UVC_ONCONNECT:
                 //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
-//                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
-//                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
-                if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
-                   goonWithAvailableTexture(mTextureView.getSurfaceTexture());
+                //                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+                //                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
+                if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+                    goonWithAvailableTexture(mTextureView.getSurfaceTexture());
                 }
                 break;
             case UVCCameraService.UVC_ONDISSCONNECT:
-//                if (DCPubic.sIsRecording) {
-//                    mMediaStream.stopRecord();
-//                }
+                //                if (DCPubic.sIsRecording) {
+                //                    mMediaStream.stopRecord();
+                //                }
                 break;
             case KEYCODE_VOLUME_DOWN:
                 //音量- 键  切换摄像头 如果在录制 停止录制 切换摄像头重新录制  如果没有录制 只单纯切换摄像头

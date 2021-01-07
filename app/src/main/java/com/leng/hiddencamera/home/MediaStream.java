@@ -452,7 +452,6 @@ public class MediaStream {
             mRecordVC.onVideoStop();
             mRecordVC = null;
         }
-        destroyCamera();
     }
 
     /// 更新分辨率
