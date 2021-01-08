@@ -497,9 +497,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-        mHandler.sendMessageDelayed(
-                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-                1000);
+//        mHandler.sendMessageDelayed(
+//                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
+//                1000);
 
         DCPubic.sIsRecording = false;
     }
