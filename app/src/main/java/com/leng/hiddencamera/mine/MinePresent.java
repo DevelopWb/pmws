@@ -54,7 +54,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
                 String.valueOf(SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)]),
                 R.mipmap.set_camera_icon));
         arrays.add(new MenuBean(NAME_FLOAT,
-                String.valueOf(SetActivity.hideShow[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX,
+                String.valueOf(SetActivity.hideShow[Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX,
                 0)]), R.mipmap.set_float_icon));
         arrays.add(new MenuBean(NAME_PLAY, "视频播放", R.mipmap.set_media_play_icon));
         arrays.add(new MenuBean(NAME_RECORD_SPACE, "录像间隔", R.mipmap.set_interval_icon));
