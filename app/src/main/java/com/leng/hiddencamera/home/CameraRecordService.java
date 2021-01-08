@@ -257,7 +257,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         switch (intervalIndex) {
             case 0:
                 //5分钟
-                mMaxDuration = 1 * 60 * 1000;
+                mMaxDuration = 5 * 60 * 1000;
                 break;
             case 1:
                 //10分钟
