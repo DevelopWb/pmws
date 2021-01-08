@@ -233,7 +233,7 @@ public class DCPubic {
 	 * @return
 	 */
 	public static String getRecordPath() {
-		File file = new File(Environment.getExternalStorageDirectory() +File.separator+"YBZD");
+		File file = new File(Environment.getExternalStorageDirectory() +File.separator+"MyData");
 		if (!file.exists()) {
 			file.mkdirs();
 		}

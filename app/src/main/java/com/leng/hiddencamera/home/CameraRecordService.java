@@ -178,7 +178,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
             } else {
                 String currentCameraName =
-                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
                 Toast.makeText(this, currentCameraName + "正在录制中", Toast.LENGTH_SHORT).show();
             }
 
@@ -190,7 +190,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 服务开始的逻辑
      */
     private void actionStartLogic() {
-        if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+        if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
             if (!UVCCameraService.uvcConnected) {
                 ToastUtils.toast(this, "请插入外置摄像头");
                 return;
@@ -200,7 +200,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream != null) {
             mMediaStream.stopPreview();
             mMediaStream.destroyCamera();
-            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
 
@@ -366,13 +366,13 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream == null) {
             mMediaStream = new MediaStream(getApplicationContext(), surface);
             mMediaStream.setRecordPath(easyPusher.getPath());
-            if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+            if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
                 if (!UVCCameraService.uvcConnected) {
                     return;
                     //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
                 }
             }
-            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
             //            mService.setMediaStream(ms);
@@ -469,7 +469,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
         showNotification();
         PmwsLog.writeLog("startRecording...");
-        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
         Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
@@ -597,7 +597,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
                 //                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
                 //                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
-                if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+                if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
                     goonWithAvailableTexture(mTextureView.getSurfaceTexture());
                 }
                 break;
@@ -627,7 +627,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * @param record 是否开始录像
      */
     private void switchCameraByVolumeDown(boolean record) {
-        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0);
         switch (currentCameraIndex) {
             case 1:
                 //front camera to back camera

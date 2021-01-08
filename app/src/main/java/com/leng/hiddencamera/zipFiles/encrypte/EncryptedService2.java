@@ -30,8 +30,8 @@ public class EncryptedService2 extends Service {
 
     private String TAG = "ZipFileService";
     ExecutorService service = Executors.newSingleThreadExecutor();
-    public static String POINT_SUFFIX_NAME = ".21ybzd";//后缀名
-    public static String SUFFIX_NAME = "21ybzd";//后缀名
+    public static String POINT_SUFFIX_NAME = ".m9xs";//后缀名
+    public static String SUFFIX_NAME = "m9xs";//后缀名
 
     @Override
     public IBinder onBind(Intent intent) {

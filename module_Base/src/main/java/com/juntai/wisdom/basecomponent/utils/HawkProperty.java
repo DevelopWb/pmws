@@ -89,7 +89,7 @@ public class HawkProperty {
     public static String CURRENT_CAMERA_INDEX = "current_camera";
 
     /**
-     * intervaltime
+     * intervaltime //0代表5分钟 1 代表10分钟 2 代表30分钟
      */
     public static String RECORD_INTERVAL_TIME_INDEX = "intervaltime";
     /**
@@ -97,7 +97,7 @@ public class HawkProperty {
      */
     public static String PRETEND_NAMES_INDEX = "pretendnames";
     /**
-     * FLOAT_IS_SHOW
+     * FLOAT_IS_SHOW   0代表显示 1代表隐藏
      */
     public static String FLOAT_IS_SHOW_INDEX = "floatshowable";
     /**

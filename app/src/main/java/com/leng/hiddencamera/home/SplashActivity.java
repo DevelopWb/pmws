@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.leng.hiddencamera.BuildConfig;
 import com.leng.hiddencamera.R;
-import com.leng.hiddencamera.mine.SetActivity;
+import com.leng.hiddencamera.mine.PmwsSetActivity;
 import com.leng.hiddencamera.util.DCPubic;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -63,14 +63,14 @@ public class SplashActivity extends RxAppCompatActivity {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             boolean canDraw = Settings.canDrawOverlays(SplashActivity.this);
                             if (canDraw) {
-                                startActivity(new Intent(SplashActivity.this, SetActivity.class));
+                                startActivity(new Intent(SplashActivity.this, PmwsSetActivity.class));
                                 finish();
                             }else {
                                 final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
                                 startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION);
                             }
                         }else {
-                            startActivity(new Intent(SplashActivity.this, SetActivity.class));
+                            startActivity(new Intent(SplashActivity.this, PmwsSetActivity.class));
                             finish();
                         }
 
@@ -91,7 +91,7 @@ public class SplashActivity extends RxAppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 boolean canDraw = Settings.canDrawOverlays(this);
                 if (canDraw) {
-                    startActivity(new Intent(SplashActivity.this, SetActivity.class));
+                    startActivity(new Intent(SplashActivity.this, PmwsSetActivity.class));
                     finish();
                 }else {
                     finish();
