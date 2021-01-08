@@ -98,7 +98,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 case MSG_RESTART_RECORDING:
                     PmwsLog.d("Max duration reached, restart the recording");
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_STOP_RECORDING), 500);
+                            mHandler.obtainMessage(MSG_STOP_RECORDING), 0);
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
@@ -170,10 +170,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (ACTION_START.equals(action)) {
             actionStartLogic();
         } else if (ACTION_STOP.equals(action)) {
-//            releaseRes();
-//            stopSelf();
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_STOP_RECORDING), 500);
+            releaseRes();
         } else if (ACTION_RECORDING.equals(action)) {
             // 如果录制过程中，点击程序，显示预览
             if (mPreviewEnabled) {
@@ -243,6 +240,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
         stopRecording();
         DCPubic.sIsRecording = false;
+        stopSelf();
     }
 
     /**
@@ -496,7 +494,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
         mHandler.sendMessageDelayed(
                 mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-                1000);
+                500);
 
         DCPubic.sIsRecording = false;
     }

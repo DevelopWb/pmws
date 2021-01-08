@@ -8,7 +8,7 @@ ext {
             targetSdkVersion : 27,
             versionCode      : 7,
             //全面屏问题
-            versionName      : "1.2.4",
+            versionName      : "1.2.5",
             //全面屏问题  音视频不同步的问题
     ]
     libsVersion = [
