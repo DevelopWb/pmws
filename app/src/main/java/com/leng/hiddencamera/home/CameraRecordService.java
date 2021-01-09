@@ -170,7 +170,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (ACTION_START.equals(action)) {
             actionStartLogic();
         } else if (ACTION_STOP.equals(action)) {
-            releaseRes();
+            if (mHandler != null) {
+                mHandler.removeMessages(MSG_RESTART_RECORDING);
+                mHandler.removeMessages(MSG_START_RECORDING);
+            }
+            stopRecording();
+
         } else if (ACTION_RECORDING.equals(action)) {
             // 如果录制过程中，点击程序，显示预览
             if (mPreviewEnabled) {
@@ -204,6 +209,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
 
+        }else {
+            if (mTextureView.isAvailable()) {
+                goonWithAvailableTexture(mTextureView.getSurfaceTexture());
+            }
         }
         // 如果没有录制，程序被点击，显示预览
         if (mPreviewEnabled) {
@@ -239,7 +248,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             removeSurfaceView();
         }
         stopRecording();
-        DCPubic.sIsRecording = false;
         stopSelf();
     }
 
@@ -562,6 +570,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             wakeLock.release();
             wakeLock = null;
         }
+        releaseRes();
         super.onDestroy();
 
     }
