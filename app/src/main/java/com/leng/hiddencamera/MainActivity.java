@@ -54,48 +54,11 @@ public class MainActivity extends Activity {
                         }
                     }
                 });
-        startUvcService();
 
     }
 
-    /**
-     * 开启uvc服务
-     */
-    private void startUvcService() {
-        startService(new Intent(this, UVCCameraService.class));
-        if (connUVC == null) {
-            connUVC = new ServiceConnection() {
 
 
-                @Override
-                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                    mUvcService = ((UVCCameraService.LocalBinder) iBinder).getService();
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName componentName) {
-
-                }
-            };
-        }
-        bindService(new Intent(this, UVCCameraService.class), connUVC, 0);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void receivedStringMsg(String msg) {
-        switch (msg) {
-            case "onAttach":
-                //                Toast.makeText(getApplicationContext(),"Attached",Toast.LENGTH_SHORT).show();
-                break;
-            case "onConnect":
-                //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
-                break;
-            case "onDisconnect":
-                break;
-            default:
-                break;
-        }
-    }
 
 
     /**
@@ -120,10 +83,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (connUVC != null) {
-            unbindService(connUVC);
-            connUVC = null;
-        }
+
     }
 }
 
