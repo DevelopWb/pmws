@@ -128,7 +128,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                         mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
             } else {
                 String currentCameraName =
-                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
                 Toast.makeText(this, currentCameraName + "正在录制中", Toast.LENGTH_SHORT).show();
             }
 
@@ -204,7 +204,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
                 //                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
                 //                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
-                if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+                if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
                     goonWithAvailableTexture(mTextureView.getSurfaceTexture());
                 }
                 break;
@@ -671,7 +671,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * @param record 是否开始录像
      */
     private void switchCameraByVolumeDown(boolean record) {
-        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+        int currentCameraIndex = Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0);
         switch (currentCameraIndex) {
             case 1:
                 //front camera to back camera
