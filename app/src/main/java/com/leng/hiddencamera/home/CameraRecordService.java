@@ -147,7 +147,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             int what = msg.what;
             switch (what) {
                 case MSG_START_RECORDING:
-                    startRecording();
+                    startRecording(mMaxDuration);
                     PmwsLog.writeLog("  Handler    MSG_START_RECORDING");
                     break;
                 case MSG_STOP_RECORDING:
@@ -373,7 +373,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 mTextureView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startRecording();
+                        startRecording(mMaxDuration);
                     }
                 }, 1000);
 
@@ -521,21 +521,8 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     /**
      * 开始录像
      */
-    private void startRecording() {
-        if (mMediaStream != null) {
-            PmwsLog.writeLog("record status--------"+mMediaStream.isRecording());
-            mMediaStream.startRecord();
-        }
-        showNotification();
+    private void startRecording111() {
 
-        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
-        Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
-
-        if (mMaxDuration > 0) {
-            reStartRecord(mMaxDuration);
-        }
-        PmwsLog.writeLog("startRecording...mMaxDuration==="+mMaxDuration);
-        DCPubic.sIsRecording = true;
 
     }
 
@@ -723,14 +710,23 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
 
     //开始轮询
-    public void reStartRecord(int delayTime) {
+    public void startRecording(int delayTime) {
         //interval对应参数 ：首次执行延时时间 、 每次轮询间隔时间 、 时间类型
-        subscribe = Observable.interval(delayTime,delayTime, TimeUnit.MINUTES)
+        subscribe = Observable.interval(0,1, TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-                        PmwsLog.writeLog("restart record --------"+aLong);
+                        PmwsLog.writeLog("startRecording ----2222222222222222---mMaxDuration==="+mMaxDuration+aLong);
+                        if (mMediaStream != null) {
+                            PmwsLog.writeLog("record status--------"+mMediaStream.isRecording());
+                            mMediaStream.startRecord();
+                        }
+                        showNotification();
+
+                        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
+                        Toast.makeText(CameraRecordService.this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
+                        DCPubic.sIsRecording = true;
 //                        stopRecording();
 //                        mHandler.sendMessageDelayed(
 //                                mHandler.obtainMessage(MSG_START_RECORDING), 2000);
