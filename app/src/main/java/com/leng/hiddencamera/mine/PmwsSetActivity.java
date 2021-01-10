@@ -114,20 +114,20 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
-            @Override
-            public void toFinishActivity() {
-                finish();
-            }
-
-            @Override
-            public void toDoNext(String input) {
-                if (input != null) {
-                    onFirst();
-                }
-                showPasswordInputDialog();
-            }
-        });
+//        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
+//            @Override
+//            public void toFinishActivity() {
+//                finish();
+//            }
+//
+//            @Override
+//            public void toDoNext(String input) {
+//                if (input != null) {
+//                    onFirst();
+//                }
+//                showPasswordInputDialog();
+//            }
+//        });
 
         mProgressDialog = DCPubic.getProgressDialog(this, "正在加密，请稍后...");
         registerCloseDialogReceiver();

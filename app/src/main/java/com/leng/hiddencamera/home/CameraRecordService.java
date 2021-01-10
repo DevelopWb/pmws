@@ -44,6 +44,12 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @aouther tobato
@@ -80,8 +86,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private TextureView mTextureView;
     private ServiceConnection connUVC;
     private UVCCameraService mUvcService;
-
-
+    private Disposable subscribe;
 
 
     @Override
@@ -109,7 +114,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         loadSettings();
         startForeground(CameraRecordService.NOTIFICATION_START_FLAG, NotificationTool.getNotification(this));
         //        backGroundNotificate();
-        Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
         String action = intent.getAction();
         PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
@@ -144,6 +148,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             switch (what) {
                 case MSG_START_RECORDING:
                     startRecording();
+                    PmwsLog.writeLog("  Handler    MSG_START_RECORDING");
                     break;
                 case MSG_STOP_RECORDING:
                     stopRecording();
@@ -155,11 +160,11 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                             mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
                 case MSG_RESTART_RECORDING:
-                    PmwsLog.d("Max duration reached, restart the recording");
+                    PmwsLog.writeLog("Max duration reached, restart the recording");
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_STOP_RECORDING), 0);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
@@ -253,6 +258,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
         }else {
             if (mTextureView.isAvailable()) {
+                PmwsLog.writeLog("actionStartLogic   to ---goonWithAvailableTexture-----");
                 goonWithAvailableTexture(mTextureView.getSurfaceTexture());
             }
         }
@@ -302,18 +308,20 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         mPreviewEnabled = 0 == Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0) ? true : false;
         //        // 录像时间选择  录像时间
         int intervalIndex = Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0);
+        PmwsLog.writeLog("record interval index--------"+intervalIndex);
+        PmwsLog.writeLog("previewable --------"+mPreviewEnabled);
         switch (intervalIndex) {
             case 0:
                 //5分钟
-                mMaxDuration = 5 * 60 * 1000;
+                mMaxDuration = 5 ;
                 break;
             case 1:
                 //10分钟
-                mMaxDuration = 10 * 60 * 1000;
+                mMaxDuration = 10 ;
                 break;
             case 2:
                 //30分钟
-                mMaxDuration = 30 * 60 * 1000;
+                mMaxDuration = 30;
                 break;
             default:
                 break;
@@ -515,18 +523,18 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      */
     private void startRecording() {
         if (mMediaStream != null) {
+            PmwsLog.writeLog("record status--------"+mMediaStream.isRecording());
             mMediaStream.startRecord();
         }
         showNotification();
-        PmwsLog.writeLog("startRecording...");
+
         String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
         Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                    mMaxDuration);
+            reStartRecord(mMaxDuration);
         }
+        PmwsLog.writeLog("startRecording...mMaxDuration==="+mMaxDuration);
         DCPubic.sIsRecording = true;
 
     }
@@ -544,7 +552,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
         mHandler.sendMessageDelayed(
                 mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-                500);
+                1000);
 
         DCPubic.sIsRecording = false;
     }
@@ -711,5 +719,31 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     mHandler.obtainMessage(MSG_START_RECORDING), 1000);
         }
 
+    }
+
+
+    //开始轮询
+    public void reStartRecord(int delayTime) {
+        //interval对应参数 ：首次执行延时时间 、 每次轮询间隔时间 、 时间类型
+        subscribe = Observable.interval(delayTime,delayTime, TimeUnit.MINUTES)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        PmwsLog.writeLog("restart record --------"+aLong);
+//                        stopRecording();
+//                        mHandler.sendMessageDelayed(
+//                                mHandler.obtainMessage(MSG_START_RECORDING), 2000);
+
+                    }
+                });
+    }
+    //结束轮询
+    public void stopInterval() {
+        //停止轮询，销毁这个Subscribe;
+        if (!subscribe.isDisposed()) {
+            subscribe.dispose();
+            subscribe=null;
+        }
     }
 }
