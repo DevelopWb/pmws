@@ -536,20 +536,20 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 停止录像
      */
     private void stopRecording() {
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(NOTIFICATION_FLAG);
+        }
+        DCPubic.sIsRecording = false;
+        PmwsLog.writeLog("stopRecording...is null or is recording"+String.valueOf(mMediaStream==null)+ mMediaStream.isRecording());
         if (mMediaStream != null && mMediaStream.isRecording()) {
             mMediaStream.stopRecord();
         } else {
             return;
         }
-        PmwsLog.writeLog("stopRecording...");
-        if (mNotificationManager != null) {
-            mNotificationManager.cancel(NOTIFICATION_FLAG);
-        }
         mHandler.sendMessageDelayed(
                 mHandler.obtainMessage(MSG_ENCRYPT_FILE),
                 500);
 
-        DCPubic.sIsRecording = false;
     }
 
 
