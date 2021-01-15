@@ -522,11 +522,11 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
         Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
-        if (mMaxDuration > 0) {
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
-                    mMaxDuration);
-        }
+//        if (mMaxDuration > 0) {
+//            mHandler.sendMessageDelayed(
+//                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
+//                    mMaxDuration);
+//        }
         DCPubic.sIsRecording = true;
 
     }
