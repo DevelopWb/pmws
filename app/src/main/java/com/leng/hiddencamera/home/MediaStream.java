@@ -16,6 +16,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.orhanobut.hawk.Hawk;
 import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.UVCCamera;
@@ -109,9 +110,9 @@ public class MediaStream {
                     //                    Intent intent = new Intent(context, BackgroundCameraService.class);
                     //                    context.stopService(intent);
                 } finally {
-                    for (int i = 0; i < 5; i++) {
-                        stopPusherStream(i);
-                    }
+//                    for (int i = 0; i < 5; i++) {
+//                        stopPusherStream(i);
+//                    }
                     stopPreview();
                     destroyCamera();
                 }
@@ -409,11 +410,13 @@ public class MediaStream {
     /// 开始录像
     public synchronized void startRecord() {
         if (Thread.currentThread() != mCameraThread) {
+            PmwsLog.writeLog("startRecording...Thread.currentThread() != mCameraThread");
             mCameraHandler.post(() -> startRecord());
             return;
         }
 
         if (mCamera == null && uvcCamera == null) {
+            PmwsLog.writeLog("startRecording...mCamera&&uvcCamera == null ");
             return;
         }
 
@@ -424,6 +427,7 @@ public class MediaStream {
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC :
                 MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, false,
                 2000000, info.mName, info.mColorFormat);
+        PmwsLog.writeLog("startRecording...mMuxer = null is"+(mMuxer == null));
         if (uvcCamera != null) {
             mRecordVC.onVideoStart(uvcWidth, uvcHeight);
         } else {
@@ -437,20 +441,22 @@ public class MediaStream {
 
     /// 停止录像
     public synchronized void stopRecord() {
+
         if (Thread.currentThread() != mCameraThread) {
             mCameraHandler.post(() -> stopRecord());
             return;
         }
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
+        PmwsLog.writeLog("MediaStream   stopRecord...");
         if (audioStream != null) {
-            audioStream.setMuxer(mMuxer);
+            audioStream.setMuxer(null);
         }
         if (mRecordVC != null) {
             mRecordVC.onVideoStop();
             mRecordVC = null;
+        }
+        if (mMuxer != null) {
+            mMuxer.release();
+            mMuxer = null;
         }
     }
 
@@ -761,15 +767,11 @@ public class MediaStream {
                 e.printStackTrace();
             }
 
-            Log.i(TAG, "release Camera");
+            PmwsLog.writeLog("destroyCamera...releaseCamera");
 
             mCamera = null;
         }
 
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
     }
 
     /// 回收线程

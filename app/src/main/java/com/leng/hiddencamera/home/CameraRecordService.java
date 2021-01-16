@@ -159,7 +159,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_STOP_RECORDING), 0);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
@@ -245,6 +245,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             }
         }
         if (mMediaStream != null) {
+            PmwsLog.writeLog("actionStartLogic  mMediaStream != null...");
             mMediaStream.stopPreview();
             mMediaStream.destroyCamera();
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
@@ -305,7 +306,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         switch (intervalIndex) {
             case 0:
                 //5分钟
-                mMaxDuration = 1 * 60 * 1000;
+                mMaxDuration = 5 * 60 * 1000;
                 break;
             case 1:
                 //10分钟
@@ -514,19 +515,21 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 开始录像
      */
     private void startRecording() {
+        PmwsLog.writeLog("startRecording...mMediaStream=null is"+(mMediaStream==null));
         if (mMediaStream != null) {
             mMediaStream.startRecord();
         }
         showNotification();
-        PmwsLog.writeLog("startRecording...");
+
         String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
         Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
-//        if (mMaxDuration > 0) {
-//            mHandler.sendMessageDelayed(
-//                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
-//                    mMaxDuration);
-//        }
+        if (mMaxDuration > 0) {
+            PmwsLog.writeLog("sendMessageDelayed..."+mMaxDuration);
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
+                    mMaxDuration);
+        }
         DCPubic.sIsRecording = true;
 
     }
@@ -538,13 +541,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream != null) {
             mMediaStream.stopRecord();
         }
-        PmwsLog.writeLog("stopRecording...");
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-        mHandler.sendMessageDelayed(
-                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-                500);
+//        mHandler.sendMessageDelayed(
+//                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
+//                500);
 
         DCPubic.sIsRecording = false;
     }
