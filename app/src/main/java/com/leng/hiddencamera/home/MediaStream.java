@@ -16,6 +16,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.orhanobut.hawk.Hawk;
 import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.UVCCamera;
@@ -109,11 +110,13 @@ public class MediaStream {
                     //                    Intent intent = new Intent(context, BackgroundCameraService.class);
                     //                    context.stopService(intent);
                 } finally {
-                    for (int i = 0; i < 5; i++) {
-                        stopPusherStream(i);
-                    }
-                    stopPreview();
-                    destroyCamera();
+                    PmwsLog.writeLog("this destroy camera ago");
+
+                    //                    for (int i = 0; i < 5; i++) {
+//                        stopPusherStream(i);
+//                    }
+//                    stopPreview();
+//                    destroyCamera();
                 }
             }
         };
@@ -163,7 +166,7 @@ public class MediaStream {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-
+            PmwsLog.writeLog("createNativeCamera...Exception....destroyCamera...releaseCamera");
             //            String stack = sw.toString();
             destroyCamera();
             e.printStackTrace();
@@ -409,21 +412,24 @@ public class MediaStream {
     /// 开始录像
     public synchronized void startRecord() {
         if (Thread.currentThread() != mCameraThread) {
+            PmwsLog.writeLog("startRecording...Thread.currentThread() != mCameraThread");
             mCameraHandler.post(() -> startRecord());
             return;
         }
 
         if (mCamera == null && uvcCamera == null) {
+            PmwsLog.writeLog("startRecording...mCamera&&uvcCamera == null ");
             return;
         }
 
         // 默认录像时间300000毫秒
         mMuxer =
-                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30 * 60 * 1000);
+                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30* 60 * 1000);
 
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC :
                 MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, false,
                 2000000, info.mName, info.mColorFormat);
+        PmwsLog.writeLog("startRecording...mMuxer = null is"+(mMuxer == null));
         if (uvcCamera != null) {
             mRecordVC.onVideoStart(uvcWidth, uvcHeight);
         } else {
@@ -437,20 +443,22 @@ public class MediaStream {
 
     /// 停止录像
     public synchronized void stopRecord() {
+
         if (Thread.currentThread() != mCameraThread) {
             mCameraHandler.post(() -> stopRecord());
             return;
         }
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
+        PmwsLog.writeLog("MediaStream   stopRecord...");
         if (audioStream != null) {
-            audioStream.setMuxer(mMuxer);
+            audioStream.setMuxer(null);
         }
         if (mRecordVC != null) {
             mRecordVC.onVideoStop();
             mRecordVC = null;
+        }
+        if (mMuxer != null) {
+            mMuxer.release();
+            mMuxer = null;
         }
     }
 
@@ -744,6 +752,7 @@ public class MediaStream {
     public synchronized void destroyCamera() {
         if (Thread.currentThread() != mCameraThread) {
             mCameraHandler.post(() -> destroyCamera());
+            PmwsLog.writeLog("Thread.currentThread() != mCameraThread.......destroyCamera...releaseCamera");
             return;
         }
 
@@ -761,15 +770,11 @@ public class MediaStream {
                 e.printStackTrace();
             }
 
-            Log.i(TAG, "release Camera");
+
 
             mCamera = null;
         }
 
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
     }
 
     /// 回收线程

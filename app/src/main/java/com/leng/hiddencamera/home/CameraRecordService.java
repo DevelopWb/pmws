@@ -123,7 +123,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 mHandler.removeMessages(MSG_RESTART_RECORDING);
                 mHandler.removeMessages(MSG_START_RECORDING);
             }
-            stopInterval();
             stopRecording();
 
         } else if (ACTION_RECORDING.equals(action)) {
@@ -159,11 +158,11 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                             mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
                 case MSG_RESTART_RECORDING:
-                    PmwsLog.writeLog("Max duration reached, restart the recording");
+                    PmwsLog.d("Max duration reached, restart the recording");
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_STOP_RECORDING), 0);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
@@ -249,6 +248,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             }
         }
         if (mMediaStream != null) {
+            PmwsLog.writeLog("actionStartLogic  mMediaStream != null.  destroycamera..");
             mMediaStream.stopPreview();
             mMediaStream.destroyCamera();
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0));
@@ -269,9 +269,8 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             // 如果没有被点击，不显示预览，开始录制
             PmwsLog.d("The service not started but preview disabled start the recording");
             showPreview(false);
-            reStartRecording(mMaxDuration);
-//            mHandler.sendMessageDelayed(
-//                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
         }
     }
 
@@ -313,15 +312,15 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         switch (intervalIndex) {
             case 0:
                 //5分钟
-                mMaxDuration = 5 * 60;
+                mMaxDuration = 5 * 60 * 1000;
                 break;
             case 1:
                 //10分钟
-                mMaxDuration = 10 * 60;
+                mMaxDuration = 10 * 60 * 1000;
                 break;
             case 2:
                 //30分钟
-                mMaxDuration = 30 * 60;
+                mMaxDuration = 30 * 60 * 1000;
                 break;
             default:
                 break;
@@ -373,7 +372,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 mTextureView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        reStartRecording(mMaxDuration);
+                        startRecording();
                     }
                 }, 1000);
 
@@ -522,34 +521,40 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 开始录像
      */
     private void startRecording() {
-        showNotification();
-        String currentCameraName =
-                SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)].toString();
-        Toast.makeText(CameraRecordService.this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
+        PmwsLog.writeLog("startRecording...mMediaStream=null is"+(mMediaStream==null));
         if (mMediaStream != null) {
             mMediaStream.startRecord();
         }
+        showNotification();
+
+        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+        Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
+
+        if (mMaxDuration > 0) {
+            PmwsLog.writeLog("sendMessageDelayed..."+mMaxDuration);
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_RESTART_RECORDING),
+                    mMaxDuration);
+        }
         DCPubic.sIsRecording = true;
+
     }
 
     /**
      * 停止录像
      */
     private void stopRecording() {
+        if (mMediaStream != null) {
+            mMediaStream.stopRecord();
+        }
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-        DCPubic.sIsRecording = false;
-        PmwsLog.writeLog("stopRecording...is null or is recording"+String.valueOf(mMediaStream==null)+ mMediaStream.isRecording());
-        if (mMediaStream != null && mMediaStream.isRecording()) {
-            mMediaStream.stopRecord();
-        } else {
-            return;
-        }
-        mHandler.sendMessageDelayed(
-                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-                500);
+//        mHandler.sendMessageDelayed(
+//                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
+//                500);
 
+        DCPubic.sIsRecording = false;
     }
 
 
@@ -644,7 +649,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
     }
-
     /**
      * 开启uvc服务
      */
@@ -715,32 +719,5 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     mHandler.obtainMessage(MSG_START_RECORDING), 1000);
         }
 
-    }
-
-
-    //开始轮询
-    public void reStartRecording(int delayTime) {
-
-        //interval对应参数 ：首次执行延时时间 、 每次轮询间隔时间 、 时间类型
-        subscribe = Observable.interval(0, delayTime, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        PmwsLog.writeLog("startRecording ----2222222222222222---mMaxDuration===" + mMaxDuration + aLong);
-                        mHandler.sendMessageDelayed(
-                                mHandler.obtainMessage(MSG_RESTART_RECORDING), 0);
-
-                    }
-                });
-    }
-
-    //结束轮询
-    public void stopInterval() {
-        //停止轮询，销毁这个Subscribe;
-        if (!subscribe.isDisposed()) {
-            subscribe.dispose();
-            subscribe = null;
-        }
     }
 }
