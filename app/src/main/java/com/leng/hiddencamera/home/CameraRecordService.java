@@ -245,7 +245,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             }
         }
         if (mMediaStream != null) {
-            PmwsLog.writeLog("actionStartLogic  mMediaStream != null...");
+            PmwsLog.writeLog("actionStartLogic  mMediaStream != null.  destroycamera..");
             mMediaStream.stopPreview();
             mMediaStream.destroyCamera();
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));

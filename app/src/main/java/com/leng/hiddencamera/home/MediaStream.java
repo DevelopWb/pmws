@@ -110,11 +110,13 @@ public class MediaStream {
                     //                    Intent intent = new Intent(context, BackgroundCameraService.class);
                     //                    context.stopService(intent);
                 } finally {
-//                    for (int i = 0; i < 5; i++) {
+                    PmwsLog.writeLog("this destroy camera ago");
+
+                    //                    for (int i = 0; i < 5; i++) {
 //                        stopPusherStream(i);
 //                    }
-                    stopPreview();
-                    destroyCamera();
+//                    stopPreview();
+//                    destroyCamera();
                 }
             }
         };
@@ -164,7 +166,7 @@ public class MediaStream {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-
+            PmwsLog.writeLog("createNativeCamera...Exception....destroyCamera...releaseCamera");
             //            String stack = sw.toString();
             destroyCamera();
             e.printStackTrace();
@@ -750,6 +752,7 @@ public class MediaStream {
     public synchronized void destroyCamera() {
         if (Thread.currentThread() != mCameraThread) {
             mCameraHandler.post(() -> destroyCamera());
+            PmwsLog.writeLog("Thread.currentThread() != mCameraThread.......destroyCamera...releaseCamera");
             return;
         }
 
@@ -767,7 +770,7 @@ public class MediaStream {
                 e.printStackTrace();
             }
 
-            PmwsLog.writeLog("destroyCamera...releaseCamera");
+
 
             mCamera = null;
         }
