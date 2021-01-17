@@ -794,8 +794,8 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     protected void onDestroy() {
         PmwsLog.writeLog("the main activity is destorying");
         Log.e(TAG, "Destroy");
-        regOperateManager.setCancelCallBack(null);
-        regOperateManager.destroy();
+//        regOperateManager.setCancelCallBack(null);
+//        regOperateManager.destroy();
         unregisterReceiver(CloseDialogReceiver);
         super.onDestroy();
     }
