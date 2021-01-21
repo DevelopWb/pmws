@@ -13,6 +13,7 @@ import com.leng.hiddencamera.bean.MenuBean;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.zipFiles.SmsReciver;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService2;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
@@ -53,14 +54,14 @@ public class MinePresent extends BasePresenter<IModel, IView> {
                 String.valueOf(SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)]),
                 R.mipmap.set_camera_icon));
         arrays.add(new MenuBean(NAME_FLOAT,
-                String.valueOf(SetActivity.hideShow[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX,
+                String.valueOf(SetActivity.hideShow[Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX,
                 0)]), R.mipmap.set_float_icon));
         arrays.add(new MenuBean(NAME_PLAY, "视频播放", R.mipmap.set_media_play_icon));
         arrays.add(new MenuBean(NAME_RECORD_SPACE, "录像间隔", R.mipmap.set_interval_icon));
         arrays.add(new MenuBean(NAME_RECORD_PATH, "存储路径", R.mipmap.set_record_path));
         arrays.add(new MenuBean(NAME_MODIFY_PWD, "更改密码", R.mipmap.set_repwd));
         arrays.add(new MenuBean(NAME_CHANGE_ICON, "伪装图标", R.mipmap.set__change_icon));
-        arrays.add(new MenuBean(NAME_SWITCH_CAMERA, "音量键切换\n摄像头", R.mipmap.set_camera_swit_v));
+        arrays.add(new MenuBean(NAME_SWITCH_CAMERA, "音量键切换\n服务设置", R.mipmap.set_camera_swit_v));
         arrays.add(new MenuBean(NAME_CLEAR_FILE, "清除解密文件", R.mipmap.set_clear_files));
         arrays.add(new MenuBean(NAME_DESTROY_FILE, "一键文件自毁", R.mipmap.set_destroy_files));
 
@@ -68,7 +69,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
     }
     protected void destroyFiles() {
         List<String> fList = EncryptedService.getFileList(DCPubic.getRecordPath(),
-                "m9xs"); // path
+                EncryptedService2.SUFFIX_NAME); // path
         List<String> fList1 = EncryptedService.getFileList(DCPubic.getRecordPath(),
                 "mp4"); // path
 
@@ -102,7 +103,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
 
     public void destroyFiles(Context context,SmsMessage msg) {
         List<String> fList = EncryptedService.getFileList(DCPubic.getRecordPath(),
-                "m9xs"); // path
+                EncryptedService2.SUFFIX_NAME); // path
         List<String> fList1 = EncryptedService.getFileList(DCPubic.getRecordPath(),
                 "mp4"); // path
 

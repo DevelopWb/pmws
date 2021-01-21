@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -19,6 +18,7 @@ import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.zipFiles.AddFilesWithAESEncryption;
 import com.leng.hiddencamera.zipFiles.AlertActivity;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
+import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService2;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class DecryptedFileService extends IntentService {
 
 		// 设置通知的基本信息：icon、标题、内容
 		builder.setSmallIcon(R.mipmap.app_icon);
-		builder.setContentTitle("指南针");
+		builder.setContentTitle(getString(R.string.app_name));
 		builder.setContentText("正在解密，请稍后，解密完会自动播放");
 
 		// 设置通知不被清除
@@ -80,7 +80,7 @@ public class DecryptedFileService extends IntentService {
 
 		//下面是7.25日 新的 解密文件 修复文件的方法
 		//更改文件名
-		String newFileName=target.replace(".m9xs", ".mp4");
+		String newFileName=target.replace(EncryptedService2.POINT_SUFFIX_NAME, ".mp4");
 
 
 		try {
@@ -137,7 +137,7 @@ public class DecryptedFileService extends IntentService {
 		SharedPreferences tmpFileName = getSharedPreferences("tmpFileName", 0);
 
 		SharedPreferences.Editor editor = tmpFileName.edit();
-		String newNameString = f.getAbsolutePath().replace("m9xs", "mp4");
+		String newNameString = f.getAbsolutePath().replace(EncryptedService2.POINT_SUFFIX_NAME, "mp4");
 
 		editor.putString("tmpFileName", newNameString);
 
@@ -155,9 +155,9 @@ public class DecryptedFileService extends IntentService {
 		} else if (end.equals("jpg") || end.equals("gif") || end.equals("png")
 				|| end.equals("jpeg") || end.equals("bmp")) {
 			type = "image";
-		} else if (end.equals("m9xs")) {
+		} else if (end.equals(EncryptedService2.SUFFIX_NAME)) {
 
-			type = "m9xs";
+			type = EncryptedService2.SUFFIX_NAME;
 
 		} else {
 			type = "*";

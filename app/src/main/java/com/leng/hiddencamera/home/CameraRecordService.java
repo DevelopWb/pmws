@@ -5,10 +5,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
@@ -33,6 +33,7 @@ import com.juntai.wisdom.basecomponent.utils.NotificationTool;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.MyApp;
 import com.leng.hiddencamera.R;
+import com.leng.hiddencamera.mine.SetActivity;
 import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService2;
@@ -51,6 +52,7 @@ import java.io.File;
  */
 public class CameraRecordService extends Service implements TextureView.SurfaceTextureListener {
     public static final int NOTIFICATION_FLAG = 1;
+    public static final int NOTIFICATION_START_FLAG = 2;
     public static final String ACTION_START = "action_start";
     public static final String ACTION_STOP = "action_stop";
     public static final String ACTION_RECORDING = "action_recording";
@@ -76,6 +78,63 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private boolean mPreviewEnabled;
     private PowerManager.WakeLock wakeLock = null;
     private TextureView mTextureView;
+    private ServiceConnection connUVC;
+    private UVCCameraService mUvcService;
+
+
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+        startUvcService();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
+        wakeLock.acquire();
+        AudioManager localAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
+                4);
+        PmwsLog.writeLog("cameraservice  onCreate--------");
+        addSurfaceView();
+        Log.i(TAG, "onCreate");
+    }
+
+
+    @SuppressLint("WrongConstant")
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        loadSettings();
+        startForeground(CameraRecordService.NOTIFICATION_START_FLAG, NotificationTool.getNotification(this));
+        //        backGroundNotificate();
+        Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
+        String action = intent.getAction();
+        PmwsLog.writeLog("cameraservice  onStartCommand--------");
+        if (ACTION_START.equals(action)) {
+            actionStartLogic();
+        } else if (ACTION_STOP.equals(action)) {
+            if (mHandler != null) {
+                mHandler.removeMessages(MSG_RESTART_RECORDING);
+                mHandler.removeMessages(MSG_START_RECORDING);
+            }
+            stopRecording();
+
+        } else if (ACTION_RECORDING.equals(action)) {
+            // 如果录制过程中，点击程序，显示预览
+            if (mPreviewEnabled) {
+                mHandler.sendMessageDelayed(
+                        mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+            } else {
+                String currentCameraName =
+                        SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+                Toast.makeText(this, currentCameraName + "正在录制中", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        return START_NOT_STICKY;
+    }
 
     private Handler mHandler = new Handler() {
 
@@ -90,17 +149,17 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     stopRecording();
                     break;
                 case MSG_OPEN_CAMERA:
-                    addSurfaceView();
-                    showPreview(false);
+//                    addSurfaceView();
+//                    showPreview(false);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
                 case MSG_RESTART_RECORDING:
                     PmwsLog.d("Max duration reached, restart the recording");
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_STOP_RECORDING), 500);
+                            mHandler.obtainMessage(MSG_STOP_RECORDING), 0);
                     mHandler.sendMessageDelayed(
-                            mHandler.obtainMessage(MSG_OPEN_CAMERA), 1000);
+                            mHandler.obtainMessage(MSG_START_RECORDING), 2000);
                     break;
                 case MSG_SHOW_PREVIEW:
                     showPreview(true);
@@ -135,79 +194,79 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         }
     };
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void receivedStringMsg(String msg) {
+        switch (msg) {
+            case UVCCameraService.UVC_ONATTACH:
+                //                Toast.makeText(getApplicationContext(),"Attached",Toast.LENGTH_SHORT).show();
+                break;
+            case UVCCameraService.UVC_ONCONNECT:
+                //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
+                //                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+                //                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
+                if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+                    goonWithAvailableTexture(mTextureView.getSurfaceTexture());
+                }
+                break;
+            case UVCCameraService.UVC_ONDISSCONNECT:
+                //                if (DCPubic.sIsRecording) {
+                //                    mMediaStream.stopRecord();
+                //                }
+                break;
+            case KEYCODE_VOLUME_DOWN:
+                //音量- 键  切换摄像头 如果在录制 停止录制 切换摄像头重新录制  如果没有录制 只单纯切换摄像头
+                //切换顺序 前 后 otg
+                if (DCPubic.sIsRecording) {
+                    stopRecording();
+                    switchCameraByVolumeDown(true);
+                } else {
+                    switchCameraByVolumeDown(false);
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     private void removeSurfaceView() {
         mWindowManager.removeView(mRootView);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
-        wakeLock.acquire();
-        AudioManager localAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
-                4);
-        PmwsLog.writeLog("cameraservice  onCreate--------");
-        loadSettings();
-        addSurfaceView();
-        Log.i(TAG, "onCreate");
-    }
-
-
-    @SuppressLint("WrongConstant")
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(CameraRecordService.NOTIFICATION_FLAG, NotificationTool.getNotification(this));
-        //        backGroundNotificate();
-        Log.i(TAG, "设置完 DCPubic.sIsRecording的状态=" + DCPubic.sIsRecording);
-        String action = intent.getAction();
-        PmwsLog.writeLog("cameraservice  onStartCommand--------");
-        if (ACTION_START.equals(action)) {
-            actionStartLogic();
-        } else if (ACTION_STOP.equals(action)) {
-            releaseRes();
-            stopSelf();
-        } else if (ACTION_RECORDING.equals(action)) {
-            // 注册完成后，点击屏幕，显示preView
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
-
-        }
-        return START_NOT_STICKY;
-    }
 
     /**
      * 服务开始的逻辑
      */
     private void actionStartLogic() {
-        if (DCPubic.sIsRecording) {
-            // 如果正在录制，这个action就是要停止录制
-            PmwsLog.d("The service has been started before, stop the recording");
-            mHandler.removeMessages(MSG_RESTART_RECORDING);
-            mHandler.removeMessages(MSG_START_RECORDING);
-            stopRecording();
-            // 如果录制过程中，点击程序，显示预览
-            if (mPreviewEnabled) {
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_SHOW_PREVIEW), 1000);
+        if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+            if (!UVCCameraService.uvcConnected) {
+                ToastUtils.toast(this, "请插入外置摄像头");
+                return;
+                //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
             }
+        }
+        if (mMediaStream != null) {
+            PmwsLog.writeLog("actionStartLogic  mMediaStream != null.  destroycamera..");
+            mMediaStream.stopPreview();
+            mMediaStream.destroyCamera();
+            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
+            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
+            mMediaStream.startPreview();
+
+        }else {
+            if (mTextureView.isAvailable()) {
+                goonWithAvailableTexture(mTextureView.getSurfaceTexture());
+            }
+        }
+        // 如果没有录制，程序被点击，显示预览
+        if (mPreviewEnabled) {
+            PmwsLog.d("The service not started and preview enabled start the preview");
+            showPreview(true);
         } else {
-            // 如果没有录制，程序被点击，显示预览
-            if (mPreviewEnabled) {
-                PmwsLog.d("The service not started and preview enabled start the preview");
-                showPreview(true);
-            } else {
-                // 如果没有被点击，不显示预览，开始录制
-                PmwsLog.d("The service not started but preview disabled start the recording");
-                showPreview(false);
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_START_RECORDING), 1000);
-            }
+            // 如果没有被点击，不显示预览，开始录制
+            PmwsLog.d("The service not started but preview disabled start the recording");
+            showPreview(false);
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
         }
     }
 
@@ -232,7 +291,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             removeSurfaceView();
         }
         stopRecording();
-        DCPubic.sIsRecording = false;
+        stopSelf();
     }
 
     /**
@@ -289,6 +348,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         mTextureView = (TextureView) mRootView
                 .findViewById(R.id.sv_surfaceview);
         mTextureView.setSurfaceTextureListener(this);
+
         // 预览界面的点击事件
         mTextureView.setOnClickListener(new View.OnClickListener() {
 
@@ -357,9 +417,10 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream == null) {
             mMediaStream = new MediaStream(getApplicationContext(), surface);
             mMediaStream.setRecordPath(easyPusher.getPath());
-            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
+            if (2 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
                 if (!UVCCameraService.uvcConnected) {
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
+                    return;
+                    //                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
                 }
             }
             mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
@@ -376,15 +437,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             //                }
             //            }
-        }else {
-            if (2== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)) {
-                if (!UVCCameraService.uvcConnected) {
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, 1);
-                }
-            }
-            mMediaStream.createCamera(Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1));
-            mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
-            mMediaStream.startPreview();
         }
         //        MediaStream ms = mService.getMediaStream();
         //
@@ -463,14 +515,17 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 开始录像
      */
     private void startRecording() {
+        PmwsLog.writeLog("startRecording...mMediaStream=null is"+(mMediaStream==null));
         if (mMediaStream != null) {
             mMediaStream.startRecord();
         }
         showNotification();
-        PmwsLog.writeLog("startRecording...");
-        Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show();
+
+        String currentCameraName = SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)].toString();
+        Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
+            PmwsLog.writeLog("sendMessageDelayed..."+mMaxDuration);
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_RESTART_RECORDING),
                     mMaxDuration);
@@ -486,16 +541,14 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mMediaStream != null) {
             mMediaStream.stopRecord();
         }
-        PmwsLog.writeLog("stopRecording...");
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-        mHandler.sendMessageDelayed(
-                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-                1000);
+//        mHandler.sendMessageDelayed(
+//                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
+//                500);
 
         DCPubic.sIsRecording = false;
-
     }
 
 
@@ -528,9 +581,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         }
         Notification notification = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification_start)
+                .setSmallIcon(R.drawable.notification_start_record)
                 .setOngoing(true)
-                .setContentTitle("指南针").setContentText("指南针, 点击停止").build();
+                .setContentTitle(getString(R.string.app_name)).setContentText("正在录像, 点击停止").build();
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());
@@ -561,6 +614,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             wakeLock.release();
             wakeLock = null;
         }
+        if (connUVC != null) {
+            unbindService(connUVC);
+            connUVC = null;
+        }
+        stopService(new Intent(this, UVCCameraService.class));
+        releaseRes();
         super.onDestroy();
 
     }
@@ -584,41 +643,32 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
     }
+    /**
+     * 开启uvc服务
+     */
+    private void startUvcService() {
+        startService(new Intent(this, UVCCameraService.class));
+        if (connUVC == null) {
+            connUVC = new ServiceConnection() {
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void receivedStringMsg(String msg) {
-        switch (msg) {
-            case UVCCameraService.UVC_ONATTACH:
-                //                Toast.makeText(getApplicationContext(),"Attached",Toast.LENGTH_SHORT).show();
-                break;
-            case UVCCameraService.UVC_ONCONNECT:
-                //                Toast.makeText(getApplicationContext(),"connect",Toast.LENGTH_SHORT).show();
-                mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
-                Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX,2);
-                break;
-            case UVCCameraService.UVC_ONDISSCONNECT:
-                if (DCPubic.sIsRecording) {
-                    mMediaStream.stopRecord();
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    mUvcService = ((UVCCameraService.LocalBinder) iBinder).getService();
                 }
-                break;
-            case KEYCODE_VOLUME_DOWN:
-                //音量- 键  切换摄像头 如果在录制 停止录制 切换摄像头重新录制  如果没有录制 只单纯切换摄像头
-                //切换顺序 前 后 otg
-                if (DCPubic.sIsRecording) {
-                    stopRecording();
-                    switchCameraByVolumeDown(true);
-                } else {
-                    switchCameraByVolumeDown(false);
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+
                 }
-                break;
-            default:
-                break;
+            };
         }
+        bindService(new Intent(this, UVCCameraService.class), connUVC, 0);
     }
 
+
     /**
-     * 切换摄像头
+     * 切换摄像头  默认顺序是 前后otg
      *
      * @param record 是否开始录像
      */
@@ -631,16 +681,23 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_BACK);
                 break;
             case 0:
-                //back camera to otg or front
-                if (UVCCameraService.uvcConnected) {
-                    //to otg
-                    mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_BACK_UVC);
-                } else {
-                    //to front
-                    mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
-                    Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_FRONT);
-                }
+                mUvcService.reRequestOtg();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //back camera to otg or front
+                        if (UVCCameraService.uvcConnected) {
+                            //to otg
+                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
+                            Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_BACK_UVC);
+                        } else {
+                            //to front
+                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
+                            Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_FRONT);
+                        }
+                    }
+                },1000);
+
 
                 break;
             case 2:

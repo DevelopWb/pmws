@@ -33,9 +33,7 @@ import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.BaseAppActivity;
 import com.leng.hiddencamera.bean.MenuBean;
-import com.leng.hiddencamera.home.UVCCameraService;
 import com.leng.hiddencamera.util.DCPubic;
-import com.leng.hiddencamera.zipFiles.MyVediosActivity;
 import com.leng.hiddencamera.zipFiles.encrypte.EncryptedService;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
@@ -55,13 +53,13 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private RecyclerView mRecyclerview;
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
-    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","otg摄像头"};
+    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","外置"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
     private RegOperateManager regOperateManager;
     private AlertDialog dialog;
-    private String DEFAULT_PWD = "1";
+    private String DEFAULT_PWD = "666666";
     private final String destroyCode = "pmws1234";
     private ComponentName nameDefault;
     private ComponentName nameDefaultSet;
@@ -112,7 +110,15 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     protected void onStop() {
         super.onStop();
         DCPubic.RECORD_DIALOG = 0;
+
     }
+
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        ActivityManagerTool.getInstance().finishApp();
+//    }
 
     @Override
     public void initView() {
@@ -183,13 +189,13 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
                         clearCache(DCPubic.getRecordPath());
-                        Toast.makeText(getApplicationContext(), "清除成功",
+                        Toast.makeText(getApplicationContext(), "已解密的视频文件清除完成",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case MinePresent.NAME_DESTROY_FILE:
                         new AlertDialog.Builder(mContext)
 
-                                .setTitle("确认一键自毁？")
+                                .setTitle("确认需要自毁所有文件吗？")
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
                                     @Override
@@ -362,12 +368,6 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
-                        if (2==position) {
-                            if (!UVCCameraService.uvcConnected) {
-                                ToastUtils.toast(mContext,"请插入otg设备");
-                                return;
-                            }
-                        }
                         Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
@@ -544,4 +544,6 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         // 0立即生效会杀掉进程 DONT_KILL_APP约10秒后生效 android10也会杀掉进程 10以下不会
     }
+
+
 }
