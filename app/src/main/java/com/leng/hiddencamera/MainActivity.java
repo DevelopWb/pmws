@@ -33,32 +33,32 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         ActivityManagerTool.getInstance().finishApp();
-//        if (!Hawk.contains(HawkProperty.REG_CODE)) {
-//            ToastUtils.toast(this, "您还没有注册，请先注册！");
-//            this.finish();
-//            return;
-//        }
-//        new RegOperateManager(this,
-//                new RegLatestContact.CancelCallBack() {
-//                    @Override
-//                    public void toFinishActivity() {
-//                        finish();
-//                    }
-//
-//                    @Override
-//                    public void toDoNext(String input) {
-//                        if (DCPubic.sIsRecording) {
-//                            startCameraService(CameraRecordService.ACTION_RECORDING);
-//                        } else {
-//                            startCameraService(CameraRecordService.ACTION_START);
-//                        }
-//                    }
-//                });
-        if (DCPubic.sIsRecording) {
-            startCameraService(CameraRecordService.ACTION_RECORDING);
-        } else {
-            startCameraService(CameraRecordService.ACTION_START);
+        if (!Hawk.contains(HawkProperty.REG_CODE)) {
+            ToastUtils.toast(this, "您还没有注册，请先注册！");
+            this.finish();
+            return;
         }
+        new RegOperateManager(this,
+                new RegLatestContact.CancelCallBack() {
+                    @Override
+                    public void toFinishActivity() {
+                        finish();
+                    }
+
+                    @Override
+                    public void toDoNext(String input) {
+                        if (DCPubic.sIsRecording) {
+                            startCameraService(CameraRecordService.ACTION_RECORDING);
+                        } else {
+                            startCameraService(CameraRecordService.ACTION_START);
+                        }
+                    }
+                });
+//        if (DCPubic.sIsRecording) {
+//            startCameraService(CameraRecordService.ACTION_RECORDING);
+//        } else {
+//            startCameraService(CameraRecordService.ACTION_START);
+//        }
 
     }
 
