@@ -273,6 +273,8 @@
         </service>
         <service android:name=".home.UVCCameraService"
             android:enabled="true"></service>
+        <activity android:name=".mine.PmwsSetActivity"></activity>
+
     </application>
 
 </manifest>

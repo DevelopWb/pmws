@@ -32,7 +32,7 @@ public class MyMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
                     String.valueOf(SetActivity.intervals[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0)]));
         } else if (MinePresent.NAME_RECORD_PATH == item.getTagId()) {
             helper.setGone(R.id.menu_content_tv, true);
-            helper.setText(R.id.menu_content_tv, "手机内部存储/YBZD");
+            helper.setText(R.id.menu_content_tv, "手机内部存储/MyData");
         } else {
             helper.setGone(R.id.menu_content_tv, false);
         }

@@ -5,7 +5,7 @@ android {
 //    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        applicationId "com.welkin.ybzd"
+        applicationId "com.welkin.pmws"
         minSdkVersion configs.minSdkVersion
         versionCode configs.versionCode
         versionName configs.versionName
