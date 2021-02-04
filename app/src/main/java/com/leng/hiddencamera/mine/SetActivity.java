@@ -364,7 +364,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
      * chose camera
      */
     private void choseCamera(MenuBean menuBean) {
-        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1),
+        new AlertDialog.Builder(this).setSingleChoiceItems(cameras, Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, PmwsSetActivity.defaultCamera),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {

@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.leng.hiddencamera.home.MediaStream;
 
 /**
@@ -93,7 +94,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     private static final String destroyCode = "pmws1234";
     public static int RECORD_DIALOG = 0;
     private SwitchCompat mFloatHideShowSv;
-
+    public static  int defaultCamera = 0;//默认后置  1是前置
 
     private RegOperateManager regOperateManager;
 
@@ -104,6 +105,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     private AlertDialog dialog;
     private Dialog mProgressDialog;
     private String strreg;
+
 
     @Override
     protected BasePresenter createPresenter() {
@@ -262,19 +264,19 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     }
 
     private void initSet() {
-        if (0== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
+        if (0 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, PmwsSetActivity.defaultCamera)) {
             //0是后置
             camera_selected_tv.setText("后置");
-        }else {
+        } else {
             camera_selected_tv.setText("前置");
         }
-        int intervalIndex = Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0);
-        if (0== intervalIndex) {
+        int intervalIndex = Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, PmwsSetActivity.defaultCamera);
+        if (0 == intervalIndex) {
             //0代表5分钟 1 代表10分钟 2 代表30分钟
             vedio_selected_tv.setText("5分钟");
-        }else if(1==intervalIndex){
+        } else if (1 == intervalIndex) {
             vedio_selected_tv.setText("10分钟");
-        }else {
+        } else {
             vedio_selected_tv.setText("30分钟");
         }
 
@@ -292,18 +294,6 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         PmwsSetActivity.RECORD_DIALOG = 0;
     }
 
-
-
-
-    private void saveVideoPath(String videopath) {
-        SharedPreferences settings = getSharedPreferences("videoPath", MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = settings.edit();
-
-        editor.putString("videoPath", videopath);
-
-        editor.commit();
-    }
 
     @Override
     public int getLayoutView() {
@@ -345,7 +335,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         destroy_file_tv.setOnClickListener(this);
         isDisplay_rv.setOnClickListener(this);
 
-        if (1==Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0)) {
+        if (1 == Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX, 0)) {
             mFloatHideShowSv.setChecked(false);
             isDisplay_tv.setText("录像前无预览");
         } else {
@@ -510,7 +500,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
                 showSelectVedioTimeDialog();
                 break;
             case R.id.file_path_rl://选择文件路径
-//                showSelectFilePathDialog();
+                //                showSelectFilePathDialog();
                 break;
             case R.id.change_pwd:  //更改密码
                 showChangePwd();
@@ -603,23 +593,23 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         final RadioButton rb2 = (RadioButton) v.findViewById(R.id.rb2);
         final RadioButton rb3 = (RadioButton) v.findViewById(R.id.rb3);
 
-        if (0== Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 0)) {
+        if (0 == Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, PmwsSetActivity.defaultCamera)) {
             //0是后置
             initRadioStatus(rb1, rb2, rb3);
-        }else {
+        } else {
             initRadioStatus(rb2, rb1, rb3);
         }
 
-//        String camera = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
-//        if (camera.equals(CAMERAID_BACK)) {
-//
-//        } else if (camera.equals(CAMERAID_FRONT)) {
-//
-//        } else if (camera.equals(CAMERAID_SPECIAL)) {
-//            initRadioStatus(rb3, rb2, rb1);
-//        } else {
-//            initRadioStatus(rb1, rb2, rb3);
-//        }
+        //        String camera = sp.getString(SettingsUtil.PREF_KEY_CAMERAID, "");
+        //        if (camera.equals(CAMERAID_BACK)) {
+        //
+        //        } else if (camera.equals(CAMERAID_FRONT)) {
+        //
+        //        } else if (camera.equals(CAMERAID_SPECIAL)) {
+        //            initRadioStatus(rb3, rb2, rb1);
+        //        } else {
+        //            initRadioStatus(rb1, rb2, rb3);
+        //        }
         final Dialog dialog_c = new Dialog(this, R.style.DialogStyle);
         dialog_c.setCanceledOnTouchOutside(false);
         dialog_c.show();
@@ -649,15 +639,15 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
                 dialog_c.dismiss();
             }
         });
-//        special_camera_rl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                initRadioStatus(rb3, rb1, rb2);
-//                SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_SPECIAL);
-//                camera_selected_tv.setText(CAMERAID_SPECIAL);
-//                dialog_c.dismiss();
-//            }
-//        });
+        //        special_camera_rl.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View v) {
+        //                initRadioStatus(rb3, rb1, rb2);
+        //                SaveToSp(SettingsUtil.PREF_KEY_CAMERAID, CAMERAID_SPECIAL);
+        //                camera_selected_tv.setText(CAMERAID_SPECIAL);
+        //                dialog_c.dismiss();
+        //            }
+        //        });
     }
 
 
@@ -685,12 +675,12 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
         final RadioButton rb2 = (RadioButton) v.findViewById(R.id.rb2);
         final RadioButton rb3 = (RadioButton) v.findViewById(R.id.rb3);
         int intervalIndex = Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0);
-        if (0== intervalIndex) {
+        if (0 == intervalIndex) {
             //0代表5分钟 1 代表10分钟 2 代表30分钟
             initRadioStatus(rb1, rb2, rb3);
-        }else if(1==intervalIndex){
+        } else if (1 == intervalIndex) {
             initRadioStatus(rb2, rb1, rb3);
-        }else {
+        } else {
             initRadioStatus(rb3, rb2, rb1);
         }
         final Dialog dialog_c = new Dialog(this, R.style.DialogStyle);
@@ -708,7 +698,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 initRadioStatus(rb1, rb2, rb3);
-                Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX,0);
+                Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0);
                 vedio_selected_tv.setText(VEDIOTIME_FIVE);
                 dialog_c.dismiss();
             }
@@ -717,7 +707,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 initRadioStatus(rb2, rb1, rb3);
-                Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX,1);
+                Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 1);
                 vedio_selected_tv.setText(VEDIOTIME_TEN);
                 dialog_c.dismiss();
             }
@@ -726,62 +716,62 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 initRadioStatus(rb3, rb1, rb2);
-                Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX,2);
+                Hawk.put(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 2);
                 vedio_selected_tv.setText(VEDIOTIME_THIRTY);
                 dialog_c.dismiss();
             }
         });
     }
 
-//    private void showSelectFilePathDialog() {
-//        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.select_filepath, null);
-//        RelativeLayout mobile_rl = (RelativeLayout) v.findViewById(R.id.mobile_rl);
-//        RelativeLayout memory_rl = (RelativeLayout) v.findViewById(R.id.memory_rl);
-//        final RadioButton rb1 = (RadioButton) v.findViewById(R.id.rb1);
-//        final RadioButton rb2 = (RadioButton) v.findViewById(R.id.rb2);
-//        String file_path = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "");
-//        if (file_path.equals(MOBILE)) {
-//            initSelectOption2(rb1, rb2);
-//        } else if (file_path.equals(SDCARD)) {
-//            initSelectOption2(rb2, rb1);
-//        } else {
-//            initSelectOption2(rb1, rb2);
-//        }
-//        final Dialog dialog_c = new Dialog(getApplicationContext(), R.style.DialogStyle);
-//        dialog_c.setCanceledOnTouchOutside(false);
-//        dialog_c.show();
-//        Window window = dialog_c.getWindow();
-//        WindowManager.LayoutParams lp = window.getAttributes();
-//        window.setGravity(Gravity.CENTER);
-//        lp.width = dip2px(this, 300); // 宽度
-//        lp.height = dip2px(this, 230); // 高度
-//        //lp.dimAmount = 0f;//去掉对话框自带背景色
-//        window.setAttributes(lp);
-//        window.setContentView(v);
-//        mobile_rl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                initSelectOption2(rb1, rb2);
-//                SaveToSp(SettingsUtil.PREF_KEY_FILE_PATH, MOBILE);
-//                filepath_selected_tv.setText(MOBILE);
-//                file_path_detail.setText("/mnt/sdcard/MyData");
-//                saveVideoPath("/mnt/sdcard/MyData");
-//                dialog_c.dismiss();
-//
-//            }
-//        });
-//        memory_rl.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                initSelectOption2(rb2, rb1);
-//                SaveToSp(SettingsUtil.PREF_KEY_FILE_PATH, SDCARD);
-//                filepath_selected_tv.setText(SDCARD);
-//                file_path_detail.setText("/storage/extSdCard/MyData");
-//                saveVideoPath("/storage/extSdCard/MyData");
-//                dialog_c.dismiss();
-//            }
-//        });
-//    }
+    //    private void showSelectFilePathDialog() {
+    //        View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.select_filepath, null);
+    //        RelativeLayout mobile_rl = (RelativeLayout) v.findViewById(R.id.mobile_rl);
+    //        RelativeLayout memory_rl = (RelativeLayout) v.findViewById(R.id.memory_rl);
+    //        final RadioButton rb1 = (RadioButton) v.findViewById(R.id.rb1);
+    //        final RadioButton rb2 = (RadioButton) v.findViewById(R.id.rb2);
+    //        String file_path = sp.getString(SettingsUtil.PREF_KEY_FILE_PATH, "");
+    //        if (file_path.equals(MOBILE)) {
+    //            initSelectOption2(rb1, rb2);
+    //        } else if (file_path.equals(SDCARD)) {
+    //            initSelectOption2(rb2, rb1);
+    //        } else {
+    //            initSelectOption2(rb1, rb2);
+    //        }
+    //        final Dialog dialog_c = new Dialog(getApplicationContext(), R.style.DialogStyle);
+    //        dialog_c.setCanceledOnTouchOutside(false);
+    //        dialog_c.show();
+    //        Window window = dialog_c.getWindow();
+    //        WindowManager.LayoutParams lp = window.getAttributes();
+    //        window.setGravity(Gravity.CENTER);
+    //        lp.width = dip2px(this, 300); // 宽度
+    //        lp.height = dip2px(this, 230); // 高度
+    //        //lp.dimAmount = 0f;//去掉对话框自带背景色
+    //        window.setAttributes(lp);
+    //        window.setContentView(v);
+    //        mobile_rl.setOnClickListener(new View.OnClickListener() {
+    //            @Override
+    //            public void onClick(View v) {
+    //                initSelectOption2(rb1, rb2);
+    //                SaveToSp(SettingsUtil.PREF_KEY_FILE_PATH, MOBILE);
+    //                filepath_selected_tv.setText(MOBILE);
+    //                file_path_detail.setText("/mnt/sdcard/MyData");
+    //                saveVideoPath("/mnt/sdcard/MyData");
+    //                dialog_c.dismiss();
+    //
+    //            }
+    //        });
+    //        memory_rl.setOnClickListener(new View.OnClickListener() {
+    //            @Override
+    //            public void onClick(View v) {
+    //                initSelectOption2(rb2, rb1);
+    //                SaveToSp(SettingsUtil.PREF_KEY_FILE_PATH, SDCARD);
+    //                filepath_selected_tv.setText(SDCARD);
+    //                file_path_detail.setText("/storage/extSdCard/MyData");
+    //                saveVideoPath("/storage/extSdCard/MyData");
+    //                dialog_c.dismiss();
+    //            }
+    //        });
+    //    }
 
     public int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;

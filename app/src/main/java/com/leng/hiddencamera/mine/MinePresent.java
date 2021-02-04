@@ -51,7 +51,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
     protected List<MenuBean> getMineMenus() {
         List<MenuBean> arrays = new ArrayList<>();
         arrays.add(new MenuBean(NAME_CAMERA,
-                String.valueOf(SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, 1)]),
+                String.valueOf(SetActivity.cameras[Hawk.get(HawkProperty.CURRENT_CAMERA_INDEX, PmwsSetActivity.defaultCamera)]),
                 R.mipmap.set_camera_icon));
         arrays.add(new MenuBean(NAME_FLOAT,
                 String.valueOf(SetActivity.hideShow[Hawk.get(HawkProperty.FLOAT_IS_SHOW_INDEX,
