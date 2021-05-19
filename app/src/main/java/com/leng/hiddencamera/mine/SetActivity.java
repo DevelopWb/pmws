@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,6 +55,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
     public static CharSequence[] cameras = new CharSequence[]{"前置", "后置"};
+    public static CharSequence[] voiceActions = new CharSequence[]{"录像", "拍照"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
@@ -185,7 +184,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
                     case MinePresent.NAME_PIC_DISPLAY:
                         break;
-                    case MinePresent.NAME_CAMERA_SET:
+                    case MinePresent.NAME_VOICE_SET:
+                        voiceActionSet(menuBean);
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
                         clearCache(DCPubic.getRecordPath());
@@ -377,6 +377,23 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                     public void onClick(DialogInterface dialog, int position) {
                         Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
+                        mMenuAdapter.notifyItemChanged(menuBean.getTagId());
+                        dialog.dismiss();
+                    }
+
+
+                }).show();
+    }
+    /**
+     * 音量键设置
+     */
+    private void voiceActionSet(MenuBean menuBean) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(voiceActions, Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position) {
+                        Hawk.put(HawkProperty.VOICE_ACTION_INDEX, position);
+                        menuBean.setDes(String.valueOf(voiceActions[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
                         dialog.dismiss();
                     }

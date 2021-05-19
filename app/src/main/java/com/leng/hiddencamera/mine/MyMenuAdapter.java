@@ -25,17 +25,29 @@ public class MyMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
         helper.setImageResource(R.id.menu_icon_iv, item.getResId());
         helper.setText(R.id.menu_title_tv, item.getName());
 
-        if (MinePresent.NAME_RECORD_SPACE == item.getTagId()) {
-            //录像间隔
-            helper.setGone(R.id.menu_content_tv, true);
-            helper.setText(R.id.menu_content_tv,
-                    String.valueOf(SetActivity.intervals[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0)]));
-        } else if (MinePresent.NAME_RECORD_PATH == item.getTagId()) {
-            helper.setGone(R.id.menu_content_tv, true);
-            helper.setText(R.id.menu_content_tv, "手机内部存储/YBZD");
-        } else {
-            helper.setGone(R.id.menu_content_tv, false);
+        switch (item.getTagId()) {
+            case MinePresent.NAME_RECORD_SPACE:
+                //录像间隔
+                helper.setGone(R.id.menu_content_tv, true);
+                helper.setText(R.id.menu_content_tv,
+                        String.valueOf(SetActivity.intervals[Hawk.get(HawkProperty.RECORD_INTERVAL_TIME_INDEX, 0)]));
+                break;
+            case MinePresent.NAME_RECORD_PATH:
+                //录像间隔
+                helper.setGone(R.id.menu_content_tv, true);
+                helper.setText(R.id.menu_content_tv, "手机内部存储/YBZD");
+                break;
+            case MinePresent.NAME_VOICE_SET:
+                //音量键功能配置
+                helper.setGone(R.id.menu_content_tv, true);
+                helper.setText(R.id.menu_content_tv, item.getDes());
+                break;
+            default:
+                helper.setGone(R.id.menu_content_tv, false);
+                break;
         }
+
+
 
     }
 }

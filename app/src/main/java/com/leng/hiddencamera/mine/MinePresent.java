@@ -37,7 +37,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
     public static final int NAME_CHANGE_ICON = 6;
     public static final int NAME_SWITCH_CAMERA = 7;
     public static final int NAME_PIC_DISPLAY = 8;
-    public static final int NAME_CAMERA_SET = 9;
+    public static final int NAME_VOICE_SET = 9;
     public static final int NAME_CLEAR_FILE = 10;
     public static final int NAME_DESTROY_FILE = 11;
 
@@ -64,7 +64,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
         arrays.add(new MenuBean(NAME_CHANGE_ICON, "伪装图标", R.mipmap.set__change_icon));
         arrays.add(new MenuBean(NAME_SWITCH_CAMERA, "开启辅助服务", R.mipmap.set_camera_swit_v));
         arrays.add(new MenuBean(NAME_PIC_DISPLAY, "图片展示", R.mipmap.set_camera_swit_v));
-        arrays.add(new MenuBean(NAME_SWITCH_CAMERA, "NAME_CAMERA_SET", R.mipmap.set_camera_swit_v));
+        arrays.add(new MenuBean(NAME_VOICE_SET, "音量键功能","录像", R.mipmap.set_camera_swit_v));
         arrays.add(new MenuBean(NAME_CLEAR_FILE, "清除解密文件", R.mipmap.set_clear_files));
         arrays.add(new MenuBean(NAME_DESTROY_FILE, "一键文件自毁", R.mipmap.set_destroy_files));
 

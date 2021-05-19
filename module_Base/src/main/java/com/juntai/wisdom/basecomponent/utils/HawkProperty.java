@@ -87,6 +87,10 @@ public class HawkProperty {
      * 当前camera
      */
     public static String CURRENT_CAMERA_INDEX = "current_camera";
+    /**
+     * voice action 默认0
+     */
+    public static String VOICE_ACTION_INDEX = "voice_action";
 
     /**
      * intervaltime

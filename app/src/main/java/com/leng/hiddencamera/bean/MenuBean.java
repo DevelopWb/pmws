@@ -12,12 +12,28 @@ import com.juntai.wisdom.basecomponent.base.BaseResult;
 public class MenuBean extends BaseResult {
     private int tagId;
     private String name;
+    private String des;
     private int resId;
 
     public MenuBean(int tagId, String name, int resId) {
         this.tagId = tagId;
         this.name = name;
         this.resId = resId;
+    }
+
+    public MenuBean(int tagId, String name, String des, int resId) {
+        this.tagId = tagId;
+        this.name = name;
+        this.des = des;
+        this.resId = resId;
+    }
+
+    public String getDes() {
+        return des == null ? "" : des;
+    }
+
+    public void setDes(String des) {
+        this.des = des == null ? "" : des;
     }
 
     public int getTagId() {
