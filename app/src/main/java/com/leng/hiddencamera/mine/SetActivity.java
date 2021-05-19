@@ -166,8 +166,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
-                        ToastUtils.toast(mContext,"暂未开放");
-//                        showAppNamess();
+                        ToastUtils.toast(mContext, "暂未开放");
+                        //                        showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -181,6 +181,11 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                             e.printStackTrace();
                         }
 
+                        break;
+
+                    case MinePresent.NAME_PIC_DISPLAY:
+                        break;
+                    case MinePresent.NAME_CAMERA_SET:
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
                         clearCache(DCPubic.getRecordPath());
