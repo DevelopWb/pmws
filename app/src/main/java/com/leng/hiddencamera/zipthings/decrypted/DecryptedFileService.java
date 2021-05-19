@@ -66,7 +66,7 @@ public class DecryptedFileService extends IntentService {
 
 		// 设置通知的基本信息：icon、标题、内容
 		builder.setSmallIcon(R.mipmap.app_icon);
-		builder.setContentTitle("指南针");
+		builder.setContentTitle("隐蔽终端");
 		builder.setContentText("正在解密，请稍后，解密完会自动播放");
 
 		// 设置通知不被清除

@@ -653,7 +653,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         Notification notification = new NotificationCompat.Builder(this, NotificationTool.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification_start)
                 .setOngoing(true)
-                .setContentTitle("指南针").setContentText("指南针, 点击停止").build();
+                .setContentTitle("隐蔽终端").setContentText("隐蔽终端, 点击停止").build();
 
         Intent intent = new Intent(ACTION_STOP);
         intent.setClass(getBaseContext(), this.getClass());

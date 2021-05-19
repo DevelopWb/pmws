@@ -45,7 +45,7 @@
         <activity
             android:name=".home.SplashActivity"
             android:icon="@mipmap/app_icon"
-            android:label="指南针设置"
+            android:label="隐蔽终端设置"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

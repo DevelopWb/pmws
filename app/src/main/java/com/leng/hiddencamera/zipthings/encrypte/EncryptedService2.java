@@ -132,7 +132,7 @@ public class EncryptedService2 extends Service {
 
                 // 设置通知的基本信息：icon、标题、内容
                 .setSmallIcon(R.mipmap.app_icon)
-                .setContentTitle("指南针")
+                .setContentTitle("隐蔽终端")
                 .setContentText("加密完成")
                 .setAutoCancel(true);
 
