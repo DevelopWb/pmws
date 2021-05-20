@@ -1,2 +1,2 @@
-include ':app',  ':RegMode', ':base_net_lib', ':module_Base', ':library'
+include ':app', ':RegMode', ':base_net_lib', ':module_Base', ':library', ':module_Video', ':zXingLiteLib', ':jiaozivideoplayer'
 rootProject.name='pmws'

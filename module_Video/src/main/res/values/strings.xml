@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">VideoPlay</string>
+
+    <string-array name="velocity">
+        <item>none</item>
+        <item>ultrafast</item>
+        <item>superfast</item>
+        <item>veryfast</item>
+        <item>faster</item>
+        <item>fast</item>
+        <item>medium</item>
+        <item>slow</item>
+        <item>slower</item>
+        <item>veryslow</item>
+        <item>placebo</item>
+    </string-array>
+    <string-array name="need_full">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+
+    <string name="warn_not_wifi">你现在不在无线局域网环境，继续操作会消耗较多流量</string>
+
+</resources>

@@ -54,7 +54,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
     public static CharSequence[] voiceActions = new CharSequence[]{"录像", "拍照"};
-    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置","外置"};
+    public static CharSequence[] cameras = new CharSequence[]{"后置", "前置", "外置"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
     public static CharSequence[] appNames = new CharSequence[]{"默认", "抖音", "快手", "QQ", "微信", "百度地图"};
@@ -182,6 +182,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         break;
 
                     case MinePresent.NAME_PIC_DISPLAY:
+                        //图片展示
+                        startActivity(new Intent(mContext, PicsDisplayActivity.class));
                         break;
                     case MinePresent.NAME_VOICE_SET:
                         voiceActionSet(menuBean);
@@ -376,6 +378,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
 
                 }).show();
     }
+
     /**
      * 音量键设置
      */
