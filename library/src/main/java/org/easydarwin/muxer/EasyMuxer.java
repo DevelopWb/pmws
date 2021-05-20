@@ -124,25 +124,25 @@ public class EasyMuxer {
             Log.i(TAG, "BUFFER_FLAG_END_OF_STREAM received");
         }
 
-        if (System.currentTimeMillis() - mBeginMillis >= durationMillis) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                Log.i(TAG, String.format("record file reach expiration.create new file:" + index));
-
-                // 结束
-                mMuxer.stop();
-                mMuxer.release();
-                mMuxer = null;
-                mVideoTrackIndex = mAudioTrackIndex = -1;
-
-                try {
-                    mMuxer = new MediaMuxer(mFilePath + "-" + ++index + ".mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
-                    addTrack(mVideoFormat, true);
-                    addTrack(mAudioFormat, false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        if (System.currentTimeMillis() - mBeginMillis >= durationMillis) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+//                Log.i(TAG, String.format("record file reach expiration.create new file:" + index));
+//
+//                // 结束
+//                mMuxer.stop();
+//                mMuxer.release();
+//                mMuxer = null;
+//                mVideoTrackIndex = mAudioTrackIndex = -1;
+//
+//                try {
+//                    mMuxer = new MediaMuxer(mFilePath + "-" + ++index + ".mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+//                    addTrack(mVideoFormat, true);
+//                    addTrack(mAudioFormat, false);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     public synchronized void release() {

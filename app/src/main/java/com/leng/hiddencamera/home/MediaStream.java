@@ -16,6 +16,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.leng.hiddencamera.util.PmwsLog;
 import com.orhanobut.hawk.Hawk;
 import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.UVCCamera;
@@ -60,13 +61,9 @@ public class MediaStream {
     private static final String TAG = MediaStream.class.getSimpleName();
     private static final int SWITCH_CAMERA = 11;
 
-    private boolean mHevc;    // mSWCodec是否软编码, mHevc是否H265
+    private boolean mHevc = false;    // mSWCodec是否软编码, mHevc是否H265
 
     private String recordPath;          // 录像地址
-    protected boolean isFirstPushStream = false;       // 是否要推送bili数据
-    protected boolean isSecendPushStream = false;       // 是否要推送huya数据
-    protected boolean isThirdPushStream = false;       // 是否要推送huya数据
-    protected boolean isFourthPushStream = false;       // 是否要推送huya数据
     private int displayRotationDegree;  // 旋转角度
 
     private Context context;
@@ -83,13 +80,13 @@ public class MediaStream {
      *   Camera.CameraInfo.CAMERA_FACING_BACK
      *   Camera.CameraInfo.CAMERA_FACING_FRONT
      *   CAMERA_FACING_BACK_UVC
-     * */ int mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    public static final int CAMERA_FACING_BACK = 0;//后置
-    public static final int CAMERA_FACING_FRONT = 1;
+     * */ int mCameraId = 1;
+    public static final int CAMERA_FACING_FRONT = 1;//系统默认1是前置 0是后置
+    public static final int CAMERA_FACING_BACK = 0;//
     public static final int CAMERA_FACING_BACK_UVC = 2;
     public static final int CAMERA_FACING_BACK_LOOP = -1;
     public static int nativeWidth = 1920, nativeHeight = 1080;//原生camera的宽高
-    public static int uvcWidth = 1280, uvcHeight = 720;//uvcCamera的宽高
+    public static int uvcWidth = 1920, uvcHeight = 1080;//uvcCamera的宽高
     private int mTargetCameraId;
     private int frameWidth;
     private int frameHeight;
@@ -113,11 +110,13 @@ public class MediaStream {
                     //                    Intent intent = new Intent(context, BackgroundCameraService.class);
                     //                    context.stopService(intent);
                 } finally {
-                    for (int i = 0; i < 5; i++) {
-                        stopPusherStream(i);
-                    }
-                    stopPreview();
-                    destroyCamera();
+                    PmwsLog.writeLog("this destroy camera ago");
+
+                    //                    for (int i = 0; i < 5; i++) {
+//                        stopPusherStream(i);
+//                    }
+//                    stopPreview();
+//                    destroyCamera();
                 }
             }
         };
@@ -167,7 +166,7 @@ public class MediaStream {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-
+            PmwsLog.writeLog("createNativeCamera...Exception....destroyCamera...releaseCamera");
             //            String stack = sw.toString();
             destroyCamera();
             e.printStackTrace();
@@ -218,7 +217,7 @@ public class MediaStream {
         }
 
         if (uvcCamera == null) {
-            mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+            mCameraId = CAMERA_FACING_FRONT;
             createNativeCamera();
         }
     }
@@ -380,10 +379,14 @@ public class MediaStream {
             mCamera.stopPreview();
             mCamera.setPreviewCallbackWithBuffer(null);
         }
-
+        // 关闭音视频合成器
+        if (mMuxer != null) {
+            mMuxer.release();
+            mMuxer = null;
+        }
         // 关闭音频采集和音频编码器
         if (audioStream != null) {
-            audioStream.setMuxer(null);
+            audioStream.setMuxer(mMuxer);
         }
 
         // 关闭录像的编码器
@@ -391,11 +394,7 @@ public class MediaStream {
             mRecordVC.onVideoStop();
         }
 
-        // 关闭音视频合成器
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
+
     }
 
 
@@ -413,21 +412,24 @@ public class MediaStream {
     /// 开始录像
     public synchronized void startRecord() {
         if (Thread.currentThread() != mCameraThread) {
+            PmwsLog.writeLog("startRecording...Thread.currentThread() != mCameraThread");
             mCameraHandler.post(() -> startRecord());
             return;
         }
 
         if (mCamera == null && uvcCamera == null) {
+            PmwsLog.writeLog("startRecording...mCamera&&uvcCamera == null ");
             return;
         }
 
         // 默认录像时间300000毫秒
         mMuxer =
-                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 300000);
+                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30* 60 * 1000);
 
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC :
                 MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, false,
                 2000000, info.mName, info.mColorFormat);
+        PmwsLog.writeLog("startRecording...mMuxer = null is"+(mMuxer == null));
         if (uvcCamera != null) {
             mRecordVC.onVideoStart(uvcWidth, uvcHeight);
         } else {
@@ -441,23 +443,23 @@ public class MediaStream {
 
     /// 停止录像
     public synchronized void stopRecord() {
+
         if (Thread.currentThread() != mCameraThread) {
             mCameraHandler.post(() -> stopRecord());
             return;
         }
-
-        if (mRecordVC == null || audioStream == null) {
-            //            nothing
-        } else {
+        PmwsLog.writeLog("MediaStream   stopRecord...");
+        if (audioStream != null) {
             audioStream.setMuxer(null);
+        }
+        if (mRecordVC != null) {
             mRecordVC.onVideoStop();
             mRecordVC = null;
         }
-
-        if (mMuxer != null)
+        if (mMuxer != null) {
             mMuxer.release();
-
-        mMuxer = null;
+            mMuxer = null;
+        }
     }
 
     /// 更新分辨率
@@ -532,16 +534,19 @@ public class MediaStream {
         if (data == null)
             return;
 
-        int oritation = 0;
-//        if (!StreamActivity.IS_VERTICAL_SCREEN) {
-//            oritation = 0;
-//        } else {
-//            if (mCameraId == CAMERA_FACING_FRONT) {
-//                oritation = 270;
-//            } else {
-//                oritation = 90;
-//            }
-//        }
+        int oritation = 90;
+        if (mCameraId == CAMERA_FACING_FRONT) {
+            oritation = 270;
+                        }
+        //        if (!StreamActivity.IS_VERTICAL_SCREEN) {
+        //            oritation = 0;
+        //        } else {
+        //            if (mCameraId == CAMERA_FACING_FRONT) {
+        //                oritation = 270;
+        //            } else {
+        //                oritation = 90;
+        //            }
+        //        }
         if (i420_buffer == null || i420_buffer.length != data.length) {
             i420_buffer = new byte[data.length];
         }
@@ -747,6 +752,7 @@ public class MediaStream {
     public synchronized void destroyCamera() {
         if (Thread.currentThread() != mCameraThread) {
             mCameraHandler.post(() -> destroyCamera());
+            PmwsLog.writeLog("Thread.currentThread() != mCameraThread.......destroyCamera...releaseCamera");
             return;
         }
 
@@ -764,15 +770,11 @@ public class MediaStream {
                 e.printStackTrace();
             }
 
-            Log.i(TAG, "release Camera");
+
 
             mCamera = null;
         }
 
-        if (mMuxer != null) {
-            mMuxer.release();
-            mMuxer = null;
-        }
     }
 
     /// 回收线程

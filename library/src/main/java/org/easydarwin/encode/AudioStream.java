@@ -125,18 +125,25 @@ public class AudioStream {
                 shouldStop = true;
         }
 
-        if (shouldStop)
+        if (shouldStop) {
             stop();
+        }
     }
 
     /*
      * 设置音频录像器
      * */
     public synchronized void setMuxer(EasyMuxer muxer) {
-        if (muxer != null) {
-            if (newFormat != null)
-                muxer.addTrack(newFormat, false);
+        if (muxer == null) {
+            stop();
+        }else {
+            startRecord();
         }
+
+//        if (muxer != null) {
+//            if (newFormat != null)
+//                muxer.addTrack(newFormat, false);
+//        }
 
         this.muxer = muxer;
     }
@@ -145,8 +152,9 @@ public class AudioStream {
      * 编码
      */
     private void startRecord() {
-        if (mThread != null)
+        if (mThread != null) {
             return;
+        }
 
         /**
          * 3、开启一个子线程，不断从AudioRecord的缓冲区将音频数据读出来。
@@ -385,16 +393,10 @@ public class AudioStream {
     }
 
     private void stop() {
-        try {
-            Thread t = mThread;
-            mThread = null;
 
-            if (t != null) {
-                t.interrupt();
-                t.join();
-            }
-        } catch (InterruptedException e) {
-            e.fillInStackTrace();
+        if (mThread != null) {
+            mThread.interrupt();
+            mThread=null;
         }
     }
 

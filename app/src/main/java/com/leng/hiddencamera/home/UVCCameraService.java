@@ -27,6 +27,9 @@ public class UVCCameraService extends Service {
 
     public static boolean uvcConnected = false;
     public static boolean uvcAttached = false;
+    public static final String UVC_ONATTACH = "onAttach";//
+    public static final String UVC_ONCONNECT = "onConnect";//
+    public static final String UVC_ONDISSCONNECT = "onDiss";//
 
 
 
@@ -115,7 +118,7 @@ public class UVCCameraService extends Service {
                 DCPubic.usbDevice = device;
                 uvcAttached = true;
                 mUSBMonitor.requestPermission(device);
-                EventBus.getDefault().post("onAttach");
+                EventBus.getDefault().post(UVC_ONATTACH);
             }
 
             @Override
@@ -151,7 +154,7 @@ public class UVCCameraService extends Service {
                     mUVCCamera = camera;
                     liveData.postValue(camera);
 //                    Toast.makeText(UVCCameraService.this, "UVCCamera connected!", Toast.LENGTH_SHORT).show();
-                    EventBus.getDefault().post("onConnect");
+                    EventBus.getDefault().post(UVC_ONCONNECT);
                     if (device != null){
                         cameras.append(device.getDeviceId(), camera);
                     }
@@ -185,7 +188,7 @@ public class UVCCameraService extends Service {
                     mUVCCamera = null;
                     liveData.postValue(null);
                 }
-                EventBus.getDefault().post("onDisconnect");
+                EventBus.getDefault().post(UVC_ONDISSCONNECT);
 
 //                mUSBMonitor = new USBMonitor(OutterCameraService.this, this);
 //                mUSBMonitor.setDeviceFilter(DeviceFilter.getDeviceFilters(OutterCameraService.this, R.xml.device_filter));
