@@ -82,8 +82,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private UVCCameraService mUvcService;
 
 
-
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -149,8 +147,8 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                     stopRecording();
                     break;
                 case MSG_OPEN_CAMERA:
-//                    addSurfaceView();
-//                    showPreview(false);
+                    //                    addSurfaceView();
+                    //                    showPreview(false);
                     mHandler.sendMessageDelayed(
                             mHandler.obtainMessage(MSG_START_RECORDING), 1000);
                     break;
@@ -216,12 +214,19 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             case KEYCODE_VOLUME_DOWN:
                 //音量- 键  切换摄像头 如果在录制 停止录制 切换摄像头重新录制  如果没有录制 只单纯切换摄像头
                 //切换顺序 前 后 otg
-                if (DCPubic.sIsRecording) {
-                    stopRecording();
-                    switchCameraByVolumeDown(true);
+                if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
+                    //设置为录像
+                    if (DCPubic.sIsRecording) {
+                        stopRecording();
+                        switchCameraByVolumeDown(true);
+                    } else {
+                        switchCameraByVolumeDown(false);
+                    }
                 } else {
-                    switchCameraByVolumeDown(false);
+                    // 拍照并保存到本地
+                    mMediaStream.takePicture();
                 }
+
                 break;
             default:
                 break;
@@ -252,7 +257,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             mMediaStream.setDisplayRotationDegree(getDisplayRotationDegree());
             mMediaStream.startPreview();
 
-        }else {
+        } else {
             if (mTextureView.isAvailable()) {
                 goonWithAvailableTexture(mTextureView.getSurfaceTexture());
             }
@@ -515,7 +520,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
      * 开始录像
      */
     private void startRecording() {
-        PmwsLog.writeLog("startRecording...mMediaStream=null is"+(mMediaStream==null));
+        PmwsLog.writeLog("startRecording...mMediaStream=null is" + (mMediaStream == null));
         if (mMediaStream != null) {
             mMediaStream.startRecord();
         }
@@ -525,7 +530,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         Toast.makeText(this, currentCameraName + "录像开启成功", Toast.LENGTH_SHORT).show();
 
         if (mMaxDuration > 0) {
-            PmwsLog.writeLog("sendMessageDelayed..."+mMaxDuration);
+            PmwsLog.writeLog("sendMessageDelayed..." + mMaxDuration);
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_RESTART_RECORDING),
                     mMaxDuration);
@@ -544,9 +549,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (mNotificationManager != null) {
             mNotificationManager.cancel(NOTIFICATION_FLAG);
         }
-//        mHandler.sendMessageDelayed(
-//                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
-//                500);
+        //        mHandler.sendMessageDelayed(
+        //                mHandler.obtainMessage(MSG_ENCRYPT_FILE),
+        //                500);
 
         DCPubic.sIsRecording = false;
     }
@@ -643,6 +648,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
     }
+
     /**
      * 开启uvc服务
      */
@@ -696,7 +702,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                             Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, MediaStream.CAMERA_FACING_FRONT);
                         }
                     }
-                },1000);
+                }, 1000);
 
 
                 break;

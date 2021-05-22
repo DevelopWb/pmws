@@ -9,11 +9,13 @@ import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
+import android.view.View;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.leng.hiddencamera.util.PmwsLog;
@@ -32,6 +34,7 @@ import org.easydarwin.util.BUSUtil;
 import org.easydarwin.util.Util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -359,6 +362,34 @@ public class MediaStream {
         mCamera.setDisplayOrientation(90);
         frameWidth = nativeHeight;
         frameHeight = nativeWidth;
+    }
+
+    public void takePicture(){
+        if(mCamera!= null){
+            mCamera.takePicture(null, null, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    // 获取Jpeg图片，并保存在sd卡上
+                    String path = Environment.getExternalStorageDirectory()
+                            .getPath()  +"/focus/";
+                    File pathDir = new File(path);
+                    if (!pathDir.exists()){
+                        pathDir.mkdir();
+                    }
+                    File pictureFile = new File(path+ "focusdemo.jpg");
+                    if (pictureFile.exists()){
+                        pictureFile.delete();
+                    }
+                    try {
+                        FileOutputStream fos = new FileOutputStream(pictureFile);
+                        fos.write(data);
+                        fos.close();
+                    } catch (Exception e) {
+
+                    }
+                }
+            });
+        }
     }
 
     /// 停止预览
