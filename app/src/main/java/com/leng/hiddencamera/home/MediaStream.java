@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.leng.hiddencamera.util.DCPubic;
 import com.leng.hiddencamera.util.PmwsLog;
 import com.orhanobut.hawk.Hawk;
 import com.serenegiant.usb.IFrameCallback;
@@ -40,6 +41,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -116,10 +118,10 @@ public class MediaStream {
                     PmwsLog.writeLog("this destroy camera ago");
 
                     //                    for (int i = 0; i < 5; i++) {
-//                        stopPusherStream(i);
-//                    }
-//                    stopPreview();
-//                    destroyCamera();
+                    //                        stopPusherStream(i);
+                    //                    }
+                    //                    stopPreview();
+                    //                    destroyCamera();
                 }
             }
         };
@@ -364,26 +366,24 @@ public class MediaStream {
         frameHeight = nativeWidth;
     }
 
-    public void takePicture(){
-        if(mCamera!= null){
+    public void takePicture() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        if (mCamera != null) {
             mCamera.takePicture(null, null, new Camera.PictureCallback() {
                 @Override
                 public void onPictureTaken(byte[] data, Camera camera) {
                     // 获取Jpeg图片，并保存在sd卡上
-                    String path = Environment.getExternalStorageDirectory()
-                            .getPath()  +"/focus/";
-                    File pathDir = new File(path);
-                    if (!pathDir.exists()){
-                        pathDir.mkdir();
-                    }
-                    File pictureFile = new File(path+ "focusdemo.jpg");
-                    if (pictureFile.exists()){
+                    File pathDir = new File(DCPubic.getPhotoPath());
+                    File pictureFile = new File(pathDir, df.format(new Date())+".jpg");
+                    if (pictureFile.exists()) {
                         pictureFile.delete();
                     }
                     try {
                         FileOutputStream fos = new FileOutputStream(pictureFile);
                         fos.write(data);
                         fos.close();
+                        camera.stopPreview();// 拍照后进行重新预览
+                        camera.startPreview();// 开始预览
                     } catch (Exception e) {
 
                     }
@@ -455,12 +455,12 @@ public class MediaStream {
 
         // 默认录像时间300000毫秒
         mMuxer =
-                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30* 60 * 1000);
+                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 30 * 60 * 1000);
 
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC :
                 MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, false,
                 2000000, info.mName, info.mColorFormat);
-        PmwsLog.writeLog("startRecording...mMuxer = null is"+(mMuxer == null));
+        PmwsLog.writeLog("startRecording...mMuxer = null is" + (mMuxer == null));
         if (uvcCamera != null) {
             mRecordVC.onVideoStart(uvcWidth, uvcHeight);
         } else {
@@ -568,7 +568,7 @@ public class MediaStream {
         int oritation = 90;
         if (mCameraId == CAMERA_FACING_FRONT) {
             oritation = 270;
-                        }
+        }
         //        if (!StreamActivity.IS_VERTICAL_SCREEN) {
         //            oritation = 0;
         //        } else {
@@ -800,7 +800,6 @@ public class MediaStream {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
 
 
             mCamera = null;

@@ -268,7 +268,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             showPreview(true);
         } else {
             // 如果没有被点击，不显示预览，开始录制
-            PmwsLog.d("The service not started but preview disabled start the recording");
+            PmwsLog.d("The service ntakePictureot started but preview disabled start the recording");
             showPreview(false);
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_START_RECORDING), 1000);
@@ -361,19 +361,25 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             public void onClick(View v) {
                 PmwsLog.d("Preview clicked, hide the preview first");
                 showPreview(false);
-                if (DCPubic.sIsRecording) {
-                    //录制过程中预览关闭
-                    return;
-                }
-                // stopSelf();
-                PmwsLog.d("Preview clicked, recording not started, start recording");
-                // 预览界面点击后，隐藏，然后开始录制
-                mTextureView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startRecording();
+
+                if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
+                    //设置为录像
+                    if (DCPubic.sIsRecording) {
+                        //录制过程中预览关闭
+                        return;
                     }
-                }, 1000);
+                    // stopSelf();
+                    PmwsLog.d("Preview clicked, recording not started, start recording");
+                    // 预览界面点击后，隐藏，然后开始录制
+                    mTextureView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startRecording();
+                        }
+                    }, 1000);
+                } else {
+                    // 拍照模式
+                }
 
             }
         });

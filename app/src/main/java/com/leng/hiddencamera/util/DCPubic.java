@@ -239,6 +239,17 @@ public class DCPubic {
 		}
 		return file.getAbsolutePath();
 	}
+	/**
+	 * 获取存储路径
+	 * @return
+	 */
+	public static String getPhotoPath() {
+		File file = new File(getRecordPath()+File.separator+"image");
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return file.getAbsolutePath();
+	}
 
 
 

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,20 +52,21 @@ public class PicsDisplayActivity extends BaseAppActivity {
         mRecyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         mSmartrefreshlayout = (SmartRefreshLayout) findViewById(R.id.smartrefreshlayout);
         picAdapter = new PicAdapter(R.layout.item_pic_display);
-        GridLayoutManager manager = new GridLayoutManager(mContext,3);
+        GridLayoutManager manager = new GridLayoutManager(mContext, 3);
         mRecyclerview.setAdapter(picAdapter);
         mRecyclerview.setLayoutManager(manager);
-        picAdapter.setNewData(getTestData());
     }
 
     @Override
     public void initData() {
+
+        initAdapterData();
+
+
         picAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                ArrayList<String> arrays = new ArrayList<>();
-                arrays.addAll(adapter.getData());
-                startActivity(new Intent(mContext, ImageZoomActivity.class).putExtra("paths", arrays).putExtra(
+                startActivity(new Intent(mContext, ImageZoomActivity.class).putExtra("paths", getAllpicPaths()).putExtra(
                         "item", position));
 
             }
@@ -72,12 +74,16 @@ public class PicsDisplayActivity extends BaseAppActivity {
         picAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                File file = (File) adapter.getData().get(position);
                 new AlertDialog.Builder(mContext)
                         .setCancelable(false)
                         .setMessage("确定删除此照片吗")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                file.delete();
+                               initAdapterData();
+                               adapter.notifyDataSetChanged();
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -91,6 +97,31 @@ public class PicsDisplayActivity extends BaseAppActivity {
             }
         });
     }
+
+    private void initAdapterData() {
+        File photos = new File(DCPubic.getPhotoPath());
+        File[] picFiles = photos.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".jpg");
+            }
+        });
+        if (picFiles != null) {
+            List<File> files = Arrays.asList(picFiles);
+            Collections.reverse(files);
+            picAdapter.setNewData(files);
+        }
+    }
+
+    private ArrayList<String> getAllpicPaths() {
+        ArrayList<String> arraysReturn = new ArrayList<>();
+        List<File> arrays = picAdapter.getData();
+        for (File array : arrays) {
+            arraysReturn.add(array.getAbsolutePath());
+        }
+        return arraysReturn;
+    }
+
     @Override
     public void onBackPressed() {
         DCPubic.RECORD_DIALOG = 1;
