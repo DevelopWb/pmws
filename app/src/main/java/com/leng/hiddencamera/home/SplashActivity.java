@@ -33,6 +33,7 @@ public class SplashActivity extends RxAppCompatActivity {
             Manifest.permission.CALL_PHONE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_NOTIFICATION_POLICY,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.SYSTEM_ALERT_WINDOW,
             Manifest.permission.CAMERA,
