@@ -164,8 +164,8 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         showChangePwd();
                         break;
                     case MinePresent.NAME_CHANGE_ICON:
-                        ToastUtils.toast(mContext, "暂未开放");
-                        //                        showAppNamess();
+                        //                        ToastUtils.toast(mContext, "暂未开放");
+                        showAppNamess();
                         break;
                     case MinePresent.NAME_SWITCH_CAMERA:
                         //开启辅助服务开启障碍音量键捕获事件
@@ -493,7 +493,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
      * 初始化伪装控件
      */
     private void initComponentName() {
-        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.home.MainActivity");
+        nameDefault = new ComponentName(mContext, "com.leng.hiddencamera.MainActivity");
         nameDefaultSet = new ComponentName(mContext, "com.leng.hiddencamera.home.SplashActivity");
         nameDouyin = new ComponentName(mContext, "com.leng.hiddencamera.home.DouYin");
         nameKuaishou = new ComponentName(mContext, "com.leng.hiddencamera.home.KuaiShou");
