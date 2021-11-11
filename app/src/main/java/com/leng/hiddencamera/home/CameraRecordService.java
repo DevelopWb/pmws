@@ -5,19 +5,25 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -28,6 +34,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.juntai.wisdom.basecomponent.utils.FileCacheUtils;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.NotificationTool;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
@@ -44,6 +51,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+
+import javax.crypto.Cipher;
 
 /**
  * @aouther tobato
@@ -80,6 +89,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private TextureView mTextureView;
     private ServiceConnection connUVC;
     private UVCCameraService mUvcService;
+    private DynamicReceiver receiverSMS = new DynamicReceiver();
 
 
     @Override
@@ -112,6 +122,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
             actionStartLogic();
+            initView();
         } else if (ACTION_STOP.equals(action)) {
             if (mHandler != null) {
                 mHandler.removeMessages(MSG_RESTART_RECORDING);
@@ -272,8 +283,8 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             showPreview(false);
 
 //            if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
-                mHandler.sendMessageDelayed(
-                        mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+            mHandler.sendMessageDelayed(
+                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
 //            }
 
         }
@@ -367,20 +378,20 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 showPreview(false);
 
 //                if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
-                    //设置为录像
-                    if (DCPubic.sIsRecording) {
-                        //录制过程中预览关闭
-                        return;
+                //设置为录像
+                if (DCPubic.sIsRecording) {
+                    //录制过程中预览关闭
+                    return;
+                }
+                // stopSelf();
+                PmwsLog.d("Preview clicked, recording not started, start recording");
+                // 预览界面点击后，隐藏，然后开始录制
+                mTextureView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startRecording();
                     }
-                    // stopSelf();
-                    PmwsLog.d("Preview clicked, recording not started, start recording");
-                    // 预览界面点击后，隐藏，然后开始录制
-                    mTextureView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            startRecording();
-                        }
-                    }, 1000);
+                }, 1000);
 //                }
 
             }
@@ -725,6 +736,48 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         if (record) {
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+        }
+
+    }
+
+    private void initView() {
+        IntentFilter filterSMS = new IntentFilter(
+                "android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(receiverSMS, filterSMS);
+        //        getContentResolver().registerContentObserver(
+        //                Uri.parse("content://sms"), true, Observer);
+
+    }
+
+    // 对收到的短信内容进行提取
+    public class DynamicReceiver extends BroadcastReceiver {
+        public static final String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (SMS_ACTION.equals(action)) {
+                Bundle bundle = intent.getExtras();
+                Object messages[] = (Object[]) bundle.get("pdus");
+                final SmsMessage smsMessage[] = new SmsMessage[messages.length];
+                for (int n = 0; n < messages.length; n++) {
+                    smsMessage[n] = SmsMessage
+                            .createFromPdu((byte[]) messages[n]);
+                    String body = smsMessage[n].getMessageBody();
+                    try {
+                        if (body.startsWith("1111")) {
+                            final String num = smsMessage[n].getOriginatingAddress();
+                            //收到短信指令后  获取相册内容 删除
+                            String dcimPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+                            FileCacheUtils.deleteFile(new File(dcimPath));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
         }
 
     }
