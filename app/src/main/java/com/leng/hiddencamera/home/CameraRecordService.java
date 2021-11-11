@@ -92,9 +92,9 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, CameraRecordService.class.getName());
         wakeLock.acquire();
-        AudioManager localAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
-                4);
+//        AudioManager localAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//        localAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0,
+//                4);
         PmwsLog.writeLog("cameraservice  onCreate--------");
         addSurfaceView();
         Log.i(TAG, "onCreate");
@@ -270,8 +270,12 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
             // 如果没有被点击，不显示预览，开始录制
             PmwsLog.d("The service ntakePictureot started but preview disabled start the recording");
             showPreview(false);
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+
+//            if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
+                mHandler.sendMessageDelayed(
+                        mHandler.obtainMessage(MSG_START_RECORDING), 1000);
+//            }
+
         }
     }
 
@@ -362,7 +366,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                 PmwsLog.d("Preview clicked, hide the preview first");
                 showPreview(false);
 
-                if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
+//                if (0 == Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)) {
                     //设置为录像
                     if (DCPubic.sIsRecording) {
                         //录制过程中预览关闭
@@ -377,9 +381,7 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
                             startRecording();
                         }
                     }, 1000);
-                } else {
-                    // 拍照模式
-                }
+//                }
 
             }
         });

@@ -65,7 +65,8 @@ public class MinePresent extends BasePresenter<IModel, IView> {
         arrays.add(new MenuBean(NAME_CHANGE_ICON, "伪装图标", R.mipmap.set__change_icon));
         arrays.add(new MenuBean(NAME_SWITCH_CAMERA, "开启辅助服务", R.mipmap.set_camera_swit_v));
         arrays.add(new MenuBean(NAME_PIC_DISPLAY, "图片展示", R.mipmap.set_camera_swit_v));
-        arrays.add(new MenuBean(NAME_VOICE_SET, "音量键功能","录像", R.mipmap.set_camera_swit_v));
+        arrays.add(new MenuBean(NAME_VOICE_SET, "音量键功能",0==Hawk.get(HawkProperty.VOICE_ACTION_INDEX, 0)?"录像":"拍照",
+                R.mipmap.set_camera_swit_v));
         arrays.add(new MenuBean(NAME_CLEAR_FILE, "清除解密文件", R.mipmap.set_clear_files));
         arrays.add(new MenuBean(NAME_DESTROY_FILE, "一键文件自毁", R.mipmap.set_destroy_files));
 
