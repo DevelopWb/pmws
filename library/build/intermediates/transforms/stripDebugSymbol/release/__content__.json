@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"name":"D:\\yangGCode\\pmws\\library\\build\\intermediates\\transforms\\mergeJniLibs\\release\\0","index":0,"scopes":["PROJECT"],"types":["NATIVE_LIBS"],"format":"DIRECTORY","present":true}]
+=======
+[{"name":"D:\\other\\pmws\\library\\build\\intermediates\\transforms\\mergeJniLibs\\release\\0","index":0,"scopes":["PROJECT"],"types":["NATIVE_LIBS"],"format":"DIRECTORY","present":true}]
+>>>>>>> 5d38a6473b3f9185ca9562a6f5f3a648a68a583c

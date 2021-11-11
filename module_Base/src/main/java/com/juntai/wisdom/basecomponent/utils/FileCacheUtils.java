@@ -249,7 +249,7 @@ public class FileCacheUtils {
      * 删除文件
      * @param file
      */
-    private static void deleteFile(File file){
+    public static void deleteFile(File file){
         //判断是否为目录
         for (File ff:file.listFiles()) {
             if (ff.isDirectory()){
