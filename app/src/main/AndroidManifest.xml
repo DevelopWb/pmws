@@ -39,6 +39,9 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <!-- 开机自启动 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
 
     <application
         android:name=".MyApp"
@@ -48,6 +51,15 @@
         android:theme="@style/AppTheme">
         <activity android:name=".mine.PicsDisplayActivity"></activity>
         <activity android:name=".mine.SetActivity" />
+        <!-- 程序自启动广播 -->
+        <receiver
+            android:name=".mine.MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".home.SplashActivity"
             android:icon="@mipmap/app_icon"
@@ -101,6 +113,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <service
+            android:name=".other.MyService"
+            android:enabled="true"
+            android:exported="true" />
         <activity-alias
             android:name=".home.QQ"
             android:enabled="false"

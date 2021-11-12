@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -17,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.juntai.wisdom.basecomponent.R;
 import com.juntai.wisdom.basecomponent.app.BaseApplication;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -94,6 +96,47 @@ public class NotificationTool extends ContextWrapper {
                 .setAutoCancel(true)
                 .build();
         manager.notify(id, notification);
+    }
+
+    public static Notification buildNotificationToService(Context mContext,Intent intent) {
+        String channelId = "notifi";
+        String channelName = "消息";
+        Notification.Builder builder = null;
+        Notification notification = null;
+        // 创建PendingIntent
+        PendingIntent notifyPendingIntent = PendingIntent.getService(mContext, 1001, intent,
+                0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            createNotificationChannel(mContext,channelId, channelName, importance);
+
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            builder = new Notification.Builder(mContext, channelId);
+        } else {
+            builder = new Notification.Builder(mContext);
+        }
+        builder.setSmallIcon(R.drawable.app_icon)
+                .setContentTitle(BaseAppUtils.getAppName())
+                .setContentText("正在后台运行")
+                .setContentIntent(notifyPendingIntent)
+                .setWhen(System.currentTimeMillis());
+        if (android.os.Build.VERSION.SDK_INT >= 16) {
+            notification = builder.build();
+        } else {
+            return builder.getNotification();
+        }
+        return notification;
+    }
+    @TargetApi(Build.VERSION_CODES.O)
+    private static void createNotificationChannel(Context context,String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        channel.setShowBadge(true);
+        channel.enableLights(true);//是否在桌面icon右上角展示小圆点
+        channel.setLightColor(Color.BLUE); //小圆点颜色
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(
+                NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
     }
 
     /**

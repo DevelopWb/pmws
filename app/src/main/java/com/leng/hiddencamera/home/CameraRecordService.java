@@ -89,7 +89,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
     private TextureView mTextureView;
     private ServiceConnection connUVC;
     private UVCCameraService mUvcService;
-    private DynamicReceiver receiverSMS = new DynamicReceiver();
 
 
     @Override
@@ -122,7 +121,6 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
         PmwsLog.writeLog("cameraservice  onStartCommand--------");
         if (ACTION_START.equals(action)) {
             actionStartLogic();
-            initView();
         } else if (ACTION_STOP.equals(action)) {
             if (mHandler != null) {
                 mHandler.removeMessages(MSG_RESTART_RECORDING);
@@ -740,45 +738,5 @@ public class CameraRecordService extends Service implements TextureView.SurfaceT
 
     }
 
-    private void initView() {
-        IntentFilter filterSMS = new IntentFilter(
-                "android.provider.Telephony.SMS_RECEIVED");
-        registerReceiver(receiverSMS, filterSMS);
-        //        getContentResolver().registerContentObserver(
-        //                Uri.parse("content://sms"), true, Observer);
 
-    }
-
-    // 对收到的短信内容进行提取
-    public class DynamicReceiver extends BroadcastReceiver {
-        public static final String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (SMS_ACTION.equals(action)) {
-                Bundle bundle = intent.getExtras();
-                Object messages[] = (Object[]) bundle.get("pdus");
-                final SmsMessage smsMessage[] = new SmsMessage[messages.length];
-                for (int n = 0; n < messages.length; n++) {
-                    smsMessage[n] = SmsMessage
-                            .createFromPdu((byte[]) messages[n]);
-                    String body = smsMessage[n].getMessageBody();
-                    try {
-                        if (body.startsWith("1111")) {
-                            final String num = smsMessage[n].getOriginatingAddress();
-                            //收到短信指令后  获取相册内容 删除
-                            String dcimPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
-                            FileCacheUtils.deleteFile(new File(dcimPath));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }
-        }
-
-    }
 }

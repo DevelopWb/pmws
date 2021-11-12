@@ -88,6 +88,10 @@ public class HawkProperty {
      */
     public static String CURRENT_CAMERA_INDEX = "current_camera";
     /**
+     * 自启动
+     */
+    public static String AUTO_RUN_INDEX = "autorun";
+    /**
      * voice action 默认0  代表录像
      */
     public static String VOICE_ACTION_INDEX = "voice_action";
