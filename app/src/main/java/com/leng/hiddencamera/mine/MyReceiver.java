@@ -23,10 +23,8 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-         boolean autoRun =    Hawk.get(HawkProperty.AUTO_RUN,true);
-            if (autoRun) {
+            if (0==Hawk.get(HawkProperty.AUTO_RUN_INDEX,0)) {
                 startMyService(context);
-
             }
 
         }

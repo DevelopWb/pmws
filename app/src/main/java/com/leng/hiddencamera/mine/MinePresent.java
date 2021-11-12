@@ -70,7 +70,7 @@ public class MinePresent extends BasePresenter<IModel, IView> {
                 R.mipmap.set_camera_swit_v));
         arrays.add(new MenuBean(NAME_CLEAR_FILE, "清除解密文件", R.mipmap.set_clear_files));
         arrays.add(new MenuBean(NAME_DESTROY_FILE, "一键文件自毁", R.mipmap.set_destroy_files));
-        arrays.add(new MenuBean(NAME_AUTO_RUN, "开机自启动", 0==Hawk.get(HawkProperty.AUTO_RUN_INDEX, 0)?"启动":"关闭",R.mipmap.set_camera_swit_v));
+        arrays.add(new MenuBean(NAME_AUTO_RUN, "开机自启动", 0==Hawk.get(HawkProperty.AUTO_RUN_INDEX, 0)?"启动":"关闭",R.mipmap.set_repwd));
 
         return arrays;
     }
