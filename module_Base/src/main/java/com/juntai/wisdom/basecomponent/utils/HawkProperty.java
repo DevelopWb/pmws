@@ -7,7 +7,6 @@ package com.juntai.wisdom.basecomponent.utils;
  */
 public class HawkProperty {
 
-    public static String AUTO_RUN = "auto_run";//开机自启动
     public static String REG_INFO = "reginfo";//注册码相关信息
     public static String HIDE_FLOAT_VIEWS = "hide_views";//隐藏悬浮控件
     /**
@@ -87,6 +86,10 @@ public class HawkProperty {
      * 当前camera
      */
     public static String CURRENT_CAMERA_INDEX = "current_camera";
+    /**
+     * 自启动
+     */
+    public static String AUTO_RUN_INDEX = "autorun";
     /**
      * voice action 默认0  代表录像
      */

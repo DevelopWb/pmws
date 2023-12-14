@@ -1,6 +1,7 @@
 package com.leng.hiddencamera.home;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.leng.hiddencamera.BuildConfig;
 import com.leng.hiddencamera.R;
 import com.leng.hiddencamera.mine.SetActivity;
+import com.leng.hiddencamera.other.MyService;
 import com.leng.hiddencamera.util.DCPubic;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -41,6 +43,7 @@ public class SplashActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startMyService();
         if (DCPubic.sIsRecording) {
             Toast.makeText(getBaseContext(), "正在录制中，请先停止...", Toast.LENGTH_LONG)
                     .show();
@@ -85,7 +88,21 @@ public class SplashActivity extends RxAppCompatActivity {
                     }
                 });
     }
-
+    /**
+     * 启动service
+     *
+     */
+    private void startMyService() {
+        Intent startIntent = new Intent(MyService.ACTION_START);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.setClass(this, MyService.class);
+        if (Build.VERSION.SDK_INT >= 26) {
+           startForegroundService(startIntent);
+        } else {
+            // Pre-O behavior.
+            startService(startIntent);
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_OVERLAY_PERMISSION) {

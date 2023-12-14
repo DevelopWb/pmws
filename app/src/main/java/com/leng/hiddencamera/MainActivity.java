@@ -15,6 +15,7 @@ import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.leng.hiddencamera.home.CameraRecordService;
 import com.leng.hiddencamera.home.UVCCameraService;
+import com.leng.hiddencamera.other.MyService;
 import com.leng.hiddencamera.util.DCPubic;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
@@ -33,11 +34,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         ActivityManagerTool.getInstance().finishApp();
+
         if (!Hawk.contains(HawkProperty.REG_CODE)) {
             ToastUtils.toast(this, "您还没有注册，请先注册！");
             this.finish();
             return;
         }
+
         new RegOperateManager(this,
                 new RegLatestContact.CancelCallBack() {
                     @Override
@@ -52,14 +55,27 @@ public class MainActivity extends Activity {
                         } else {
                             startCameraService(CameraRecordService.ACTION_START);
                         }
+                        startMyService();
                     }
                 });
 
     }
 
 
-
-
+    /**
+     * 启动service
+     */
+    private void startMyService() {
+        Intent startIntent = new Intent(MyService.ACTION_START);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.setClass(this, MyService.class);
+        if (Build.VERSION.SDK_INT >= 26) {
+            startForegroundService(startIntent);
+        } else {
+            // Pre-O behavior.
+            startService(startIntent);
+        }
+    }
 
     /**
      * 启动service

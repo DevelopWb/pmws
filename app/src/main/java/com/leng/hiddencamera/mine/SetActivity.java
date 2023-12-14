@@ -54,6 +54,7 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
     private MyMenuAdapter mMenuAdapter;
     private LinearLayout mMenuQuitLl;
     public static CharSequence[] voiceActions = new CharSequence[]{"录像", "拍照"};
+    public static CharSequence[] autoRun = new CharSequence[]{"开启", "关闭"};
     public static CharSequence[] cameras = new CharSequence[]{"后置", "前置", "外置"};
     public static CharSequence[] hideShow = new CharSequence[]{"悬浮窗显示", "悬浮窗隐藏"};
     public static CharSequence[] intervals = new CharSequence[]{"5分钟", "10分钟", "30分钟"};
@@ -187,6 +188,9 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                         break;
                     case MinePresent.NAME_VOICE_SET:
                         voiceActionSet(menuBean);
+                        break;
+                    case MinePresent.NAME_AUTO_RUN:
+                        choseAutoRunSet(menuBean);
                         break;
                     case MinePresent.NAME_CLEAR_FILE:
                         clearCache(DCPubic.getRecordPath());
@@ -371,6 +375,23 @@ public class SetActivity extends BaseAppActivity<MinePresent> implements IView, 
                     public void onClick(DialogInterface dialog, int position) {
                         Hawk.put(HawkProperty.CURRENT_CAMERA_INDEX, position);
                         menuBean.setName(String.valueOf(cameras[position]));
+                        mMenuAdapter.notifyItemChanged(menuBean.getTagId());
+                        dialog.dismiss();
+                    }
+
+
+                }).show();
+    }
+    /**
+     * chose camera
+     */
+    private void choseAutoRunSet(MenuBean menuBean) {
+        new AlertDialog.Builder(this).setSingleChoiceItems(autoRun, Hawk.get(HawkProperty.AUTO_RUN_INDEX, 0),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position) {
+                        Hawk.put(HawkProperty.AUTO_RUN_INDEX, position);
+                        menuBean.setDes(String.valueOf(autoRun[position]));
                         mMenuAdapter.notifyItemChanged(menuBean.getTagId());
                         dialog.dismiss();
                     }

@@ -42,6 +42,11 @@ public class MyMenuAdapter extends BaseQuickAdapter<MenuBean, BaseViewHolder> {
                 helper.setGone(R.id.menu_content_tv, true);
                 helper.setText(R.id.menu_content_tv, item.getDes());
                 break;
+            case MinePresent.NAME_AUTO_RUN:
+                //a
+                helper.setGone(R.id.menu_content_tv, true);
+                helper.setText(R.id.menu_content_tv, item.getDes());
+                break;
             default:
                 helper.setGone(R.id.menu_content_tv, false);
                 break;
