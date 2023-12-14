@@ -1,0 +1,51 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+	package
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:3:5-38
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:1-15:12
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:2:11-69
+application
+ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:5:5-13:19
+activity#com.juntai.wisdom.video.img.ImageZoomActivity
+ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:6:9-7:45
+	android:launchMode
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:7:13-43
+	android:name
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:6:19-56
+uses-library#org.apache.http.legacy
+ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:9:9-11:40
+	android:required
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:11:13-37
+	android:name
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml:10:13-50
+uses-sdk
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		ADDED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml
+		INJECTED from D:\other\pmws\module_Video\src\main\AndroidManifest.xml

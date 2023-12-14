@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\other\pmws\module_Video\src\main\res"/><source path="D:\other\pmws\module_Video\build\generated\res\rs\release"/><source path="D:\other\pmws\module_Video\build\generated\res\resValues\release"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\other\pmws\module_Video\src\main\res"><file name="videoplayer_btn_bg" path="D:\other\pmws\module_Video\src\main\res\drawable\videoplayer_btn_bg.xml" qualifiers="" type="drawable"/><file name="camera_play_button" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\camera_play_button.png" qualifiers="hdpi-v4" type="drawable"/><file name="camera_pre" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\camera_pre.png" qualifiers="hdpi-v4" type="drawable"/><file name="capture" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\capture.png" qualifiers="hdpi-v4" type="drawable"/><file name="flow" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\flow.png" qualifiers="hdpi-v4" type="drawable"/><file name="flow_pre" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\flow_pre.png" qualifiers="hdpi-v4" type="drawable"/><file name="max" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\max.png" qualifiers="hdpi-v4" type="drawable"/><file name="pause" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\pause.png" qualifiers="hdpi-v4" type="drawable"/><file name="playbutton2" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\playbutton2.png" qualifiers="hdpi-v4" type="drawable"/><file name="play_big" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\play_big.png" qualifiers="hdpi-v4" type="drawable"/><file name="realplayer_play" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\realplayer_play.png" qualifiers="hdpi-v4" type="drawable"/><file name="record" path="D:\other\pmws\module_Video\src\main\res\drawable-hdpi\record.png" qualifiers="hdpi-v4" type="drawable"/><file name="activity_imagezoom" path="D:\other\pmws\module_Video\src\main\res\layout\activity_imagezoom.xml" qualifiers="" type="layout"/><file path="D:\other\pmws\module_Video\src\main\res\values\colors.xml" qualifiers=""><color name="camera_progress_three">#24ff00</color><color name="color_4e3d31">#4e3d31</color><color name="grey8">#888888</color><color name="transparent_black_85">#DA000000</color></file><file path="D:\other\pmws\module_Video\src\main\res\values\strings.xml" qualifiers=""><string name="app_name">VideoPlay</string><string-array name="velocity">
+        <item>none</item>
+        <item>ultrafast</item>
+        <item>superfast</item>
+        <item>veryfast</item>
+        <item>faster</item>
+        <item>fast</item>
+        <item>medium</item>
+        <item>slow</item>
+        <item>slower</item>
+        <item>veryslow</item>
+        <item>placebo</item>
+    </string-array><string-array name="need_full">
+        <item>false</item>
+        <item>true</item>
+    </string-array><string name="warn_not_wifi">你现在不在无线局域网环境，继续操作会消耗较多流量</string></file><file path="D:\other\pmws\module_Video\src\main\res\values\style.xml" qualifiers=""><style name="edit_AlertDialog_style" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        
+    </style><style name="MediaStyleTheme" parent="BaseAppTheme">
+        
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        
+        <item name="colorAccent">@color/colorAccent</item>
+    </style></file></source><source path="D:\other\pmws\module_Video\build\generated\res\rs\release"/><source path="D:\other\pmws\module_Video\build\generated\res\resValues\release"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="release$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\other\pmws\module_Video\src\release\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="release" generated-set="release$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\other\pmws\module_Video\src\release\res"/></dataSet><mergedItems/></merger>
