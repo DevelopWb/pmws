@@ -25,30 +25,35 @@ public class MainActivity extends Activity {
         //        acquireWakeLock();
         ActivityManagerTool.getInstance().finishApp();
         String strreg = Hawk.get(HawkProperty.REG_CODE);
-        if ("".equals(strreg) || TextUtils.isEmpty(strreg)) {
-            ToastUtils.toast(this, "您还没有注册，请先注册！");
-            this.finish();
-            return;
+        // TODO: 2023/12/14 暂时去掉注册码验证 
+//        if ("".equals(strreg) || TextUtils.isEmpty(strreg)) {
+//            ToastUtils.toast(this, "您还没有注册，请先注册！");
+//            this.finish();
+//            return;
+//        } else {
+//            new RegOperateManager(this,
+//                    new RegLatestContact.CancelCallBack() {
+//                        @Override
+//                        public void toFinishActivity() {
+//                            finish();
+//                        }
+//
+//                        @Override
+//                        public void toDoNext(String input) {
+//                            if (PmwsSetActivity.sIsRecording) {
+//                                startCameraService(CameraRecordService.ACTION_RECORDING);
+//                            } else {
+//                                startCameraService(CameraRecordService.ACTION_START);
+//                            }
+//                        }
+//                    });
+//
+//        }
+        if (PmwsSetActivity.sIsRecording) {
+            startCameraService(CameraRecordService.ACTION_RECORDING);
         } else {
-            new RegOperateManager(this,
-                    new RegLatestContact.CancelCallBack() {
-                        @Override
-                        public void toFinishActivity() {
-                            finish();
-                        }
-
-                        @Override
-                        public void toDoNext(String input) {
-                            if (PmwsSetActivity.sIsRecording) {
-                                startCameraService(CameraRecordService.ACTION_RECORDING);
-                            } else {
-                                startCameraService(CameraRecordService.ACTION_START);
-                            }
-                        }
-                    });
-
+            startCameraService(CameraRecordService.ACTION_START);
         }
-
 
     }
 

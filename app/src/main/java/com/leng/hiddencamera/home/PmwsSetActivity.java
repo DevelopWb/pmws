@@ -96,7 +96,7 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     private ToggleButton mToggleButton02;
 
 
-    private RegOperateManager regOperateManager;
+//    private RegOperateManager regOperateManager;
 
     private TextView change_pwd;
     private TextView mVolume_cge;
@@ -109,21 +109,22 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
-            @Override
-            public void toFinishActivity() {
-                finish();
-            }
-
-            @Override
-            public void toDoNext(String input) {
-                if (input != null) {
-                    onFirst();
-                }
-                showPasswordInputDialog();
-            }
-        });
-
+        // TODO: 2023/12/14 暂时将注册码取消
+//        regOperateManager = new RegOperateManager(this, new RegLatestContact.CancelCallBack() {
+//            @Override
+//            public void toFinishActivity() {
+//                finish();
+//            }
+//
+//            @Override
+//            public void toDoNext(String input) {
+//                if (input != null) {
+//                    onFirst();
+//                }
+//                showPasswordInputDialog();
+//            }
+//        });
+        showPasswordInputDialog();
         mProgressDialog = DCPubic.getProgressDialog(this, "正在加密，请稍后...");
         setContentView(R.layout.pmws_set);
         sp = getSharedPreferences("PMWS_SET", MODE_PRIVATE);
@@ -802,8 +803,8 @@ public class PmwsSetActivity extends BaseAppActivity implements View.OnClickList
     protected void onDestroy() {
         PmwsLog.writeLog("the main activity is destorying");
         Log.e(TAG, "Destroy");
-        regOperateManager.setCancelCallBack(null);
-        regOperateManager.destroy();
+//        regOperateManager.setCancelCallBack(null);
+//        regOperateManager.destroy();
         unregisterReceiver(CloseDialogReceiver);
         super.onDestroy();
     }
